@@ -13,6 +13,10 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    // Отключение предупреждений о неиспользованных переменных
+    "noUnusedLocals": false,
+    // Отключение предупреждений о неиспользованных параметрах функций
+    "noUnusedParameters": false,
     "plugins": [
       {
         "name": "next"

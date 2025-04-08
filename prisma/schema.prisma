@@ -7,30 +7,46 @@ datasource db {
     url      = env("POSTGRES_URL")
 }
 
+enum Role {
+    USER
+    ORGANIZER
+    ADMIN
+}
+
+enum AccountType {
+    OAUTH
+    CREDENTIALS
+}
+
 model User {
-    id        String   @id @default(uuid())
-    email     String   @unique
-    name      String?
-    avatarUrl String?
-    role      Role     @default(USER)
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    id            String    @id @default(uuid())
+    name          String?
+    email         String    @unique
+    password      String?
+    emailVerified DateTime?
+    image         String?
+    role          Role      @default(USER)
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
 
     accounts Account[]
     sessions Session[]
+    events   Event[]   @relation("EventCreator")
 }
 
 model Account {
     id                String  @id @default(uuid())
-    provider          String // 'google', 'yandex'
+    userId            String
+    type              String
+    provider          String
     providerAccountId String
     access_token      String?
     refresh_token     String?
-    token_type        String?
     scope             String?
+    token_type        String?
+    session_state     String?
 
-    userId String
-    user   User   @relation(fields: [userId], references: [id])
+    user User @relation(fields: [userId], references: [id])
 
     @@unique([provider, providerAccountId])
 }
@@ -39,12 +55,59 @@ model Session {
     id           String   @id @default(uuid())
     sessionToken String   @unique
     userId       String
-    user         User     @relation(fields: [userId], references: [id])
     expires      DateTime
+
+    user User @relation(fields: [userId], references: [id])
 }
 
-enum Role {
-    USER
-    ORGANIZER
-    ADMIN
+model Event {
+    id          String   @id @default(uuid())
+    title       String
+    description String
+    startDate   DateTime
+    startTime   String
+    duration    Int
+    place       String
+    archive     Boolean  @default(false)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    createdById String
+    createdBy   User   @relation("EventCreator", fields: [createdById], references: [id])
+
+    categoryId String
+    category   Category @relation(fields: [categoryId], references: [id])
+
+    townId String
+    town   Town   @relation(fields: [townId], references: [id])
+
+    statusId String
+    status   Status @relation(fields: [statusId], references: [id])
+
+    images EventImage[]
+}
+
+model EventImage {
+    id       String @id @default(uuid())
+    imageUrl String
+    eventId  String
+    event    Event  @relation(fields: [eventId], references: [id])
+}
+
+model Category {
+    id     String  @id @default(uuid())
+    name   String  @unique
+    events Event[]
+}
+
+model Town {
+    id     String  @id @default(uuid())
+    name   String  @unique
+    events Event[]
+}
+
+model Status {
+    id     String  @id @default(uuid())
+    name   String  @unique
+    events Event[]
 }

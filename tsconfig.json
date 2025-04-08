@@ -1,31 +1,49 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
+    "target": "ES2020",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    "noEmit": true,
+    "noEmit": false, // Разрешаем эмит файлов для сидинга
     "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "CommonJS", // Изменено для совместимости с ts-node
+    "moduleResolution": "node", // Изменено для лучшей совместимости
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    // Отключение предупреждений о неиспользованных переменных
     "noUnusedLocals": false,
-    // Отключение предупреждений о неиспользованных параметрах функций
     "noUnusedParameters": false,
+    "outDir": "./dist", // Добавлено для сборки
+    "rootDir": "./", // Добавлено для четкого указания корня
+    "baseUrl": "./", // Добавлено для путей
+    "types": ["node"], // Добавлено для Node.js типов
+
     "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"] // Уточненный путь
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "prisma/**/*" // Добавлено для сидинга
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts" // Добавлено для исключения тестов
+  ],
+  "ts-node": {
+    "require": ["tsconfig-paths/register"],
+    "compilerOptions": {
+      "module": "CommonJS"
+    }
+  }
 }

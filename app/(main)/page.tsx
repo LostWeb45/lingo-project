@@ -1,3 +1,5 @@
+import { Container, Filters, Title } from "@/components/shared/";
+import { Button } from "@/components/ui/button";
 import { prisma } from "@/prisma/prisma-client";
 
 export default async function Home() {
@@ -14,7 +16,13 @@ export default async function Home() {
       },
     },
   });
-  console.log(events);
 
-  return <h1>Главная страница</h1>;
+  return (
+    <>
+      <Container>
+        <Title text="Все события" size="lg" url="./" />
+        <Filters />
+      </Container>
+    </>
+  );
 }

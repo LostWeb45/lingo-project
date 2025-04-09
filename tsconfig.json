@@ -1,47 +1,27 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    "noEmit": false, // нужно для компиляции seed-скрипта
+    "noEmit": true,
     "esModuleInterop": true,
-    "module": "CommonJS", // для поддержки ts-node
-    "moduleResolution": "node", // стабильнее для Node/ts-node
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "outDir": "./dist", // для компиляции
-    "rootDir": "./", // корень проекта
-    "baseUrl": ".", // для алиасов
-    "types": ["node"],
-
-    "paths": {
-      "@/*": ["./*"] // работает, если импортировать от корня
-    },
-
     "plugins": [
       {
         "name": "next"
       }
-    ]
-  },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "prisma/**/*"
-  ],
-  "exclude": ["node_modules", "**/*.spec.ts"],
-  "ts-node": {
-    "require": ["tsconfig-paths/register"],
-    "compilerOptions": {
-      "module": "CommonJS"
+    ],
+    "paths": {
+      "@/*": ["./*"]
     }
-  }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

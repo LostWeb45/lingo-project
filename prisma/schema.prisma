@@ -1,5 +1,6 @@
 generator client {
     provider = "prisma-client-js"
+    output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -69,6 +70,7 @@ model Event {
     duration    Int
     place       String
     archive     Boolean  @default(false)
+    age         Int      @default(0)
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
 

@@ -1,15 +1,15 @@
 import { Monda, Montserrat } from "next/font/google";
 import "./globals.css";
 
-const geistMontserrat = Montserrat({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["cyrillic"],
   weight: ["400", "500", "600", "700", "800", "900"],
 });
 
-const geistMondo = Monda({
+const mondo = Monda({
   subsets: ["latin"],
-  variable: "--font-nunito",
+  variable: "--font-mondo",
   weight: ["400", "500", "600", "700"],
 });
 
@@ -20,9 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistMontserrat.variable} ${geistMondo.variable} antialiased`}
-      >
+      <body className={`${montserrat.variable} ${mondo.variable} antialiased`}>
         {children}
       </body>
     </html>

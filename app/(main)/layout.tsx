@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "../globals.css";
+import { Header } from "@/components/shared";
 
 export const metadata: Metadata = {
   title: "Lingo | Главная страница",
@@ -10,5 +11,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <main>{children}</main>;
+  return (
+    <main>
+      <Header />
+      {children}
+    </main>
+  );
 }

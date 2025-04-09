@@ -5,41 +5,39 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    "noEmit": false, // Разрешаем эмит файлов для сидинга
+    "noEmit": false, // нужно для компиляции seed-скрипта
     "esModuleInterop": true,
-    "module": "CommonJS", // Изменено для совместимости с ts-node
-    "moduleResolution": "node", // Изменено для лучшей совместимости
+    "module": "CommonJS", // для поддержки ts-node
+    "moduleResolution": "node", // стабильнее для Node/ts-node
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "outDir": "./dist", // Добавлено для сборки
-    "rootDir": "./", // Добавлено для четкого указания корня
-    "baseUrl": "./", // Добавлено для путей
-    "types": ["node"], // Добавлено для Node.js типов
+    "outDir": "./dist", // для компиляции
+    "rootDir": "./", // корень проекта
+    "baseUrl": ".", // для алиасов
+    "types": ["node"],
+
+    "paths": {
+      "@/*": ["./*"] // работает, если импортировать от корня
+    },
 
     "plugins": [
       {
         "name": "next"
       }
-    ],
-    "paths": {
-      "@/*": ["./src/*"] // Уточненный путь
-    }
+    ]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "prisma/**/*" // Добавлено для сидинга
+    "prisma/**/*"
   ],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts" // Добавлено для исключения тестов
-  ],
+  "exclude": ["node_modules", "**/*.spec.ts"],
   "ts-node": {
     "require": ["tsconfig-paths/register"],
     "compilerOptions": {

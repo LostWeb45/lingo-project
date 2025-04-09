@@ -39,7 +39,7 @@ export const SearchIvent: React.FC<Props> = ({ className }) => {
         />
       </svg>
       <input
-        className="rounded-2xl outline-none  pl-11 w-[200px] border-none bg-[#F5F6FA] placeholder:text-[#333333] text-[14px] "
+        className="rounded-2xl outline-none  w-[200px] border-none bg-[#F5F6FA] placeholder:text-[#333333] text-[14px] "
         type="text"
         placeholder="Название мероприятия"
         value={searchValue}

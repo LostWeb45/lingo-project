@@ -20,7 +20,7 @@ enum AccountType {
 }
 
 model User {
-    id            String    @id @default(uuid())
+    id            Int       @id @default(autoincrement())
     name          String?
     email         String    @unique
     password      String?
@@ -36,8 +36,8 @@ model User {
 }
 
 model Account {
-    id                String  @id @default(uuid())
-    userId            String
+    id                Int     @id @default(autoincrement())
+    userId            Int
     type              String
     provider          String
     providerAccountId String
@@ -53,64 +53,65 @@ model Account {
 }
 
 model Session {
-    id           String   @id @default(uuid())
+    id           Int      @id @default(autoincrement())
     sessionToken String   @unique
-    userId       String
+    userId       Int
     expires      DateTime
 
     user User @relation(fields: [userId], references: [id])
 }
 
 model Event {
-    id          String   @id @default(uuid())
+    id          Int      @id @default(autoincrement())
     title       String
     description String
     startDate   DateTime
     startTime   String
     duration    Int
+    price       Int?
     place       String
     archive     Boolean  @default(false)
     age         Int      @default(0)
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
 
-    createdById String
-    createdBy   User   @relation("EventCreator", fields: [createdById], references: [id])
+    createdById Int
+    createdBy   User @relation("EventCreator", fields: [createdById], references: [id])
 
-    categoryId String
+    categoryId Int
     category   Category @relation(fields: [categoryId], references: [id])
 
-    townId String
-    town   Town   @relation(fields: [townId], references: [id])
+    townId Int
+    town   Town @relation(fields: [townId], references: [id])
 
-    statusId String
+    statusId Int
     status   Status @relation(fields: [statusId], references: [id])
 
     images EventImage[]
 }
 
 model EventImage {
-    id       String @id @default(uuid())
+    id       Int    @id @default(autoincrement())
     imageUrl String
-    eventId  String
+    eventId  Int
     event    Event  @relation(fields: [eventId], references: [id])
 }
 
 model Category {
-    id     String  @id @default(uuid())
+    id     Int     @id @default(autoincrement())
     name   String  @unique
     image  String?
     events Event[]
 }
 
 model Town {
-    id     String  @id @default(uuid())
+    id     Int     @id @default(autoincrement())
     name   String  @unique
     events Event[]
 }
 
 model Status {
-    id     String  @id @default(uuid())
+    id     Int     @id @default(autoincrement())
     name   String  @unique
     events Event[]
 }

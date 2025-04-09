@@ -19,7 +19,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
       <div className="inline-block">
         <SearchIvent />
 
-        <Select>
+        {/* <Select>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Theme" />
           </SelectTrigger>
@@ -28,7 +28,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
             <SelectItem value="dark">Dark</SelectItem>
             <SelectItem value="system">System</SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
       </div>
       <div className="flex items-center font-[18px] text-[#333333]">
         187 событий

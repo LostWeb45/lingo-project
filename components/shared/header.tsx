@@ -1,15 +1,22 @@
+"use client";
+
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Container } from "./container";
 import Link from "next/link";
 import { Avatar } from "../ui";
 import { AvatarFallback, AvatarImage } from "../ui/avatar";
+import { useSession, signIn } from "next-auth/react";
+import { LogIn } from "lucide-react";
 
 interface Props {
   className?: string;
 }
 
 export const Header: React.FC<Props> = ({ className }) => {
+  const { data: session } = useSession();
+  console.log(session, "auth");
+
   const navItems = [
     { id: 1, title: "Главная", href: "/" },
     { id: 2, title: "Все события", href: "/events" },
@@ -27,7 +34,9 @@ export const Header: React.FC<Props> = ({ className }) => {
             </span>
             <span className="text-[#1D3C6A] text-[20px]">Санкт-Петербург</span>
           </div>
-          <div className="flex justify-center items-center relative gap-3">
+
+          {/* Если пользователь залогинен */}
+          {/* <div className="flex justify-center items-center relative gap-3">
             <p className="text-[#2E1A1A] text-[20px]">Константин</p>
             <Avatar className="cursor-pointer w-[50px] h-[50px]">
               <AvatarImage src="https://github.com/shadcn.png" />
@@ -47,7 +56,18 @@ export const Header: React.FC<Props> = ({ className }) => {
                 fill="white"
               />
             </svg>
-          </div>
+          </div> */}
+
+          {/* Если пользователь не залогинен */}
+          <button
+            onClick={() =>
+              signIn("google", { callbackUrl: "/", redirect: true })
+            }
+            className="flex justify-center items-center relative gap-2 border border-[#aebdf3] rounded-[2px] cursor-pointer px-[15px] py-[6px] duration-200 hover:bg-[#f1f1f3]"
+          >
+            <p className="text-[#3A5F9D] text-[16px]">Войти</p>
+            <LogIn width={20} height={17} color="#3A5F9D" />
+          </button>
         </div>
       </header>
       <Container className="flex justify-between px-[81px] py-[10px] sticky top-0 bg-[#F5F6FA] z-30 mb-[30px]">

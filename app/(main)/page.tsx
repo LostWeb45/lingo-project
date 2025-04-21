@@ -22,7 +22,7 @@ export default async function Home() {
               возможности для интересного <br />
               времяпрепровождения!
             </div>
-            <Button className="w-[180px] h-[50px]">Кнопка</Button>
+            <Button className="w-[180px] h-[50px]">Найти</Button>
           </div>
           <div className="flex w-[26%]  gap-[13px] flex-col">
             <p className="text-[20px] font-medium [font-family:var(--font-montserrat)]">
@@ -31,7 +31,7 @@ export default async function Home() {
             <Accordion
               type="single"
               defaultValue="item-1"
-              className="flex flex-col px-5  bg-[#f5f9ff] [font-family:var(--font-montserrat)]"
+              className="flex flex-col px-5  bg-[#fafcfe] [font-family:var(--font-montserrat)]"
             >
               <AccordionItem value="item-1">
                 <AccordionTrigger className="group flex justify-between items-center  text-[17px] font-bold text-[#1D3C6A] transition-colors hover:text-[#3A5F9D] no-underline">

@@ -3,7 +3,7 @@ import "../globals.css";
 import { Header } from "@/components/shared";
 
 export const metadata: Metadata = {
-  title: "Lingo | Главная страница",
+  title: "LinGo | Главная страница",
 };
 
 export default function RootLayout({

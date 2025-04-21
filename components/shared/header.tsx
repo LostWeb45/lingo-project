@@ -3,6 +3,8 @@ import { cn } from "@/lib/utils";
 import { Container } from "./container";
 import Image from "next/image";
 import Link from "next/link";
+import { Avatar } from "../ui";
+import { AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface Props {
   className?: string;
@@ -10,12 +12,12 @@ interface Props {
 
 export const Header: React.FC<Props> = ({ className }) => {
   const linkClass =
-    "text-[#333333] text-[20px] transition-colors duration-200 hover:text-[#3A5F9D]";
+    "text-[#333333] text-[20px] transition-colors duration-150 hover:text-[#3A5F9D]";
 
   return (
     <>
       <header className={cn("", className)}>
-        <div className="flex justify-between items-center m-[18px]">
+        <div className="flex justify-between items-center m-[16px]">
           <div className="flex items-center gap-2">
             <span className="text-[30px] [font-family:var(--font-montserrat)] font-semibold">
               LinGo
@@ -25,13 +27,11 @@ export const Header: React.FC<Props> = ({ className }) => {
           <div className="flex justify-center items-center relative gap-3">
             {/* Имя пользователя */}
             <p className="text-[#2E1A1A] text-[20px]">Константин</p>
-            <Image
-              className="cursor-pointer"
-              src="/images/no-avatar.svg"
-              width={50}
-              height={50}
-              alt="avatar"
-            />
+            <Avatar className="cursor-pointer w-[50px] h-[50px]">
+              <AvatarImage src="https://github.com/shadcn.png" />
+              {/* Первая буква имени */}
+              <AvatarFallback>К</AvatarFallback>
+            </Avatar>
             <svg
               className="absolute top-8 right-0 w-[20px] h-[20px] cursor-pointer"
               xmlns="http://www.w3.org/2000/svg"
@@ -49,17 +49,17 @@ export const Header: React.FC<Props> = ({ className }) => {
           </div>
         </div>
       </header>
-      <Container className="flex justify-between px-[81px] py-[10px] sticky top-0 bg-[#F5F6FA] z-30">
+      <Container className="flex justify-between px-[81px] py-[10px] sticky top-0 bg-[#F5F6FA] z-30 mb-[30px]">
         <Link className={linkClass} href={"/"}>
           Главная
         </Link>
         <Link className={linkClass} href={"/events"}>
           Все события
         </Link>
-        <Link className={linkClass} href={"/"}>
+        <Link className={linkClass} href={"/categories"}>
           Категории
         </Link>
-        <Link className={linkClass} href={"/"}>
+        <Link className={linkClass} href={"/profile"}>
           События с вами
         </Link>
       </Container>

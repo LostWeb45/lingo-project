@@ -63,7 +63,7 @@ export const Header: React.FC<Props> = ({ className }) => {
             onClick={() =>
               signIn("google", { callbackUrl: "/", redirect: true })
             }
-            className="flex justify-center items-center relative gap-2 border border-[#aebdf3] rounded-[2px] cursor-pointer px-[15px] py-[6px] duration-200 hover:bg-[#f1f1f3]"
+            className="flex justify-center items-center relative gap-2 border border-[#aebdf3] rounded-[2px] cursor-pointer px-[15px] py-[6px] duration-200 hover:bg-[#e6e6f4]"
           >
             <p className="text-[#3A5F9D] text-[16px]">Войти</p>
             <LogIn width={20} height={17} color="#3A5F9D" />

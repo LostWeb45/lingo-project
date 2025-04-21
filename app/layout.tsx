@@ -1,5 +1,6 @@
 import { Monda, Montserrat } from "next/font/google";
 import "./globals.css";
+import { Providers } from "@/components/shared";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -21,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${montserrat.variable} ${mondo.variable} antialiased`}>
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

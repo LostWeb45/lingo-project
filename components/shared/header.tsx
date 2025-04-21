@@ -1,7 +1,6 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Container } from "./container";
-import Image from "next/image";
 import Link from "next/link";
 import { Avatar } from "../ui";
 import { AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -11,8 +10,12 @@ interface Props {
 }
 
 export const Header: React.FC<Props> = ({ className }) => {
-  const linkClass =
-    "text-[#333333] text-[20px] transition-colors duration-150 hover:text-[#3A5F9D]";
+  const navItems = [
+    { id: 1, title: "Главная", href: "/" },
+    { id: 2, title: "Все события", href: "/events" },
+    { id: 3, title: "Категории", href: "/categories" },
+    { id: 4, title: "События с вами", href: "/profile" },
+  ];
 
   return (
     <>
@@ -22,14 +25,12 @@ export const Header: React.FC<Props> = ({ className }) => {
             <span className="text-[30px] [font-family:var(--font-montserrat)] font-semibold">
               LinGo
             </span>
-            <span className="text-[#1D3C6A] text-[20px] ">Санкт-Петербург</span>
+            <span className="text-[#1D3C6A] text-[20px]">Санкт-Петербург</span>
           </div>
           <div className="flex justify-center items-center relative gap-3">
-            {/* Имя пользователя */}
             <p className="text-[#2E1A1A] text-[20px]">Константин</p>
             <Avatar className="cursor-pointer w-[50px] h-[50px]">
               <AvatarImage src="https://github.com/shadcn.png" />
-              {/* Первая буква имени */}
               <AvatarFallback>К</AvatarFallback>
             </Avatar>
             <svg
@@ -50,18 +51,17 @@ export const Header: React.FC<Props> = ({ className }) => {
         </div>
       </header>
       <Container className="flex justify-between px-[81px] py-[10px] sticky top-0 bg-[#F5F6FA] z-30 mb-[30px]">
-        <Link className={linkClass} href={"/"}>
-          Главная
-        </Link>
-        <Link className={linkClass} href={"/events"}>
-          Все события
-        </Link>
-        <Link className={linkClass} href={"/categories"}>
-          Категории
-        </Link>
-        <Link className={linkClass} href={"/profile"}>
-          События с вами
-        </Link>
+        {navItems.map((item) => (
+          <Link
+            key={item.id}
+            className={
+              "text-[#333333] text-[20px] transition-colors duration-150 hover:text-[#3A5F9D]"
+            }
+            href={item.href}
+          >
+            {item.title}
+          </Link>
+        ))}
       </Container>
     </>
   );

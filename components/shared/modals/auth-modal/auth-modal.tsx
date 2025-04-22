@@ -29,8 +29,9 @@ export const AuthModal: React.FC<Props> = ({ open, onClose }) => {
             }
           >
             <img
-              src="https://fonts.gstatic.com/s/i/productlogos/google/v6/24px.svg"
-              alt="гугл"
+              src="./images/Yandex_icon.svg"
+              className="w-[35px] h-[35px]"
+              alt="yandex"
             />
           </Button>
           <Button

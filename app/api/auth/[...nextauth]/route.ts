@@ -7,13 +7,13 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       phone?: string;
-      image?: string; // Добавляем аватарку
+      image?: string;
     } & DefaultSession["user"];
   }
 
   interface JWT {
     phone?: string;
-    picture?: string; // Добавляем аватарку в токен
+    picture?: string;
   }
 }
 
@@ -44,14 +44,11 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, account, profile }) {
-      // Добавляем данные из профиля Яндекса в токен
       if (account?.provider === "yandex" && profile) {
         const yandexProfile = profile as YandexProfile;
 
-        // Телефон
         token.phone = yandexProfile.default_phone?.number;
 
-        // Аватарка
         if (!yandexProfile.is_avatar_empty && yandexProfile.default_avatar_id) {
           token.picture = `https://avatars.yandex.net/get-yapic/${yandexProfile.default_avatar_id}/islands-200`;
         }
@@ -59,9 +56,8 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      // Добавляем данные в сессию
       if (token.phone) {
-        session.user.phone = token.phone;
+        session.user.phone = String(token.phone);
       }
       if (token.picture) {
         session.user.image = token.picture;

@@ -26,10 +26,16 @@ export default function ProfilePage() {
               <span className="font-semibold">Email:</span>{" "}
               {session.user?.email}
             </p>
-            {/* <p className="text-lg">
+            <p className="text-lg">
               <span className="font-semibold">Телефон:</span>{" "}
               {session.user?.phone || "Не указан"}
-            </p> */}
+            </p>
+            <div className="mt-4 p-4 bg-gray-100 rounded-md">
+              <h2 className="font-bold mb-2">Данные сессии (для отладки):</h2>
+              <pre className="text-xs overflow-auto">
+                {JSON.stringify(session, null, 2)}
+              </pre>
+            </div>
           </div>
         )}
 

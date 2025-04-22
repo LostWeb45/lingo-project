@@ -5,3 +5,4 @@ export { Title } from "./title";
 export { Filters } from "./filters";
 export { SearchIvent } from "./search-ivent";
 export { Providers } from "./providers";
+export * from "./modals";

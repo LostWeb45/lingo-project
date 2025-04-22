@@ -8,6 +8,7 @@ import { Avatar } from "../ui";
 import { AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useSession, signIn } from "next-auth/react";
 import { LogIn } from "lucide-react";
+import { AuthModal } from "./modals";
 
 interface Props {
   className?: string;
@@ -15,7 +16,9 @@ interface Props {
 
 export const Header: React.FC<Props> = ({ className }) => {
   const { data: session } = useSession();
-  console.log(session, "auth");
+
+  const [openAuthModal, setAuthOpenModal] = React.useState(false);
+  // console.log(session, "auth");
 
   const navItems = [
     { id: 1, title: "Главная", href: "/" },
@@ -60,14 +63,16 @@ export const Header: React.FC<Props> = ({ className }) => {
 
           {/* Если пользователь не залогинен */}
           <button
-            onClick={() =>
-              signIn("google", { callbackUrl: "/", redirect: true })
-            }
+            onClick={() => setAuthOpenModal(true)}
             className="flex justify-center items-center relative gap-2 border border-[#aebdf3] rounded-[2px] cursor-pointer px-[15px] py-[6px] duration-200 hover:bg-[#e6e6f4]"
           >
             <p className="text-[#3A5F9D] text-[16px]">Войти</p>
             <LogIn width={20} height={17} color="#3A5F9D" />
           </button>
+          <AuthModal
+            open={openAuthModal}
+            onClose={() => setAuthOpenModal(false)}
+          />
         </div>
       </header>
       <Container className="flex justify-between px-[81px] py-[10px] sticky top-0 bg-[#F5F6FA] z-30 mb-[30px]">

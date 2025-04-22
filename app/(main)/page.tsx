@@ -1,6 +1,7 @@
 import { Container, Filters, Title } from "@/components/shared/";
-import { Accordion, Button } from "@/components/ui";
+import { Button } from "@/components/ui";
 import {
+  Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,

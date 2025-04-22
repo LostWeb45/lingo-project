@@ -22,7 +22,7 @@ export const AuthModal: React.FC<Props> = ({ open, onClose }) => {
             className="gap-2 h-12 flex-1"
             variant={"outline"}
             onClick={() =>
-              signIn("google", {
+              signIn("yandex", {
                 callbackUrl: "/",
                 redirect: true,
               })
@@ -38,7 +38,7 @@ export const AuthModal: React.FC<Props> = ({ open, onClose }) => {
             variant={"outline"}
             onClick={() =>
               signIn("vk", {
-                callbackUrl: "/",
+                callbackUrl: "http://localhost:3000",
                 redirect: true,
               })
             }

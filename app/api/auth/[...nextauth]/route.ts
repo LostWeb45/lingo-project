@@ -1,12 +1,18 @@
 import NextAuth from "next-auth";
 import VkProvider from "next-auth/providers/vk";
-import GoogleProvider from "next-auth/providers/google";
+import YandexProvider from "next-auth/providers/yandex";
 
 export const authOptions = {
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    YandexProvider({
+      clientId: process.env.YANDEX_CLIENT_ID!,
+      clientSecret: process.env.YANDEX_CLIENT_SECRET!,
+      authorization: {
+        params: {
+          scope: "login:email login:info",
+          // login:phone
+        },
+      },
     }),
 
     VkProvider({

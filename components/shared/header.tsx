@@ -18,7 +18,7 @@ export const Header: React.FC<Props> = ({ className }) => {
   const { data: session } = useSession();
 
   const [openAuthModal, setAuthOpenModal] = React.useState(false);
-  // console.log(session, "auth");
+  console.log(session, "auth");
 
   const navItems = [
     { id: 1, title: "Главная", href: "/" },

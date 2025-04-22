@@ -47,7 +47,7 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }) {
       if (token.phone) {
-        session.user.phone = token.phone;
+        session.user.phone = String(token.phone);
       }
       return session;
     },

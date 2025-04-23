@@ -2,7 +2,7 @@ import NextAuth, { NextAuthOptions, DefaultSession, JWT } from "next-auth";
 import YandexProvider from "next-auth/providers/yandex";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/prisma/prisma-client";
-import { compare, hash } from "bcrypt";
+import { compare } from "bcrypt";
 
 // Расширяем стандартные типы Session и JWT
 declare module "next-auth" {
@@ -45,32 +45,27 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // if (!credentials?.email || !credentials?.password) {
-        //   return null;
-        // }
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
 
-        const hashedPassword = await hash(credentials.password, 10);
-
-        const user = await prisma.user.create({
-          data: {
-            email: credentials.email,
-            password: hashedPassword, // Хешируем и сохраняем
-            name: credentials.name,
-          },
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email },
         });
 
         if (!user || !user.password) {
           return null;
         }
 
-        console.log("Введённый пароль:", credentials.password);
         console.log("Хешированный пароль:", user.password);
         const isPasswordValid = await compare(
           credentials.password.trim(),
           user.password.trim()
         );
 
-        // if (!isPasswordValid || !user.emailVerified) {
+        console.log(isPasswordValid);
+
+        // if (!isPasswordValid || !user.emailVerified) { когда добавлю
         if (!isPasswordValid) {
           return null;
         }

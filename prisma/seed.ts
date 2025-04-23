@@ -54,7 +54,7 @@ async function main() {
       data: {
         name: "Администратор",
         email: "admin@example.com",
-        password: hashSync("amdin11", 10),
+        password: hashSync("admin11", 10),
         role: "ADMIN",
         emailVerified: new Date(),
       },

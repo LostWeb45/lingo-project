@@ -27,7 +27,6 @@ export const AuthModal: React.FC<Props> = ({ open, onClose }) => {
         ) : (
           <p>Регистраци</p>
         )}
-        FORM
         <hr />
         <div className="flex gap-2">
           <Button

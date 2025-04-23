@@ -45,7 +45,7 @@ export const FormInput: React.FC<Props> = ({
       )}
 
       <div className="relative">
-        <Input className="h-12 text-md" {...register(name)} {...props} />
+        <Input className="h-12" {...register(name)} {...props} />
 
         {Boolean(text) && <ClearButton onClick={onClickClear} />}
       </div>

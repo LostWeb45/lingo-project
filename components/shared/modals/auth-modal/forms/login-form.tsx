@@ -4,11 +4,11 @@ import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { formLoginSchema, TFormLoginValues } from "./schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Title } from "@/components/shared/title";
 import { FormInput } from "@/components/shared/form/form-input";
 import { Button } from "@/components/ui";
 import toast from "react-hot-toast";
 import { signIn } from "next-auth/react";
+import { DialogTitle } from "@/components/ui/dialog";
 
 interface Props {
   className?: string;
@@ -25,7 +25,6 @@ export const LoginForm: React.FC<Props> = ({ onClose, className }) => {
   });
 
   const onSubmit = async (data: TFormLoginValues) => {
-    console.log("📤 Данные для входа:", data); // Логируем данные
     try {
       const result = await signIn("credentials", {
         email: data.email,
@@ -33,20 +32,18 @@ export const LoginForm: React.FC<Props> = ({ onClose, className }) => {
         redirect: false,
       });
 
-      console.log("📥 Результат логина:", result); // Логируем ответ
-
       if (result?.error) {
         throw new Error(result.error);
       }
 
       if (!result?.ok) {
-        throw new Error("Ошибка авторизации");
+        throw new Error("Ошбика авторизации");
       }
 
       toast.success("Вы успешно вошли в аккаунт", { icon: "✅" });
       onClose?.();
     } catch (error) {
-      console.error("Login failed:", error);
+      // console.error("Login failed:", error);
       toast.error("Неверный email или пароль", { icon: "❌" });
     } finally {
       form.reset();
@@ -61,7 +58,7 @@ export const LoginForm: React.FC<Props> = ({ onClose, className }) => {
       >
         <div className="flex justify-between items-center">
           <div className="mr-2">
-            <Title text="Вход в аккаунт" />
+            <DialogTitle className="text-[26px]">Вход в аккаунт</DialogTitle>
             <p className="text-gray-400">
               Введите свою почту, чтобы войти в аккаунт
             </p>
@@ -74,8 +71,20 @@ export const LoginForm: React.FC<Props> = ({ onClose, className }) => {
           />
         </div>
 
-        <FormInput name="email" label="E-Mail" type="email" required />
-        <FormInput name="password" label="Пароль" type="password" required />
+        <FormInput
+          className="text-[17px]"
+          name="email"
+          label="E-Mail"
+          type="email"
+          required
+        />
+        <FormInput
+          className="text-[17px]"
+          name="password"
+          label="Пароль"
+          type="password"
+          required
+        />
 
         <Button
           className="h-[50px]"

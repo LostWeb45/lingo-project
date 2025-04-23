@@ -120,7 +120,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-h2 {
-  margin: 20px 0;
-}

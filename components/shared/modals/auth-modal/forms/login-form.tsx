@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { formLoginSchema, TFormLoginValues } from "./schemas";
@@ -6,7 +8,6 @@ import { Title } from "@/components/shared/title";
 import { FormInput } from "@/components/shared/form/form-input";
 import { Button } from "@/components/ui";
 import toast from "react-hot-toast";
-import { icons } from "lucide-react";
 import { signIn } from "next-auth/react";
 
 interface Props {
@@ -24,50 +25,64 @@ export const LoginForm: React.FC<Props> = ({ onClose, className }) => {
   });
 
   const onSubmit = async (data: TFormLoginValues) => {
+    console.log("📤 Данные для входа:", data); // Логируем данные
     try {
-      const resp = await signIn("credentials", { ...data, redirect: false });
+      const result = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
 
-      if (!resp?.ok) {
-        throw Error();
+      console.log("📥 Результат логина:", result); // Логируем ответ
+
+      if (result?.error) {
+        throw new Error(result.error);
       }
 
-      toast.success("Вы успешно вошли в аккаунт", {
-        icon: "✅",
-      });
+      if (!result?.ok) {
+        throw new Error("Ошибка авторизации");
+      }
 
+      toast.success("Вы успешно вошли в аккаунт", { icon: "✅" });
       onClose?.();
     } catch (error) {
-      console.error("Login ERROR", error);
-      toast.error("Не удалось войти в аккаунт", {
-        icon: "❌",
-      });
+      console.error("Login failed:", error);
+      toast.error("Неверный email или пароль", { icon: "❌" });
+    } finally {
+      form.reset();
     }
   };
 
   return (
     <FormProvider {...form}>
       <form
-        className="flex flex-col gap-5"
+        className={`flex flex-col gap-5 ${className || ""}`}
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <div className="flex justify-between items-center">
           <div className="mr-2">
-            <Title text={"Вход в аккаунт"} />
+            <Title text="Вход в аккаунт" />
             <p className="text-gray-400">
               Введите свою почту, чтобы войти в аккаунт
             </p>
-            <img
-              src="/images/phone-icon.svg"
-              alt="phone"
-              width={60}
-              height={60}
-            />
           </div>
+          <img
+            src="/images/phone-icon.png"
+            alt="phone"
+            width={60}
+            height={60}
+          />
         </div>
-        <FormInput name="email" label="E-Mail" required />
+
+        <FormInput name="email" label="E-Mail" type="email" required />
         <FormInput name="password" label="Пароль" type="password" required />
 
-        <Button loading={form.formState.isSubmitting} type="submit">
+        <Button
+          className="h-[50px]"
+          loading={form.formState.isSubmitting}
+          type="submit"
+          disabled={form.formState.isSubmitting}
+        >
           Войти
         </Button>
       </form>

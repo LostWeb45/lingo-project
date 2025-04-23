@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { hashSync } from "bcrypt";
 const prisma = new PrismaClient();
 
 async function main() {
@@ -53,7 +54,7 @@ async function main() {
       data: {
         name: "Администратор",
         email: "admin@example.com",
-        password: "$2a$10$X8L9.3XvJzZrF.5jZ5W4E.XxXxXxXxXxXxXxXxXxXxXxXxXxXxXx",
+        password: hashSync("amdin11", 10),
         role: "ADMIN",
         emailVerified: new Date(),
       },
@@ -62,7 +63,7 @@ async function main() {
       data: {
         name: "Организатор",
         email: "organizer@example.com",
-        password: "$2a$10$X8L9.3XvJzZrF.5jZ5W4E.XxXxXxXxXxXxXxXxXxXxXxXxXxXxXx",
+        password: hashSync("pols11", 10),
         role: "ORGANIZER",
         emailVerified: new Date(),
       },

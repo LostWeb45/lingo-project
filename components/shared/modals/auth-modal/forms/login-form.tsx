@@ -44,8 +44,6 @@ export const LoginForm: React.FC<Props> = ({ onClose, className }) => {
       toast.success("Вы успешно вошли в аккаунт", { icon: "✅" });
 
       onClose?.();
-
-      window.location.href = result?.url || window.location.origin;
     } catch (error) {
       toast.error("Неверный email или пароль", { icon: "❌" });
     } finally {

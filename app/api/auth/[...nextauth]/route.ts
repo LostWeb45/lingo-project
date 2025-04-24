@@ -132,7 +132,7 @@ export const authOptions: NextAuthOptions = {
               },
             },
           },
-          include: { accounts: true }, // <- добавил
+          include: { accounts: true },
         });
 
         if (!user) {
@@ -146,6 +146,7 @@ export const authOptions: NextAuthOptions = {
               image: `https://avatars.yandex.net/get-yapic/${yandexProfile.default_avatar_id}/islands-200`,
               role: "USER",
               password: "",
+              emailVerified: new Date(),
               accounts: {
                 create: {
                   type: "OAUTH",

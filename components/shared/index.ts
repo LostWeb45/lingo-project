@@ -1,4 +1,7 @@
 export { Container } from "./container";
+export { ClearButton } from "./clear-button";
+export { ErrorText } from "./error-text";
+export { RequiredSymbol } from "./requried-symbol";
 export { EventList } from "./event-list";
 export { Header } from "./header";
 export { Title } from "./title";

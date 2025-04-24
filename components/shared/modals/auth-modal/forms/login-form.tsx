@@ -30,6 +30,7 @@ export const LoginForm: React.FC<Props> = ({ onClose, className }) => {
         email: data.email,
         password: data.password,
         redirect: false,
+        callbackUrl: window.location.origin,
       });
 
       if (result?.error) {
@@ -37,13 +38,15 @@ export const LoginForm: React.FC<Props> = ({ onClose, className }) => {
       }
 
       if (!result?.ok) {
-        throw new Error("Ошбика авторизации");
+        throw new Error("Ошибка авторизации");
       }
 
       toast.success("Вы успешно вошли в аккаунт", { icon: "✅" });
+
       onClose?.();
+
+      window.location.href = result?.url || window.location.origin;
     } catch (error) {
-      // console.error("Login failed:", error);
       toast.error("Неверный email или пароль", { icon: "❌" });
     } finally {
       form.reset();

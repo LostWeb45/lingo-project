@@ -3,14 +3,15 @@ import YandexProvider from "next-auth/providers/yandex";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/prisma/prisma-client";
 import { compare } from "bcrypt";
+import { YandexProfile } from "next-auth/providers/yandex";
 
-// Расширяем стандартные типы Session и JWT
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
       image?: string;
       role?: string;
+      email?: string;
     } & DefaultSession["user"];
   }
 
@@ -18,14 +19,24 @@ declare module "next-auth" {
     id: string;
     picture?: string;
     role?: string;
+    email?: string;
   }
 }
 
-interface YandexProfile {
-  is_avatar_empty?: boolean;
-  default_avatar_id?: string;
-  login?: string;
-}
+// interface YandexProfile {
+//   id: string;
+//   login: string;
+//   display_name?: string;
+//   real_name: string;
+//   first_name: string;
+//   last_name: string;
+//   sex: string;
+//   default_email: string;
+//   emails: string[];
+//   default_avatar_id: string;
+//   is_avatar_empty: boolean;
+//   psuid: string;
+// }
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -37,7 +48,26 @@ export const authOptions: NextAuthOptions = {
           scope: "login:email login:info login:avatar",
         },
       },
+      profile(profile: YandexProfile) {
+        // console.log("Yandex profile:", profile); // для дебага
+
+        const userObj = {
+          id: profile.login,
+          name: profile.display_name || profile.real_name || profile.login,
+          email: profile.default_email,
+          image: `https://avatars.yandex.net/get-yapic/${profile.default_avatar_id}/islands-200`,
+        };
+
+        return {
+          id: userObj.id,
+          name: userObj.name,
+          email: userObj.email,
+          image: userObj.image,
+          role: "USER",
+        };
+      },
     }),
+
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -45,31 +75,21 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
-        }
+        if (!credentials?.email || !credentials?.password) return null;
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
 
-        if (!user || !user.password) {
-          return null;
-        }
+        if (!user || !user.password) return null;
 
-        console.log("Хешированный пароль:", user.password);
         const isPasswordValid = await compare(
           credentials.password.trim(),
           user.password.trim()
         );
 
-        console.log(isPasswordValid);
+        if (!isPasswordValid) return null;
 
-        // if (!isPasswordValid || !user.emailVerified) { когда добавлю
-        if (!isPasswordValid) {
-          return null;
-        }
-        //
         return {
           id: user.id.toString(),
           email: user.email,
@@ -79,20 +99,13 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+
   secret: process.env.NEXTAUTH_SECRET,
   session: { strategy: "jwt" },
+
   callbacks: {
     async jwt({ token, user, account, profile }) {
-      // Для Яндекс провайдера
-      if (account?.provider === "yandex" && profile) {
-        const yandexProfile = profile as YandexProfile;
-
-        if (!yandexProfile.is_avatar_empty && yandexProfile.default_avatar_id) {
-          token.picture = `https://avatars.yandex.net/get-yapic/${yandexProfile.default_avatar_id}/islands-200`;
-        }
-      }
-
-      if (account?.provider == "credentials") {
+      if (account?.provider === "credentials") {
         const findUser = await prisma.user.findFirst({
           where: {
             email: token.email as string,
@@ -107,22 +120,85 @@ export const authOptions: NextAuthOptions = {
         }
       }
 
+      if (account?.provider === "yandex" && profile) {
+        const yandexProfile = profile as YandexProfile;
+
+        let user = await prisma.user.findFirst({
+          where: {
+            accounts: {
+              some: {
+                provider: account.provider,
+                providerAccountId: account.providerAccountId,
+              },
+            },
+          },
+          include: { accounts: true }, // <- добавил
+        });
+
+        if (!user) {
+          user = await prisma.user.create({
+            data: {
+              email: yandexProfile.default_email as string,
+              name:
+                yandexProfile.display_name ||
+                yandexProfile.real_name ||
+                yandexProfile.login,
+              image: `https://avatars.yandex.net/get-yapic/${yandexProfile.default_avatar_id}/islands-200`,
+              role: "USER",
+              password: "",
+              accounts: {
+                create: {
+                  type: "OAUTH",
+                  provider: account.provider,
+                  providerAccountId: account.providerAccountId,
+                  access_token: account.access_token,
+                  refresh_token: account.refresh_token,
+                  scope: account.scope,
+                  token_type: account.token_type,
+                  session_state: account.session_state,
+                },
+              },
+            },
+            include: { accounts: true },
+          });
+        } else {
+          await prisma.account.updateMany({
+            where: {
+              userId: user.id,
+              provider: account.provider,
+            },
+            data: {
+              providerAccountId: account.providerAccountId || "",
+              access_token: account.access_token,
+              refresh_token: account.refresh_token,
+              scope: account.scope,
+              token_type: account.token_type,
+              session_state: account.session_state,
+            },
+          });
+        }
+
+        token.id = String(user.id);
+        token.name = user.name;
+        token.email = user.email;
+        token.image = user.image ?? undefined;
+        token.role = user.role;
+      }
+
       return token;
     },
+
     async session({ session, token }) {
       if (session?.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
-      }
-      if (token.picture) {
-        session.user.image = token.picture;
-      }
-      if (token.role) {
-        session.user.role = token.role as string;
+        session.user.email = token.email as string;
+        session.user.image = token.image as string;
       }
       return session;
     },
   },
+
   pages: {
     signIn: "/auth/signin",
   },

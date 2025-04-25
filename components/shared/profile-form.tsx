@@ -90,6 +90,7 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
               required
               className="text-[17px]"
               disabled={isYandexProvider}
+              disablesDel={isYandexProvider}
             />
 
             <FormInput

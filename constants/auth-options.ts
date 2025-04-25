@@ -1,7 +1,7 @@
 import YandexProvider from "next-auth/providers/yandex";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/prisma/prisma-client";
-import { compare } from "bcrypt";
+import { compare } from "bcryptjs";
 import { YandexProfile } from "next-auth/providers/yandex";
 import { NextAuthOptions, DefaultSession } from "next-auth";
 

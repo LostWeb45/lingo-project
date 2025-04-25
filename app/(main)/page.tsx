@@ -7,7 +7,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { prisma } from "@/prisma/prisma-client";
-import { hash } from "bcrypt";
+import { hash } from "bcryptjs";
 
 export default async function Home() {
   return (

@@ -15,6 +15,7 @@ import { Title } from "./title";
 import { FormInput } from "./form/form-input";
 import { Button } from "../ui";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { updateUserInfo } from "@/app/actions";
 
 interface Props {
   data: User;
@@ -62,7 +63,7 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
         <div className="flex flex-col items-center mb-2">
           <Avatar className="w-[90px] h-[90px] mb-2">
             <AvatarImage src={data.image ?? undefined} />
-            <AvatarFallback>
+            <AvatarFallback className="text-[28px]">
               {getFirstName(data.name)?.charAt(0).toUpperCase() ?? "П"}
             </AvatarFallback>
           </Avatar>

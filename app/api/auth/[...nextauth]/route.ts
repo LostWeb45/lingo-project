@@ -49,8 +49,6 @@ export const authOptions: NextAuthOptions = {
         },
       },
       profile(profile: YandexProfile) {
-        // console.log("Yandex profile:", profile); // для дебага
-
         const userObj = {
           id: profile.login,
           name: profile.display_name || profile.real_name || profile.login,

@@ -2,21 +2,26 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
-import { Container } from "./container";
+import { Container } from "../container";
 import Link from "next/link";
-import { Avatar } from "../ui";
-import { AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useSession, signIn } from "next-auth/react";
+import { Avatar } from "../../ui";
+import { AvatarFallback, AvatarImage } from "../../ui/avatar";
 import { LogIn } from "lucide-react";
-import { AuthModal } from "./modals";
+import { AuthModal } from "../modals";
+import { Session } from "next-auth";
+import { useSession } from "next-auth/react";
 
 interface Props {
+  initSession: Session | null;
   className?: string;
 }
 
-export const Header: React.FC<Props> = ({ className }) => {
-  const { data: session } = useSession();
+export const Header: React.FC<Props> = ({ initSession, className }) => {
   const [openAuthModal, setAuthOpenModal] = React.useState(false);
+
+  const { data: clientSession } = useSession();
+
+  const session = clientSession || initSession;
 
   const getFirstName = (fullName?: string | null) => {
     if (!fullName) return "Профиль";

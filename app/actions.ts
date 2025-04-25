@@ -13,11 +13,14 @@ export async function updateUserInfo(body: Prisma.UserUpdateInput) {
       throw new Error("Пользователь не найден");
     }
 
-    const findUser = await prisma.user.findFirst({
+    const userAccount = await prisma.account.findFirst({
       where: {
-        id: Number(currentUser.id),
+        userId: Number(currentUser.id),
+        type: "OAUTH",
       },
     });
+
+    const isOAuthUser = userAccount?.provider === "yandex";
 
     await prisma.user.update({
       where: {
@@ -25,14 +28,44 @@ export async function updateUserInfo(body: Prisma.UserUpdateInput) {
       },
       data: {
         name: body.name,
-        email: body.email,
-        password: body.password
-          ? hashSync(body.password as string, 10)
-          : findUser?.password,
+        email: isOAuthUser ? undefined : body.email,
+        password:
+          isOAuthUser || !body.password
+            ? undefined
+            : hashSync(body.password as string, 10),
       },
     });
   } catch (err) {
     console.log("Error [UPDATE_USER]", err);
+    throw err;
+  }
+}
+
+export async function registerUser(body: Prisma.UserCreateInput) {
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        email: body.email,
+      },
+    });
+
+    if (user) {
+      if (!user.emailVerified) {
+        throw new Error("Почта не подтверждена");
+      }
+
+      throw new Error("Пользователь уже зарегистрирован");
+    }
+
+    const createUser = await prisma.user.create({
+      data: {
+        name: body.name,
+        email: body.email,
+        password: hashSync(body.password as string, 10),
+      },
+    });
+  } catch (err) {
+    console.log("Error [REGISTER_USER]", err);
     throw err;
   }
 }

@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -22,6 +23,15 @@ interface Props {
 }
 
 export const ProfileForm: React.FC<Props> = ({ data }) => {
+  const { data: session } = useSession();
+  const [isYandexProvider, setIsYandexProvider] = useState(false);
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      setIsYandexProvider(session.user.provider === "yandex");
+    }
+  }, [session]);
+
   const form = useForm<TFormUpdateValues>({
     resolver: zodResolver(formUpdateSchema),
     defaultValues: {
@@ -79,7 +89,9 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
               label="E-Mail"
               required
               className="text-[17px]"
+              disabled={isYandexProvider}
             />
+
             <FormInput
               name="name"
               label="Полное имя"
@@ -92,17 +104,20 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
               name="password"
               label="Новый пароль"
               className="text-[17px]"
+              disabled={isYandexProvider}
             />
+
             <FormInput
               type="password"
               name="confirmPassword"
               label="Повторите пароль"
               className="text-[17px]"
+              disabled={isYandexProvider}
             />
 
             <Button
               disabled={form.formState.isSubmitting}
-              className="text-base mt-3 h-[50px]"
+              className="text-[18px] mt-3 h-[50px]"
               type="submit"
             >
               Сохранить
@@ -112,7 +127,7 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
               onClick={onClickSignOut}
               variant="secondary"
               disabled={form.formState.isSubmitting}
-              className="text-base text-[#667198] h-[50px]"
+              className="text-[18px] text-[#667198] h-[50px] "
               type="button"
             >
               Выйти

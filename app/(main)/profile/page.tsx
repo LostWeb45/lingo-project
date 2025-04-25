@@ -7,6 +7,8 @@ import { redirect } from "next/navigation";
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
 
+  console.log(session);
+
   if (!session) {
     return redirect("/");
   }
@@ -14,6 +16,13 @@ export default async function ProfilePage() {
   const user = await prisma.user.findFirst({
     where: {
       id: Number(session.user?.id),
+    },
+    include: {
+      accounts: {
+        select: {
+          provider: true,
+        },
+      },
     },
   });
 

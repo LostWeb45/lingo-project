@@ -3,7 +3,7 @@ export { ClearButton } from "./clear-button";
 export { ErrorText } from "./error-text";
 export { RequiredSymbol } from "./requried-symbol";
 export { EventList } from "./event-list";
-export { Header } from "./header";
+export { HeaderServer } from "./header/header-server";
 export { Title } from "./title";
 export { Filters } from "./filters";
 export { SearchIvent } from "./search-ivent";

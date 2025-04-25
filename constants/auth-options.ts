@@ -12,6 +12,7 @@ declare module "next-auth" {
       image?: string;
       role?: string;
       email?: string;
+      provider?: string;
     } & DefaultSession["user"];
   }
 
@@ -99,6 +100,7 @@ export const authOptions: NextAuthOptions = {
           token.email = findUser.email;
           token.role = findUser.role;
           token.name = findUser.name;
+          token.provider = account.provider;
         }
       }
 
@@ -166,6 +168,7 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email;
         token.image = user.image ?? undefined;
         token.role = user.role;
+        token.provider = account.provider;
       }
 
       return token;
@@ -177,6 +180,7 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role as string;
         session.user.email = token.email as string;
         session.user.image = token.image as string;
+        session.user.provider = token.provider as string;
       }
       return session;
     },

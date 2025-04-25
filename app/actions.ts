@@ -1,15 +1,23 @@
+"use server";
+
 import { getUserSession } from "@/lib/get-user-session";
 import { prisma } from "@/prisma/prisma-client";
 import { Prisma } from "@prisma/client";
 import { hashSync } from "bcryptjs";
 
-export async function updateUserInfo(body: Prisma.UserCreateInput) {
+export async function updateUserInfo(body: Prisma.UserUpdateInput) {
   try {
     const currentUser = await getUserSession();
 
     if (!currentUser) {
       throw new Error("Пользователь не найден");
     }
+
+    const findUser = await prisma.user.findFirst({
+      where: {
+        id: Number(currentUser.id),
+      },
+    });
 
     await prisma.user.update({
       where: {
@@ -18,7 +26,9 @@ export async function updateUserInfo(body: Prisma.UserCreateInput) {
       data: {
         name: body.name,
         email: body.email,
-        password: hashSync(body.password, 10),
+        password: body.password
+          ? hashSync(body.password as string, 10)
+          : findUser?.password,
       },
     });
   } catch (err) {

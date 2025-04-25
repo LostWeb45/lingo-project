@@ -12,7 +12,7 @@ export const formLoginSchema = z.object({
 export const formRegisterSchema = formLoginSchema
   .merge(
     z.object({
-      fullName: z.string().min(2, { message: "Введите корректное имя" }),
+      name: z.string().min(2, { message: "Введите корректное имя" }),
       confirmPassword: passwordSchema,
     })
   )
@@ -21,5 +21,22 @@ export const formRegisterSchema = formLoginSchema
     path: ["confirmPassword"],
   });
 
+export const formUpdateSchema = z
+  .object({
+    email: z.string().email({ message: "Введите корректную почту" }),
+    name: z.string().min(2, { message: "Введите корректное имя" }),
+    password: z
+      .string()
+      .min(4, { message: "Введите корректный пароль" })
+      .optional()
+      .or(z.literal("")),
+    confirmPassword: z.string().optional().or(z.literal("")),
+  })
+  .refine((data) => !data.password || data.password === data.confirmPassword, {
+    message: "Пароли не совпадают",
+    path: ["confirmPassword"],
+  });
+
+export type TFormUpdateValues = z.infer<typeof formUpdateSchema>;
 export type TFormLoginValues = z.infer<typeof formLoginSchema>;
 export type TFormRegisterValues = z.infer<typeof formRegisterSchema>;

@@ -4,8 +4,8 @@ import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  formRegisterSchema,
-  TFormLoginValues,
+  formUpdateSchema,
+  TFormUpdateValues,
 } from "./modals/auth-modal/forms/schemas";
 import { User } from "@prisma/client";
 import toast from "react-hot-toast";
@@ -22,17 +22,17 @@ interface Props {
 }
 
 export const ProfileForm: React.FC<Props> = ({ data }) => {
-  const form = useForm({
-    resolver: zodResolver(formRegisterSchema),
+  const form = useForm<TFormUpdateValues>({
+    resolver: zodResolver(formUpdateSchema),
     defaultValues: {
-      fullName: data.name,
+      name: data.name,
       email: data.email,
       password: "",
       confirmPassword: "",
     },
   });
 
-  const onSubmit = async (data: TFormLoginValues) => {
+  const onSubmit = async (data: TFormUpdateValues) => {
     try {
       await updateUserInfo({
         email: data.email,
@@ -81,7 +81,7 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
               className="text-[17px]"
             />
             <FormInput
-              name="fullName"
+              name="name"
               label="Полное имя"
               className="text-[17px]"
               required
@@ -92,14 +92,12 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
               name="password"
               label="Новый пароль"
               className="text-[17px]"
-              required
             />
             <FormInput
               type="password"
               name="confirmPassword"
               label="Повторите пароль"
               className="text-[17px]"
-              required
             />
 
             <Button

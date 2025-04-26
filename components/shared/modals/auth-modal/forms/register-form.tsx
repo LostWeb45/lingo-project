@@ -28,30 +28,40 @@ export const RegisterForm: React.FC<Props> = ({ onClose, className }) => {
 
   const onSubmit = async (data: TFormRegisterValues) => {
     try {
-      // Например, создаем пользователя в базе данных
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          password: data.password,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || result?.success === false) {
+        throw new Error(result?.message || "Ошибка при регистрации");
+      }
 
       toast.success("Вы успешно зарегистрированы", { icon: "✅" });
 
-      const result = await signIn("credentials", {
+      const loginResult = await signIn("credentials", {
         email: data.email,
         password: data.password,
         redirect: false,
         callbackUrl: window.location.origin,
       });
 
-      if (result?.error) {
-        throw new Error(result.error);
-      }
-
-      if (!result?.ok) {
-        throw new Error("Ошибка регистрации");
+      if (loginResult?.error) {
+        throw new Error(loginResult.error);
       }
 
       toast.success("Вы успешно вошли в аккаунт", { icon: "✅" });
 
       onClose?.();
     } catch (error) {
-      toast.error("Ошибка при регистрации", { icon: "❌" });
+      console.log(error);
     } finally {
       form.reset();
     }

@@ -16,7 +16,7 @@ import { Title } from "./title";
 import { FormInput } from "./form/form-input";
 import { Button } from "../ui";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { updateUserInfo } from "@/app/actions";
+import { requestEmailVerification, updateUserInfo } from "@/app/actions";
 
 interface Props {
   data: User;
@@ -41,6 +41,15 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
       confirmPassword: "",
     },
   });
+
+  const handleSendVerification = async () => {
+    try {
+      await requestEmailVerification();
+      toast.success("Код отправлен на почту", { icon: "📩" });
+    } catch (error) {
+      toast.error("Не удалось отправить код", { icon: "❌" });
+    }
+  };
 
   const onSubmit = async (data: TFormUpdateValues) => {
     try {
@@ -92,6 +101,16 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
               disabled={isYandexProvider}
               disablesDel={isYandexProvider}
             />
+            {!data.emailVerified && (
+              <Button
+                type="button"
+                variant="secondary"
+                className="h-[50px] text-[14px] whitespace-nowrap"
+                onClick={handleSendVerification}
+              >
+                Подтвердить
+              </Button>
+            )}
 
             <FormInput
               name="name"

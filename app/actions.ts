@@ -1,5 +1,7 @@
 "use server";
 
+import { VerificationUserTemplate } from "@/components/shared/email-templates/verification-user";
+import { sendMail } from "@/lib";
 import { getUserSession } from "@/lib/get-user-session";
 import { prisma } from "@/prisma/prisma-client";
 import { Prisma } from "@prisma/client";
@@ -79,10 +81,27 @@ export async function requestEmailVerification() {
 
   const code = Math.floor(100000 + Math.random() * 900000).toString();
 
+  await prisma.verificationCode.deleteMany({
+    where: {
+      userId: Number(currentUser.id),
+    },
+  });
+
   await prisma.verificationCode.create({
     data: {
       code,
       userId: Number(currentUser.id),
     },
   });
+
+  const emailHtml = VerificationUserTemplate({ code });
+
+  await sendMail({
+    to: currentUser.email!,
+    subject: "LinGo | Подтверждение почты",
+    text: `Ваш код подтверждения: ${code}`,
+    html: emailHtml,
+  });
+
+  return true;
 }

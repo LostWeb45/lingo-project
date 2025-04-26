@@ -69,3 +69,20 @@ export async function registerUser(body: Prisma.UserCreateInput) {
     throw err;
   }
 }
+
+export async function requestEmailVerification() {
+  const currentUser = await getUserSession();
+
+  if (!currentUser) {
+    return false;
+  }
+
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+  await prisma.verificationCode.create({
+    data: {
+      code,
+      userId: Number(currentUser.id),
+    },
+  });
+}

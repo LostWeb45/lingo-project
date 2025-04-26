@@ -30,9 +30,25 @@ model User {
     createdAt     DateTime  @default(now())
     updatedAt     DateTime  @updatedAt
 
-    accounts Account[]
-    sessions Session[]
-    events   Event[]   @relation("EventCreator")
+    verificationCode VerificationCode?
+    accounts         Account[]
+    sessions         Session[]
+    events           Event[]           @relation("EventCreator")
+}
+
+model VerificationCode {
+    id Int @id @default(autoincrement())
+
+    userId Int  @unique
+    user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    code String
+
+    expiresAt DateTime @default(now())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([userId, code])
 }
 
 model Account {

@@ -104,8 +104,8 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
             {!data.emailVerified && (
               <Button
                 type="button"
-                variant="secondary"
-                className="h-[50px] text-[14px] whitespace-nowrap"
+                variant="ghost"
+                className="h-[50px] text-[16px] text-[#1d3c6a] whitespace-nowrap"
                 onClick={handleSendVerification}
               >
                 Подтвердить

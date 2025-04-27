@@ -51,13 +51,22 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
     }
   };
 
-  const onSubmit = async (data: TFormUpdateValues) => {
+  const onSubmit = async (formData: TFormUpdateValues) => {
     try {
+      // const emailChanged = formData.email !== data.email;
+
       await updateUserInfo({
-        email: data.email,
-        name: data.name,
-        password: data.password,
+        email: formData.email,
+        name: formData.name,
+        password: formData.password,
       });
+
+      // if (emailChanged) {
+      //   setEmailVerified(null);
+      //   toast.success("Почта изменена. Требуется подтверждение.", {
+      //     icon: "📩",
+      //   });
+      // }
 
       toast.success("Данные успешно обновлены", { icon: "✅" });
     } catch (error) {

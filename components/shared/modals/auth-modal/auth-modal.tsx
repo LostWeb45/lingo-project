@@ -35,7 +35,7 @@ export const AuthModal: React.FC<Props> = ({ open, onClose }) => {
             variant={"ghost"}
             onClick={() =>
               signIn("yandex", {
-                callbackUrl: "/",
+                callbackUrl: "/?logined",
                 redirect: true,
               })
             }

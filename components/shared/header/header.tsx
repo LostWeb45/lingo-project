@@ -44,6 +44,10 @@ export const Header: React.FC<Props> = ({ initSession, className }) => {
   React.useEffect(() => {
     let toastMessage = "";
 
+    if (searParams.has("logined")) {
+      toastMessage = "Вы успешно вошли в аккаунт";
+    }
+
     if (searParams.has("verified")) {
       toastMessage = "Почта успешно подтверждена";
     }

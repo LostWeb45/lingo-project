@@ -8,6 +8,7 @@ export function VerificationUserTemplate({ code }: Props) {
         <h1>Подтверждение почты</h1>
         <p>Ваш код подтверждения:</p>
         <h2>${code}</h2>
+        <a href="http://localhost:3000/api/auth/verify?code=${code}">Подтвердить почту</a>
         <p>Если вы не запрашивали подтверждение, просто проигнорируйте это письмо.</p>
       </div>
     `;

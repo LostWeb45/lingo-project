@@ -10,6 +10,9 @@ import { LogIn } from "lucide-react";
 import { AuthModal } from "../modals";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 interface Props {
   initSession: Session | null;
@@ -17,6 +20,9 @@ interface Props {
 }
 
 export const Header: React.FC<Props> = ({ initSession, className }) => {
+  const searParams = useSearchParams();
+  const router = useRouter();
+
   const [openAuthModal, setAuthOpenModal] = React.useState(false);
 
   const { data: clientSession } = useSession();
@@ -34,6 +40,23 @@ export const Header: React.FC<Props> = ({ initSession, className }) => {
     { id: 3, title: "Категории", href: "/categories" },
     { id: 4, title: "События с вами", href: "/profile" },
   ];
+
+  React.useEffect(() => {
+    let toastMessage = "";
+
+    if (searParams.has("verified")) {
+      toastMessage = "Почта успешно подтверждена";
+    }
+
+    if (toastMessage) {
+      setTimeout(() => {
+        router.replace("/");
+        toast.success(toastMessage, {
+          duration: 3000,
+        });
+      });
+    }
+  }, []);
 
   return (
     <>

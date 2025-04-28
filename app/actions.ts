@@ -24,6 +24,19 @@ export async function updateUserInfo(body: Prisma.UserUpdateInput) {
 
     const isOAuthUser = userAccount?.provider === "yandex";
 
+    const currentUserData = await prisma.user.findUnique({
+      where: {
+        id: Number(currentUser.id),
+      },
+    });
+
+    if (!currentUserData) {
+      throw new Error("Пользователь не найден");
+    }
+
+    const emailChanged =
+      !isOAuthUser && body.email && body.email !== currentUserData.email;
+
     await prisma.user.update({
       where: {
         id: Number(currentUser.id),
@@ -35,6 +48,7 @@ export async function updateUserInfo(body: Prisma.UserUpdateInput) {
           isOAuthUser || !body.password
             ? undefined
             : hashSync(body.password as string, 10),
+        emailVerified: emailChanged ? null : currentUserData.emailVerified,
       },
     });
   } catch (err) {

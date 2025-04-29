@@ -10,4 +10,7 @@ export { SearchIvent } from "./search-ivent";
 export { Providers } from "./providers";
 export { FormInput } from "./form/form-input";
 export { ProfileForm } from "./profile-form";
+export { CategoriesList } from "./categories-list";
+export { AccordionMain } from "./accordion-main";
+export { CategoryItem } from "./category-item";
 export * from "./modals";

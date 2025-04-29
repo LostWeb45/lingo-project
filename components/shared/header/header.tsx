@@ -36,8 +36,8 @@ export const Header: React.FC<Props> = ({ initSession, className }) => {
 
   const navItems = [
     { id: 1, title: "Главная", href: "/" },
-    { id: 2, title: "Все события", href: "/events" },
-    { id: 3, title: "Категории", href: "/categories" },
+    { id: 2, title: "Категории", href: "/categories" },
+    { id: 3, title: "Все события", href: "/events" },
     { id: 4, title: "События с вами", href: "/profile" },
   ];
 

@@ -80,11 +80,13 @@ async function main() {
   ]);
 
   // Создаем тестовые события
-  const [upcomingStatus, concertCategory, moscowTown] = await Promise.all([
-    prisma.status.findFirstOrThrow({ where: { name: "Предстоящее" } }),
-    prisma.category.findFirstOrThrow({ where: { name: "Концерт" } }),
-    prisma.town.findFirstOrThrow({ where: { name: "Москва" } }),
-  ]);
+  const [upcomingStatus, concertCategory, exhibitionCategory, moscowTown] =
+    await Promise.all([
+      prisma.status.findFirstOrThrow({ where: { name: "Предстоящее" } }),
+      prisma.category.findFirstOrThrow({ where: { name: "Концерт" } }),
+      prisma.category.findFirstOrThrow({ where: { name: "Выставка" } }),
+      prisma.town.findFirstOrThrow({ where: { name: "Москва" } }),
+    ]);
 
   await prisma.event.createMany({
     data: [
@@ -114,6 +116,46 @@ async function main() {
         townId: moscowTown.id,
         statusId: upcomingStatus.id,
       },
+      {
+        title: "Международная выставка искусств",
+        description:
+          "Выставка современного искусства с участием художников со всего мира.",
+        startDate: new Date("2023-12-25"),
+        startTime: "10:00",
+        duration: 240,
+        age: 0,
+        place: "Московский выставочный центр",
+        createdById: organizer.id,
+        categoryId: exhibitionCategory.id,
+        townId: moscowTown.id,
+        statusId: upcomingStatus.id,
+      },
+      {
+        title: "Фестиваль уличной еды",
+        description: "Фестиваль с участием лучших уличных поваров.",
+        startDate: new Date("2024-01-05"),
+        startTime: "12:00",
+        duration: 180,
+        age: 0,
+        place: "Центральный парк",
+        createdById: organizer.id,
+        categoryId: exhibitionCategory.id,
+        townId: moscowTown.id,
+        statusId: upcomingStatus.id,
+      },
+      {
+        title: "Театральная премьера",
+        description: "Новая театральная постановка.",
+        startDate: new Date("2024-01-15"),
+        startTime: "19:00",
+        duration: 120,
+        age: 12,
+        place: "Театр",
+        createdById: organizer.id,
+        categoryId: exhibitionCategory.id,
+        townId: moscowTown.id,
+        statusId: upcomingStatus.id,
+      },
     ],
   });
 
@@ -130,6 +172,18 @@ async function main() {
         eventId: events[0].id,
       },
       { imageUrl: "https://example.com/jazz-night.jpg", eventId: events[1].id },
+      {
+        imageUrl: "https://example.com/exhibition-art.jpg",
+        eventId: events[2].id,
+      },
+      {
+        imageUrl: "https://example.com/street-food-festival.jpg",
+        eventId: events[3].id,
+      },
+      {
+        imageUrl: "https://example.com/theater-premiere.jpg",
+        eventId: events[4].id,
+      },
     ],
   });
 }

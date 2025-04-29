@@ -13,7 +13,7 @@ interface Props {
 
 export const Title: React.FC<Props> = ({
   text,
-  size = "sm",
+  size = "lg",
   className,
   url,
 }) => {
@@ -35,7 +35,6 @@ export const Title: React.FC<Props> = ({
     "2xl": "text-[48px]",
   } as const;
 
-  // Если передан URL, добавляем иконку рядом с текстом
   const icon = url ? (
     <Link href={url} target="_blank" rel="noopener noreferrer">
       <svg
@@ -44,7 +43,7 @@ export const Title: React.FC<Props> = ({
         height="26"
         viewBox="0 0 26 26"
         fill="none"
-        className="ml-2 inline-block opacity-60"
+        className="ml-[3px] mb-[2px] inline-block opacity-60"
       >
         <path
           d="M2 0V4H19.18L0 23.18L2.82 26L22 6.82V24H26V0H2Z"

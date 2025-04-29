@@ -1,13 +1,11 @@
-import { Container, Filters, Title } from "@/components/shared/";
-import { Button } from "@/components/ui";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { prisma } from "@/prisma/prisma-client";
-import { hash } from "bcryptjs";
+  AccordionMain,
+  CategoriesList,
+  Container,
+  Filters,
+  Title,
+} from "@/components/shared/";
+import { Button } from "@/components/ui";
 
 export default async function Home() {
   return (
@@ -31,49 +29,18 @@ export default async function Home() {
             <p className="text-[20px] font-medium [font-family:var(--font-montserrat)]">
               Наши преимущества
             </p>
-            <Accordion
-              type="single"
-              defaultValue="item-1"
-              className="flex flex-col px-5  bg-[#fafcfe] [font-family:var(--font-montserrat)]"
-            >
-              <AccordionItem value="item-1">
-                <AccordionTrigger className="group flex justify-between items-center  text-[17px] font-bold text-[#1D3C6A] transition-colors hover:text-[#3A5F9D] no-underline">
-                  Быстрый доступ к мероприятиям
-                </AccordionTrigger>
-                <AccordionContent className="text-[#333] text-[14px] leading-[20px] pb-2">
-                  Платформа показывает актуальные события рядом с вами — не
-                  нужно тратить время на поиски в соцсетях или переписках.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-2">
-                <AccordionTrigger className="group flex justify-between items-center py-3 text-[17px] font-bold text-[#1D3C6A] transition-colors hover:text-[#3A5F9D] no-underline">
-                  Удобное вступление и напоминания
-                </AccordionTrigger>
-                <AccordionContent className="text-[#333] text-[14px] leading-[20px] pb-2">
-                  Вы можете вступать в события в один клик, получать напоминания
-                  и быть уверенным, что не пропустите ничего важного.
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-3">
-                <AccordionTrigger className="group flex justify-between items-center py-3 text-[17px] font-bold text-[#1D3C6A] transition-colors hover:text-[#3A5F9D] no-underline">
-                  Общение и новые знакомства
-                </AccordionTrigger>
-                <AccordionContent className="text-[#333] text-[14px] leading-[20px] pb-2">
-                  После вступления в событие можно общаться с другими
-                  участниками — находите единомышленников ещё до начала
-                  мероприятия.
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+            <AccordionMain />
           </div>
         </div>
-
-        {/* Все события */}
-        <Title text="Все события" size="lg" url="./" />
-        <Filters />
       </Container>
+      {/* Категории */}
+      <Container className="mt-[30px]">
+        <Title text={"Категории"} url="/categories" className="font-semibold" />
+        <CategoriesList />
+      </Container>
+      {/* Все события */}
+      {/* <Title text="Все события" size="lg" url="./" />
+        <Filters /> */}
     </>
   );
 }

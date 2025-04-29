@@ -36,7 +36,7 @@ export const Title: React.FC<Props> = ({
   } as const;
 
   const icon = url ? (
-    <Link href={url} target="_blank" rel="noopener noreferrer">
+    <Link href={url} rel="noopener noreferrer">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="26"

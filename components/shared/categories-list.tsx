@@ -45,7 +45,7 @@ export const CategoriesList: React.FC<Props> = ({ className }) => {
     >
       {loading
         ? Array.from({ length: 6 }).map((_, index) => (
-            <Skeleton key={index} className="h-60 rounded-2xl" />
+            <Skeleton key={index} className="h-[105px] rounded-[1px]" />
           ))
         : categories?.map((category) => (
             <CategoryItem

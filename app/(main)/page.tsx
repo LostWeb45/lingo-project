@@ -36,7 +36,7 @@ export default async function Home() {
       {/* Категории */}
       <Container className="mt-[30px]">
         <Title text={"Категории"} url="/categories" className="font-semibold" />
-        <CategoriesList />
+        <CategoriesList className="mt-[30px]" />
       </Container>
       {/* Все события */}
       {/* <Title text="Все события" size="lg" url="./" />

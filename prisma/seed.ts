@@ -23,26 +23,29 @@ async function main() {
     ],
   });
 
-  // Создаем категории
-  const categories = await prisma.category.createMany({
+  // Создаем категории с картинками
+  await prisma.category.createMany({
     data: [
-      { name: "Концерт" },
-      { name: "Выставка" },
-      { name: "Фестиваль" },
-      { name: "Спорт" },
-      { name: "Театр" },
-      { name: "Кино" },
-      { name: "Образование" },
-      { name: "Еда и напитки" },
-      { name: "Кулинария" },
-      { name: "Туризм" },
-      { name: "Мода" },
-      { name: "Бизнес" },
+      { name: "Концерт", image: "/images/categories-ico/concert.svg" },
+      { name: "Выставка", image: "/images/categories-ico/exhibition.svg" },
+      { name: "Фестиваль", image: "/images/categories-ico/festival.svg" },
+      { name: "Спорт", image: "/images/categories-ico/sport.svg" },
+      { name: "Театр", image: "/images/categories-ico/theater.svg" },
+      { name: "Кино", image: "/images/categories-ico/cinema.svg" },
+      { name: "Образование", image: "/images/categories-ico/education.svg" },
+      {
+        name: "Еда и напитки",
+        image: "/images/categories-ico/food-and-drinks.svg",
+      },
+      { name: "Кулинария", image: "/images/categories-ico/culinary.svg" },
+      { name: "Туризм", image: "/images/categories-ico/tourism.svg" },
+      { name: "Мода", image: "/images/categories-ico/fashion.svg" },
+      { name: "Бизнес", image: "/images/categories-ico/business.svg" },
     ],
   });
 
   // Создаем города
-  const towns = await prisma.town.createMany({
+  await prisma.town.createMany({
     data: [
       { name: "Москва" },
       { name: "Санкт-Петербург" },
@@ -83,7 +86,7 @@ async function main() {
     }),
   ]);
 
-  // Создаем события
+  // Получаем объекты для связей
   const [
     upcomingStatus,
     concertCategory,
@@ -118,9 +121,9 @@ async function main() {
     prisma.town.findFirstOrThrow({ where: { name: "Санкт-Петербург" } }),
   ]);
 
+  // Создаем события без картинок
   await prisma.event.createMany({
     data: [
-      // Концерты
       {
         title: "Рок концерт",
         description: "Большой рок концерт с участием известных групп",
@@ -147,8 +150,6 @@ async function main() {
         townId: moscowTown.id,
         statusId: upcomingStatus.id,
       },
-
-      // Выставки
       {
         title: "Международная выставка искусства",
         description:
@@ -177,8 +178,6 @@ async function main() {
         townId: spbTown.id,
         statusId: upcomingStatus.id,
       },
-
-      // Фестивали
       {
         title: "Фестиваль уличной еды",
         description: "Фестиваль с участием лучших уличных поваров.",
@@ -205,8 +204,6 @@ async function main() {
         townId: spbTown.id,
         statusId: upcomingStatus.id,
       },
-
-      // Спортивные события
       {
         title: "Матч по футболу",
         description: "Матч чемпионата страны по футболу.",
@@ -232,40 +229,6 @@ async function main() {
         categoryId: sportsCategory.id,
         townId: spbTown.id,
         statusId: upcomingStatus.id,
-      },
-
-      // Другие события...
-    ],
-  });
-
-  // Добавляем изображения к событиям
-  const events = await prisma.event.findMany();
-
-  await prisma.eventImage.createMany({
-    data: [
-      {
-        imageUrl: "/images/events/rock-concert1.jpg",
-        eventId: events[0].id,
-      },
-      {
-        imageUrl: "/images/events/rock-concert2.jpg",
-        eventId: events[0].id,
-      },
-      {
-        imageUrl: "/images/events/jazz-night.jpg",
-        eventId: events[1].id,
-      },
-      {
-        imageUrl: "/images/events/exhibition-art.jpg",
-        eventId: events[2].id,
-      },
-      {
-        imageUrl: "/images/events/food-festival.jpg",
-        eventId: events[3].id,
-      },
-      {
-        imageUrl: "/images/events/football-match.jpg",
-        eventId: events[4].id,
       },
     ],
   });

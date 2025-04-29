@@ -20,10 +20,10 @@ export const CategoryItem: React.FC<Props> = ({
   return (
     <Link className={cn(className)} href={`/categories/${id}`}>
       <div className="flex pl-[30px] items-center  h-[105px] bg-[#fafcfe]  hover:bg-[#F5F6FA] transition rounded-[1px]">
-        <img src={imageUrl} alt={title} className="w-[50px]" />
+        <img src={imageUrl} alt={title} className="w-[55px]" />
         <div className="pl-[45px]">
           <h3 className="text-[#2E1A1A] text-[18px]  ">{title}</h3>
-          <p className="text-[#333333] text-[13px] opacity-60">
+          <p className="text-[#333333] text-[14px] opacity-60">
             {eventsCount} {eventsCount === 1 ? "событие" : "событий"}
           </p>
         </div>

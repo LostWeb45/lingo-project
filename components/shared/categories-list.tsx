@@ -5,26 +5,30 @@ import { cn } from "@/lib/utils";
 import { CategoryItem } from "./category-item";
 import { Skeleton } from "../ui/skeleton";
 import axios from "axios";
+import { Category } from "@prisma/client";
 
 interface Props {
+  limit?: number;
   className?: string;
 }
 
-interface Category {
-  id: number;
-  name: string;
-  image: string | null;
+interface CategoryVitchCount extends Category {
   eventsCount: number;
 }
 
-export const CategoriesList: React.FC<Props> = ({ className }) => {
-  const [categories, setCategories] = useState<Category[] | null>(null);
+export const CategoriesList: React.FC<Props> = ({ limit, className }) => {
+  const [categories, setCategories] = useState<CategoryVitchCount[] | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
+
+  const displayedCategories =
+    limit && categories ? categories.slice(0, limit) : categories;
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get<Category[]>("/api/categories");
+        const res = await axios.get<CategoryVitchCount[]>("/api/categories");
         setCategories(res.data);
       } catch (error) {
         console.error("Ошибка загрузки категорий", error);
@@ -47,7 +51,7 @@ export const CategoriesList: React.FC<Props> = ({ className }) => {
         ? Array.from({ length: 6 }).map((_, index) => (
             <Skeleton key={index} className="h-[105px] rounded-[1px]" />
           ))
-        : categories?.map((category) => (
+        : displayedCategories?.map((category) => (
             <CategoryItem
               key={category.id}
               title={category.name}

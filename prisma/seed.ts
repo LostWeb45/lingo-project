@@ -24,7 +24,7 @@ async function main() {
   });
 
   // Создаем категории
-  await prisma.category.createMany({
+  const categories = await prisma.category.createMany({
     data: [
       { name: "Концерт" },
       { name: "Выставка" },
@@ -34,11 +34,15 @@ async function main() {
       { name: "Кино" },
       { name: "Образование" },
       { name: "Еда и напитки" },
+      { name: "Кулинария" },
+      { name: "Туризм" },
+      { name: "Мода" },
+      { name: "Бизнес" },
     ],
   });
 
   // Создаем города
-  await prisma.town.createMany({
+  const towns = await prisma.town.createMany({
     data: [
       { name: "Москва" },
       { name: "Санкт-Петербург" },
@@ -79,17 +83,44 @@ async function main() {
     }),
   ]);
 
-  // Создаем тестовые события
-  const [upcomingStatus, concertCategory, exhibitionCategory, moscowTown] =
-    await Promise.all([
-      prisma.status.findFirstOrThrow({ where: { name: "Предстоящее" } }),
-      prisma.category.findFirstOrThrow({ where: { name: "Концерт" } }),
-      prisma.category.findFirstOrThrow({ where: { name: "Выставка" } }),
-      prisma.town.findFirstOrThrow({ where: { name: "Москва" } }),
-    ]);
+  // Создаем события
+  const [
+    upcomingStatus,
+    concertCategory,
+    exhibitionCategory,
+    festivalCategory,
+    sportsCategory,
+    theaterCategory,
+    cinemaCategory,
+    foodCategory,
+    educationCategory,
+    culinaryCategory,
+    tourismCategory,
+    fashionCategory,
+    businessCategory,
+    moscowTown,
+    spbTown,
+  ] = await Promise.all([
+    prisma.status.findFirstOrThrow({ where: { name: "Предстоящее" } }),
+    prisma.category.findFirstOrThrow({ where: { name: "Концерт" } }),
+    prisma.category.findFirstOrThrow({ where: { name: "Выставка" } }),
+    prisma.category.findFirstOrThrow({ where: { name: "Фестиваль" } }),
+    prisma.category.findFirstOrThrow({ where: { name: "Спорт" } }),
+    prisma.category.findFirstOrThrow({ where: { name: "Театр" } }),
+    prisma.category.findFirstOrThrow({ where: { name: "Кино" } }),
+    prisma.category.findFirstOrThrow({ where: { name: "Еда и напитки" } }),
+    prisma.category.findFirstOrThrow({ where: { name: "Образование" } }),
+    prisma.category.findFirstOrThrow({ where: { name: "Кулинария" } }),
+    prisma.category.findFirstOrThrow({ where: { name: "Туризм" } }),
+    prisma.category.findFirstOrThrow({ where: { name: "Мода" } }),
+    prisma.category.findFirstOrThrow({ where: { name: "Бизнес" } }),
+    prisma.town.findFirstOrThrow({ where: { name: "Москва" } }),
+    prisma.town.findFirstOrThrow({ where: { name: "Санкт-Петербург" } }),
+  ]);
 
   await prisma.event.createMany({
     data: [
+      // Концерты
       {
         title: "Рок концерт",
         description: "Большой рок концерт с участием известных групп",
@@ -116,8 +147,10 @@ async function main() {
         townId: moscowTown.id,
         statusId: upcomingStatus.id,
       },
+
+      // Выставки
       {
-        title: "Международная выставка искусств",
+        title: "Международная выставка искусства",
         description:
           "Выставка современного искусства с участием художников со всего мира.",
         startDate: new Date("2023-12-25"),
@@ -131,6 +164,22 @@ async function main() {
         statusId: upcomingStatus.id,
       },
       {
+        title: "Фотовыставка",
+        description:
+          "Выставка фотографий профессиональных и начинающих фотографов.",
+        startDate: new Date("2024-01-10"),
+        startTime: "11:00",
+        duration: 180,
+        age: 0,
+        place: "Центральный выставочный зал",
+        createdById: organizer.id,
+        categoryId: exhibitionCategory.id,
+        townId: spbTown.id,
+        statusId: upcomingStatus.id,
+      },
+
+      // Фестивали
+      {
         title: "Фестиваль уличной еды",
         description: "Фестиваль с участием лучших уличных поваров.",
         startDate: new Date("2024-01-05"),
@@ -139,49 +188,83 @@ async function main() {
         age: 0,
         place: "Центральный парк",
         createdById: organizer.id,
-        categoryId: exhibitionCategory.id,
+        categoryId: festivalCategory.id,
         townId: moscowTown.id,
         statusId: upcomingStatus.id,
       },
       {
-        title: "Театральная премьера",
-        description: "Новая театральная постановка.",
-        startDate: new Date("2024-01-15"),
+        title: "Фестиваль музыки и танцев",
+        description: "Танцевальные и музыкальные номера на улице.",
+        startDate: new Date("2024-01-12"),
+        startTime: "14:00",
+        duration: 150,
+        age: 0,
+        place: "Открытая площадка в парке",
+        createdById: organizer.id,
+        categoryId: festivalCategory.id,
+        townId: spbTown.id,
+        statusId: upcomingStatus.id,
+      },
+
+      // Спортивные события
+      {
+        title: "Матч по футболу",
+        description: "Матч чемпионата страны по футболу.",
+        startDate: new Date("2024-01-20"),
         startTime: "19:00",
         duration: 120,
-        age: 12,
-        place: "Театр",
+        age: 0,
+        place: "Стадион Спартак",
         createdById: organizer.id,
-        categoryId: exhibitionCategory.id,
+        categoryId: sportsCategory.id,
         townId: moscowTown.id,
         statusId: upcomingStatus.id,
       },
+      {
+        title: "Марафон",
+        description: "Городской марафон для всех желающих.",
+        startDate: new Date("2024-01-25"),
+        startTime: "09:00",
+        duration: 240,
+        age: 0,
+        place: "Центр города",
+        createdById: organizer.id,
+        categoryId: sportsCategory.id,
+        townId: spbTown.id,
+        statusId: upcomingStatus.id,
+      },
+
+      // Другие события...
     ],
   });
 
   // Добавляем изображения к событиям
   const events = await prisma.event.findMany();
+
   await prisma.eventImage.createMany({
     data: [
       {
-        imageUrl: "https://example.com/rock-concert1.jpg",
+        imageUrl: "/images/events/rock-concert1.jpg",
         eventId: events[0].id,
       },
       {
-        imageUrl: "https://example.com/rock-concert2.jpg",
+        imageUrl: "/images/events/rock-concert2.jpg",
         eventId: events[0].id,
       },
-      { imageUrl: "https://example.com/jazz-night.jpg", eventId: events[1].id },
       {
-        imageUrl: "https://example.com/exhibition-art.jpg",
+        imageUrl: "/images/events/jazz-night.jpg",
+        eventId: events[1].id,
+      },
+      {
+        imageUrl: "/images/events/exhibition-art.jpg",
         eventId: events[2].id,
       },
       {
-        imageUrl: "https://example.com/street-food-festival.jpg",
+        imageUrl: "/images/events/food-festival.jpg",
         eventId: events[3].id,
       },
       {
-        imageUrl: "https://example.com/theater-premiere.jpg",
+        imageUrl: "/images/events/football-match.jpg",
         eventId: events[4].id,
       },
     ],

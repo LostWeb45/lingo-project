@@ -2,6 +2,7 @@ import {
   AccordionMain,
   CategoriesList,
   Container,
+  EventList,
   Filters,
   Title,
 } from "@/components/shared/";
@@ -42,6 +43,7 @@ export default async function Home() {
       <Container className="mt-[30px]">
         <Title text={"Все события"} className="font-semibold" url="/events" />
         <Filters />
+        <EventList />
       </Container>
     </>
   );

@@ -35,7 +35,6 @@ export const Filters: React.FC<Props> = ({ className }) => {
   const [age, setAge] = useState<string>(searchParams.get("age") || "any");
   const [categories, setCategories] = useState<Category[]>([]);
 
-  // Загружаем категории через ваш API
   useEffect(() => {
     async function fetchCategories() {
       try {
@@ -75,7 +74,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
       maxPrice = "3000";
     } else if (value === "3000+") {
       minPrice = "3000";
-      maxPrice = "any";
+      maxPrice = "20000";
     }
 
     if (value === "any") {

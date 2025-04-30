@@ -14,7 +14,7 @@ export const SearchIvent: React.FC<Props> = ({ className }) => {
   const router = useRouter();
 
   useEffect(() => {
-    const query = searchParams.get("search");
+    const query = searchParams.get("query");
     if (query) {
       setSearchValue(query);
     }
@@ -26,9 +26,9 @@ export const SearchIvent: React.FC<Props> = ({ className }) => {
 
     const params = new URLSearchParams(searchParams.toString());
     if (value) {
-      params.set("search", value);
+      params.set("query", value);
     } else {
-      params.delete("search");
+      params.delete("query");
     }
     router.push(`?${params.toString()}`);
   };
@@ -36,7 +36,7 @@ export const SearchIvent: React.FC<Props> = ({ className }) => {
   const handleClear = () => {
     setSearchValue("");
     const params = new URLSearchParams(searchParams.toString());
-    params.delete("search");
+    params.delete("query");
     router.push(`?${params.toString()}`);
   };
 

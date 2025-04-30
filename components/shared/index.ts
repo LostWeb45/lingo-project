@@ -13,4 +13,5 @@ export { ProfileForm } from "./profile-form";
 export { CategoriesList } from "./categories-list";
 export { AccordionMain } from "./accordion-main";
 export { CategoryItem } from "./category-item";
+export { EventCard } from "./event-card";
 export * from "./modals";

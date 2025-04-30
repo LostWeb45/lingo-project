@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { useSearchParams, useRouter } from "next/navigation"; // Добавим useRouter и useSearchParams
+import { useSearchParams, useRouter } from "next/navigation";
 
 interface Props {
   className?: string;
@@ -13,7 +13,6 @@ export const SearchIvent: React.FC<Props> = ({ className }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // Инициализация searchValue из параметра URL, если он есть
   useEffect(() => {
     const query = searchParams.get("search");
     if (query) {
@@ -25,21 +24,20 @@ export const SearchIvent: React.FC<Props> = ({ className }) => {
     const value = e.target.value;
     setSearchValue(value);
 
-    // Обновление URL с параметром search
     const params = new URLSearchParams(searchParams.toString());
     if (value) {
-      params.set("search", value); // Добавляем или обновляем параметр "search"
+      params.set("search", value);
     } else {
-      params.delete("search"); // Убираем параметр, если поиск очищен
+      params.delete("search");
     }
-    router.push(`?${params.toString()}`); // Переход по новому URL с параметрами
+    router.push(`?${params.toString()}`);
   };
 
   const handleClear = () => {
     setSearchValue("");
     const params = new URLSearchParams(searchParams.toString());
-    params.delete("search"); // Убираем параметр из URL
-    router.push(`?${params.toString()}`); // Переход по новому URL
+    params.delete("search");
+    router.push(`?${params.toString()}`);
   };
 
   return (

@@ -1,21 +1,46 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { useClickAway } from "react-use";
+import { useSearchParams, useRouter } from "next/navigation"; // Добавим useRouter и useSearchParams
 
 interface Props {
   className?: string;
 }
 
 export const SearchIvent: React.FC<Props> = ({ className }) => {
-  const [searchValue, setSearchValue] = React.useState<string>("");
-  const [isFocused, setIsFocused] = React.useState<boolean>(false);
-  const searchRef = React.useRef<HTMLDivElement>(null);
+  const [searchValue, setSearchValue] = useState<string>("");
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
-  useClickAway(searchRef, () => setIsFocused(false));
+  // Инициализация searchValue из параметра URL, если он есть
+  useEffect(() => {
+    const query = searchParams.get("search");
+    if (query) {
+      setSearchValue(query);
+    }
+  }, [searchParams]);
 
-  const handleClear = () => setSearchValue("");
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchValue(value);
+
+    // Обновление URL с параметром search
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) {
+      params.set("search", value); // Добавляем или обновляем параметр "search"
+    } else {
+      params.delete("search"); // Убираем параметр, если поиск очищен
+    }
+    router.push(`?${params.toString()}`); // Переход по новому URL с параметрами
+  };
+
+  const handleClear = () => {
+    setSearchValue("");
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("search"); // Убираем параметр из URL
+    router.push(`?${params.toString()}`); // Переход по новому URL
+  };
 
   return (
     <div
@@ -23,10 +48,9 @@ export const SearchIvent: React.FC<Props> = ({ className }) => {
         "flex flex-1 justify-center relative w-[280px] h-[40px] bg-[#F5F6FA]",
         className
       )}
-      ref={searchRef}
     >
       <svg
-        className="absolute left-[12px]  top-1/2 translate-y-[-50%] "
+        className="absolute left-[12px] top-1/2 translate-y-[-50%]"
         xmlns="http://www.w3.org/2000/svg"
         width="18"
         height="18"
@@ -39,12 +63,11 @@ export const SearchIvent: React.FC<Props> = ({ className }) => {
         />
       </svg>
       <input
-        className="rounded-2xl outline-none  w-[200px] border-none bg-[#F5F6FA] placeholder:text-[#333333] text-[14px] "
+        className="rounded-2xl outline-none w-[200px] border-none bg-[#F5F6FA] placeholder:text-[#333333] text-[14px]"
         type="text"
         placeholder="Название мероприятия"
         value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
-        onFocus={() => setIsFocused(true)}
+        onChange={handleSearchChange}
       />
       {searchValue && (
         <svg

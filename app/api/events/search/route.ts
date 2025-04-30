@@ -24,29 +24,28 @@ export async function GET(request: NextRequest) {
         mode: "insensitive",
       },
       archive: false,
-      ...(minPriceInt !== undefined &&
-        maxPriceInt !== undefined && {
+      ...(minPriceInt &&
+        maxPriceInt && {
           price: {
             gte: minPriceInt,
             lte: maxPriceInt,
           },
         }),
-      ...(categoryIdInt !== undefined && {
+      ...(categoryIdInt && {
         categoryId: categoryIdInt,
       }),
-      ...(townIdInt !== undefined && {
+      ...(townIdInt && {
         townId: townIdInt,
       }),
-      ...(statusIdInt !== undefined && {
+      ...(statusIdInt && {
         statusId: statusIdInt,
       }),
-      ...(ageInt !== undefined && {
+      ...(ageInt && {
         age: {
           lte: ageInt,
         },
       }),
     },
-
     take: 5,
     orderBy: {
       startDate: "asc",

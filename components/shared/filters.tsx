@@ -165,9 +165,9 @@ export const Filters: React.FC<Props> = ({ className }) => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="any">Любой возраст</SelectItem>
-            <SelectItem value="20">20+</SelectItem>
-            <SelectItem value="30">30+</SelectItem>
-            <SelectItem value="40">40+</SelectItem>
+            <SelectItem value="14">14+</SelectItem>
+            <SelectItem value="16">16+</SelectItem>
+            <SelectItem value="18">18+</SelectItem>
           </SelectContent>
         </Select>
         {/* Кнопка сбросить */}

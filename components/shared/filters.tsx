@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SearchIvent } from "./search-ivent";
@@ -13,6 +13,11 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
+interface Category {
+  id: number;
+  name: string;
+}
+
 interface Props {
   className?: string;
 }
@@ -21,7 +26,6 @@ export const Filters: React.FC<Props> = ({ className }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Инициализация параметров из URL
   const [price, setPrice] = useState<string>(
     searchParams.get("price") || "any"
   );
@@ -29,6 +33,22 @@ export const Filters: React.FC<Props> = ({ className }) => {
     searchParams.get("categoryId") || "any"
   );
   const [age, setAge] = useState<string>(searchParams.get("age") || "any");
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  // Загружаем категории через ваш API
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const response = await fetch("/api/categories");
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Ошибка при загрузке категорий:", error);
+      }
+    }
+
+    fetchCategories();
+  }, []);
 
   const handleFilterChange = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -76,7 +96,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
     if (value === "any") {
       params.delete("categoryId");
     } else {
-      params.set("categoryId", value); // Теперь используем categoryId
+      params.set("categoryId", value);
     }
 
     router.push(`?${params.toString()}`);
@@ -89,7 +109,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
     if (value === "any") {
       params.delete("age");
     } else {
-      params.set("age", value); // Передаем минимальный возраст
+      params.set("age", value);
     }
 
     router.push(`?${params.toString()}`);
@@ -132,9 +152,11 @@ export const Filters: React.FC<Props> = ({ className }) => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="any">Все категории</SelectItem>
-            <SelectItem value="1">Концерты</SelectItem> {/* ID категории 1 */}
-            <SelectItem value="2">Выставки</SelectItem> {/* ID категории 2 */}
-            <SelectItem value="3">Спорт</SelectItem> {/* ID категории 3 */}
+            {categories.map((category) => (
+              <SelectItem key={category.id} value={category.id.toString()}>
+                {category.name}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
         {/* Фильтр по возрасту */}
@@ -144,9 +166,9 @@ export const Filters: React.FC<Props> = ({ className }) => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="any">Любой возраст</SelectItem>
-            <SelectItem value="20">20+</SelectItem> {/* Возраст 20+ */}
-            <SelectItem value="30">30+</SelectItem> {/* Возраст 30+ */}
-            <SelectItem value="40">40+</SelectItem> {/* Возраст 40+ */}
+            <SelectItem value="20">20+</SelectItem>
+            <SelectItem value="30">30+</SelectItem>
+            <SelectItem value="40">40+</SelectItem>
           </SelectContent>
         </Select>
         {/* Кнопка сбросить */}

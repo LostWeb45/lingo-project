@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useSearchParams } from "next/navigation";
 import { EventCard } from "./event-card";
+import { Skeleton } from "../ui";
 
 interface Event {
   id: number;
@@ -18,9 +19,9 @@ interface Event {
 
 export const EventList: React.FC = () => {
   const searchParams = useSearchParams();
-  const [events, setEvents] = useState<Event[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [events, setEvents] = React.useState<Event[]>([]);
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [error, setError] = React.useState<string | null>(null);
 
   const fetchEvents = async () => {
     setIsLoading(true);
@@ -42,14 +43,27 @@ export const EventList: React.FC = () => {
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchEvents();
   }, [searchParams]);
 
   return (
     <div className="event-list">
       {isLoading ? (
-        <div>Загрузка...</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[...Array(6)].map((_, index) => (
+            <div key={index} className="event-skeleton">
+              <Skeleton className="h-40 w-full rounded-md" />{" "}
+              {/* Скелетон для изображения */}
+              <Skeleton className="h-6 mt-4 w-3/4 rounded-md" />{" "}
+              {/* Скелетон для заголовка */}
+              <Skeleton className="h-4 mt-2 w-5/6 rounded-md" />{" "}
+              {/* Скелетон для текста */}
+              <Skeleton className="h-4 mt-2 w-1/2 rounded-md" />{" "}
+              {/* Скелетон для текста */}
+            </div>
+          ))}
+        </div>
       ) : error ? (
         <div>{error}</div>
       ) : events.length > 0 ? (

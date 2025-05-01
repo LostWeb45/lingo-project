@@ -12,11 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-
-interface Category {
-  id: number;
-  name: string;
-}
+import { Category } from "@prisma/client";
 
 interface Props {
   className?: string;
@@ -97,6 +93,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
       className={cn("flex justify-between items-center gap-[30px]", className)}
     >
       <div className="flex flex-wrap gap-4">
+        {/* Название */}
         <SearchIvent />
         {/* Цена */}
         <Select value={price} onValueChange={handlePriceChange}>

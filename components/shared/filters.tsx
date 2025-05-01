@@ -22,97 +22,64 @@ interface Props {
   className?: string;
 }
 
+const priceOptions = [
+  { label: "Любая цена", value: "any" },
+  { label: "До 1000₽", value: "0-1000" },
+  { label: "1000₽–3000₽", value: "1000-3000" },
+  { label: "Больше 3000₽", value: "3000+" },
+];
+
+const ageOptions = [
+  { label: "Любой возраст", value: "any" },
+  { label: "14+", value: "14" },
+  { label: "16+", value: "16" },
+  { label: "18+", value: "18" },
+];
+
 export const Filters: React.FC<Props> = ({ className }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [price, setPrice] = useState<string>(
-    searchParams.get("price") || "any"
-  );
-  const [category, setCategory] = useState<string>(
+  const [price, setPrice] = useState(searchParams.get("price") || "any");
+  const [category, setCategory] = useState(
     searchParams.get("categoryId") || "any"
   );
-  const [age, setAge] = useState<string>(searchParams.get("age") || "any");
+  const [age, setAge] = useState(searchParams.get("age") || "any");
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    async function fetchCategories() {
-      try {
-        const response = await fetch("/api/categories");
-        const data = await response.json();
-        setCategories(data);
-      } catch (error) {
-        console.error("Ошибка при загрузке категорий:", error);
-      }
-    }
-
-    fetchCategories();
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then(setCategories)
+      .catch((err) => console.error("Ошибка при загрузке категорий:", err));
   }, []);
 
-  const handleFilterChange = (key: string, value: string) => {
+  const updateParams = (updates: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams.toString());
-
-    if (value === "any" || value === "all") {
-      params.delete(key);
-    } else {
-      params.set(key, value);
-    }
-
+    Object.entries(updates).forEach(([key, value]) =>
+      value ? params.set(key, value) : params.delete(key)
+    );
     router.push(`?${params.toString()}`);
   };
 
   const handlePriceChange = (value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    let minPrice = "any";
-    let maxPrice = "any";
-
-    if (value === "0-1000") {
-      minPrice = "0";
-      maxPrice = "1000";
-    } else if (value === "1000-3000") {
-      minPrice = "1000";
-      maxPrice = "3000";
-    } else if (value === "3000+") {
-      minPrice = "3000";
-      maxPrice = "20000";
-    }
-
-    if (value === "any") {
-      params.delete("minPrice");
-      params.delete("maxPrice");
-    } else {
-      params.set("minPrice", minPrice);
-      params.set("maxPrice", maxPrice);
-    }
-
-    router.push(`?${params.toString()}`);
     setPrice(value);
+    if (value === "any") {
+      updateParams({ minPrice: null, maxPrice: null });
+    } else {
+      const [minPrice, maxPrice] =
+        value === "3000+" ? ["3000", "20000"] : value.split("-");
+      updateParams({ minPrice, maxPrice });
+    }
   };
 
-  const handleCategoryChange = (value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (value === "any") {
-      params.delete("categoryId");
-    } else {
-      params.set("categoryId", value);
-    }
-
-    router.push(`?${params.toString()}`);
-    setCategory(value);
-  };
-
-  const handleAgeChange = (value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (value === "any") {
-      params.delete("age");
-    } else {
-      params.set("age", value);
-    }
-
-    router.push(`?${params.toString()}`);
-    setAge(value);
+  const handleChange = (
+    key: string,
+    value: string,
+    setter: (val: string) => void
+  ) => {
+    setter(value);
+    updateParams({ [key]: value === "any" ? null : value });
   };
 
   const handleReset = () => {
@@ -122,7 +89,6 @@ export const Filters: React.FC<Props> = ({ className }) => {
     router.push(window.location.pathname);
   };
 
-  // Проверяем, если все фильтры на дефолтных значениях
   const allFiltersDefault =
     price === "any" && category === "any" && age === "any";
 
@@ -131,53 +97,59 @@ export const Filters: React.FC<Props> = ({ className }) => {
       className={cn("flex justify-between items-center gap-[30px]", className)}
     >
       <div className="flex flex-wrap gap-4">
-        <SearchIvent /> {/* Компонент поиска */}
-        {/* Фильтр по цене */}
+        <SearchIvent />
+        {/* Цена */}
         <Select value={price} onValueChange={handlePriceChange}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Цена" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="any">Любая цена</SelectItem>
-            <SelectItem value="0-1000">До 1000₽</SelectItem>
-            <SelectItem value="1000-3000">1000₽–3000₽</SelectItem>
-            <SelectItem value="3000+">Больше 3000₽</SelectItem>
+            {priceOptions.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
-        {/* Фильтр по категории */}
-        <Select value={category} onValueChange={handleCategoryChange}>
+        {/* Категория */}
+        <Select
+          value={category}
+          onValueChange={(v) => handleChange("categoryId", v, setCategory)}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Категория" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="any">Все категории</SelectItem>
-            {categories.map((category) => (
-              <SelectItem key={category.id} value={category.id.toString()}>
-                {category.name}
+            {categories.map((c) => (
+              <SelectItem key={c.id} value={String(c.id)}>
+                {c.name}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
-        {/* Фильтр по возрасту */}
-        <Select value={age} onValueChange={handleAgeChange}>
+        {/* Возраст */}
+        <Select
+          value={age}
+          onValueChange={(v) => handleChange("age", v, setAge)}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Возраст" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="any">Любой возраст</SelectItem>
-            <SelectItem value="14">14+</SelectItem>
-            <SelectItem value="16">16+</SelectItem>
-            <SelectItem value="18">18+</SelectItem>
+            {ageOptions.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
-        {/* Кнопка сбросить */}
         {!allFiltersDefault && (
           <Button variant="outline" onClick={handleReset}>
             Сбросить фильтры
           </Button>
         )}
       </div>
-
       <div className="font-[18px] text-[#333333]">187 событий</div>
     </div>
   );

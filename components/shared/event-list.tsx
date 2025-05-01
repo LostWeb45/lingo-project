@@ -4,6 +4,11 @@ import React from "react";
 import { useSearchParams } from "next/navigation";
 import { EventCard } from "./event-card";
 import { Skeleton } from "../ui";
+import { cn } from "@/lib/utils";
+
+interface Props {
+  className?: string;
+}
 
 interface Event {
   id: number;
@@ -17,7 +22,7 @@ interface Event {
   images: { imageUrl: string }[];
 }
 
-export const EventList: React.FC = () => {
+export const EventList: React.FC<Props> = (className) => {
   const searchParams = useSearchParams();
   const [events, setEvents] = React.useState<Event[]>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
@@ -48,7 +53,7 @@ export const EventList: React.FC = () => {
   }, [searchParams]);
 
   return (
-    <div className="event-list">
+    <div className={cn("mt-[30px] event-list", className)}>
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[...Array(6)].map((_, index) => (

@@ -35,14 +35,14 @@ export default async function Home() {
         </div>
       </Container>
       {/* Категории */}
-      <Container className="mt-[30px]">
+      <Container>
         <Title text={"Категории"} url="/categories" className="font-semibold" />
         <CategoriesList className="mt-[30px]" limit={6} />
       </Container>
-      {/* Все события */}
-      <Container className="mt-[30px]">
+      {/* Все события, доделать груплист и сам элемент карточки */}
+      <Container>
         <Title text={"Все события"} className="font-semibold" url="/events" />
-        <Filters />
+        <Filters className="mt-[30px]" />
         <EventList />
       </Container>
     </>

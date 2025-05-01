@@ -92,7 +92,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
     <div
       className={cn("flex justify-between items-center gap-[30px]", className)}
     >
-      <div className="flex flex-wrap gap-4">
+      <div className="flex items-center flex-wrap gap-4">
         {/* Название */}
         <SearchIvent />
         {/* Цена */}
@@ -142,9 +142,12 @@ export const Filters: React.FC<Props> = ({ className }) => {
           </SelectContent>
         </Select>
         {!allFiltersDefault && (
-          <Button variant="outline" onClick={handleReset}>
-            Сбросить фильтры
-          </Button>
+          <span
+            onClick={handleReset}
+            className="text-sm  text-[#1D3C6A] underline-offset-2 cursor-pointer hover:underline transition"
+          >
+            Сбросить
+          </span>
         )}
       </div>
       <div className="font-[18px] text-[#333333]">187 событий</div>

@@ -11,7 +11,7 @@ interface Props {
   className?: string;
 }
 
-export const EventList: React.FC<Props> = (className) => {
+export const EventList: React.FC<Props> = ({ className }) => {
   const searchParams = useSearchParams();
   const [events, setEvents] = React.useState<Event[]>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
@@ -40,29 +40,24 @@ export const EventList: React.FC<Props> = (className) => {
   React.useEffect(() => {
     fetchEvents();
   }, [searchParams]);
-  console.log(events);
 
   return (
-    <div className={cn("mt-[30px] event-list", className)}>
+    <div className={cn("mt-[30px] w-full", className)}>
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-4">
           {[...Array(6)].map((_, index) => (
             <div key={index} className="event-skeleton">
-              <Skeleton className="h-40 w-full rounded-md" />{" "}
-              {/* Скелетон для изображения */}
-              <Skeleton className="h-6 mt-4 w-3/4 rounded-md" />{" "}
-              {/* Скелетон для заголовка */}
-              <Skeleton className="h-4 mt-2 w-5/6 rounded-md" />{" "}
-              {/* Скелетон для текста */}
-              <Skeleton className="h-4 mt-2 w-1/2 rounded-md" />{" "}
-              {/* Скелетон для текста */}
+              <Skeleton className="h-40 w-full rounded-md" />
+              <Skeleton className="h-6 mt-4 w-3/4 rounded-md" />
+              <Skeleton className="h-4 mt-2 w-5/6 rounded-md" />
+              <Skeleton className="h-4 mt-2 w-1/2 rounded-md" />
             </div>
           ))}
         </div>
       ) : error ? (
         <div>{error}</div>
       ) : events.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-5">
           {events.map((event) => (
             <EventCard key={event.id} event={event} />
           ))}

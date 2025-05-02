@@ -1,9 +1,9 @@
-import { Event } from "@prisma/client";
 import { Avatar, Button } from "../ui";
 import { format, addMinutes, parse } from "date-fns";
 import { ru } from "date-fns/locale";
 import { AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
+import { Event } from "@prisma/client";
 
 interface EventCardProps {
   event: Event;
@@ -28,8 +28,8 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       <div className="h-[200px] overflow-hidden">
         <img
           src={
-            event.images.length > 0
-              ? `${event.images[0].imageUrl}`
+            event.images?.length > 0
+              ? `${event.images[0]?.imageUrl}`
               : "/images/no-image.png"
           }
           alt="event image"
@@ -40,7 +40,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         <div className="flex items-center justify-between">
           <Link className="flex justify-center items-center gap-3" href={"/"}>
             <Avatar className="cursor-pointer  w-[30px] h-[30px] hover:opacity-90 transition-opacity">
-              <AvatarImage src={event.createdBy.image ?? undefined} />
+              <AvatarImage src={event.createdBy?.image ?? undefined} />
               <AvatarFallback className="bg-[white]">
                 {event.createdBy.name?.charAt(0) ?? "П"}
               </AvatarFallback>

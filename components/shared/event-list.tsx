@@ -5,21 +5,10 @@ import { useSearchParams } from "next/navigation";
 import { EventCard } from "./event-card";
 import { Skeleton } from "../ui";
 import { cn } from "@/lib/utils";
+import { Event } from "@prisma/client";
 
 interface Props {
   className?: string;
-}
-
-interface Event {
-  id: number;
-  title: string;
-  description: string;
-  startDate: string;
-  price: number;
-  place: string;
-  category: { name: string };
-  town: { name: string };
-  images: { imageUrl: string }[];
 }
 
 export const EventList: React.FC<Props> = (className) => {

@@ -41,7 +41,10 @@ export const RegisterForm: React.FC<Props> = ({ onClose, className }) => {
       const result = await response.json();
 
       if (!response.ok || result?.success === false) {
-        throw new Error(result?.message || "Ошибка при регистрации");
+        toast.error(result?.message || "Ошибка при регистрации", {
+          icon: "❌",
+        });
+        return;
       }
 
       toast.success("Вы успешно зарегистрированы", { icon: "✅" });
@@ -62,6 +65,7 @@ export const RegisterForm: React.FC<Props> = ({ onClose, className }) => {
       onClose?.();
     } catch (error) {
       console.log(error);
+      toast.error("Произошла ошибка при регистрации", { icon: "❌" });
     } finally {
       form.reset();
     }

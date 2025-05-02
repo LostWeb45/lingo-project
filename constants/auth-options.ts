@@ -46,7 +46,7 @@ export const authOptions: NextAuthOptions = {
           name: userObj.name,
           email: userObj.email,
           image: userObj.image,
-          role: "USER",
+          role: "ORGANIZER",
         };
       },
     }),
@@ -128,7 +128,7 @@ export const authOptions: NextAuthOptions = {
                 yandexProfile.real_name ||
                 yandexProfile.login,
               image: `https://avatars.yandex.net/get-yapic/${yandexProfile.default_avatar_id}/islands-200`,
-              role: "USER",
+              role: "ORGANIZER",
               password: "",
               emailVerified: new Date(),
               accounts: {

@@ -70,7 +70,7 @@ export async function registerUser(body: Prisma.UserCreateInput) {
         throw new Error("Почта не подтверждена");
       }
 
-      throw new Error("Пользователь уже зарегистрирован");
+      throw new Error("Пользователь с такой почтой уже зарегистрирован");
     }
 
     const createUser = await prisma.user.create({
@@ -80,9 +80,14 @@ export async function registerUser(body: Prisma.UserCreateInput) {
         password: hashSync(body.password as string, 10),
       },
     });
-  } catch (err) {
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.log("Error [REGISTER_USER]", err);
+      throw new Error(err.message);
+    }
+
     console.log("Error [REGISTER_USER]", err);
-    throw err;
+    throw new Error("Неизвестная ошибка при регистрации");
   }
 }
 

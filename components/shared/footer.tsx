@@ -20,7 +20,7 @@ export const Footer: React.FC<Props> = ({ className }) => {
         <div className="flex flex-col gap-[10px] font-medium">
           <div className="text-[19px] text-[#333333]">Помощь</div>
           <div className="text-[16px] text-[#585858] font-medium">
-            konstintin@gmail.com
+            konstintinp@gmail.com
           </div>
           <div className="text-[16px] text-[#585858] font-medium">
             kostik052005@gmail.com
@@ -39,7 +39,7 @@ export const Footer: React.FC<Props> = ({ className }) => {
             Наши контакты
           </div>
           <div className="text-[16px] text-[#585858] font-medium ">
-            konstintin@gmail.com
+            konstintinp@gmail.com
           </div>
           <div className="text-[16px] text-[#585858] font-medium ">
             г. Санкт-Петербург

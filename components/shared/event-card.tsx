@@ -24,7 +24,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   console.log(event);
 
   return (
-    <div>
+    <div className="transition-shadow duration-300 hover:shadow-lg">
       <div className="h-[200px] overflow-hidden">
         <img
           src={
@@ -50,7 +50,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             </p>
           </Link>
 
-          <div>16+</div>
+          <div>{event.age}+</div>
         </div>
         <h3 className="text-[19px] font-semibold">{event.title}</h3>
         <div className="flex flex-col">

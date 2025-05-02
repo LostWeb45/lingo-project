@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "../globals.css";
-import { HeaderServer } from "@/components/shared/";
+import { Footer, HeaderServer } from "@/components/shared/";
 
 export const metadata: Metadata = {
   title: "LinGo | Главная страница",
@@ -15,6 +15,7 @@ export default function RootLayout({
     <main>
       <HeaderServer />
       {children}
+      <Footer />
     </main>
   );
 }

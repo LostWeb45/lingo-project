@@ -3,10 +3,16 @@ import { format, addMinutes, parse } from "date-fns";
 import { ru } from "date-fns/locale";
 import { AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
-import { Event } from "@prisma/client";
+import { Event, User } from "@prisma/client";
+
+// type EventCard extended Event{
+
+// }
 
 interface EventCardProps {
   event: Event;
+  createdBy: User;
+  images: string[];
 }
 
 const getFormattedDateTime = (date: Date, time: string, duration: number) => {

@@ -46,11 +46,15 @@ export const EventList: React.FC<Props> = ({ className }) => {
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-4">
           {[...Array(6)].map((_, index) => (
-            <div key={index} className="event-skeleton">
-              <Skeleton className="h-40 w-full rounded-md" />
-              <Skeleton className="h-6 mt-4 w-3/4 rounded-md" />
-              <Skeleton className="h-4 mt-2 w-5/6 rounded-md" />
-              <Skeleton className="h-4 mt-2 w-1/2 rounded-md" />
+            <div key={index} className="flex flex-col gap-3">
+              <Skeleton className="h-[200px] w-full" />
+              <Skeleton className="h-6  w-2/5" />
+              <Skeleton className="h-8  w-5/6" />
+              <div className="flex flex-col gap-2">
+                <Skeleton className="h-5 w-2/3" />
+                <Skeleton className="h-5 w-2/3" />
+              </div>
+              <Skeleton className="h-10  w-[150px]" />
             </div>
           ))}
         </div>

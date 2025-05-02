@@ -30,14 +30,14 @@ export const SearchIvent: React.FC<Props> = ({ className }) => {
     } else {
       params.delete("query");
     }
-    router.push(`?${params.toString()}`);
+    router.push(`?${params.toString()}`, { scroll: false });
   };
 
   const handleClear = () => {
     setSearchValue("");
     const params = new URLSearchParams(searchParams.toString());
     params.delete("query");
-    router.push(`?${params.toString()}`);
+    router.push(`?${params.toString()}`, { scroll: false });
   };
 
   return (

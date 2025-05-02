@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SearchIvent } from "./search-ivent";
@@ -11,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import { Category } from "@prisma/client";
 
 interface Props {
@@ -36,14 +35,14 @@ export const Filters: React.FC<Props> = ({ className }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [price, setPrice] = useState(searchParams.get("price") || "any");
-  const [category, setCategory] = useState(
+  const [price, setPrice] = React.useState(searchParams.get("price") || "any");
+  const [category, setCategory] = React.useState(
     searchParams.get("categoryId") || "any"
   );
-  const [age, setAge] = useState(searchParams.get("age") || "any");
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [age, setAge] = React.useState(searchParams.get("age") || "any");
+  const [categories, setCategories] = React.useState<Category[]>([]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetch("/api/categories")
       .then((res) => res.json())
       .then(setCategories)
@@ -55,7 +54,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
     Object.entries(updates).forEach(([key, value]) =>
       value ? params.set(key, value) : params.delete(key)
     );
-    router.push(`?${params.toString()}`);
+    router.push(`?${params.toString()}`, { scroll: false });
   };
 
   const handlePriceChange = (value: string) => {
@@ -82,7 +81,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
     setPrice("any");
     setCategory("any");
     setAge("any");
-    router.push(window.location.pathname);
+    router.push(window.location.pathname, { scroll: false });
   };
 
   const allFiltersDefault =

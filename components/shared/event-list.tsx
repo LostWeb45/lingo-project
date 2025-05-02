@@ -40,6 +40,7 @@ export const EventList: React.FC<Props> = (className) => {
   React.useEffect(() => {
     fetchEvents();
   }, [searchParams]);
+  console.log(events);
 
   return (
     <div className={cn("mt-[30px] event-list", className)}>

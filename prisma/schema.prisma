@@ -30,10 +30,11 @@ model User {
     createdAt     DateTime  @default(now())
     updatedAt     DateTime  @updatedAt
 
-    verificationCode VerificationCode?
-    accounts         Account[]
-    sessions         Session[]
-    events           Event[]           @relation("EventCreator")
+    verificationCode    VerificationCode?
+    accounts            Account[]
+    sessions            Session[]
+    events              Event[]           @relation("EventCreator")
+    eventsAsParticipant Event[]           @relation("EventParticipants") // связь с участниками событий
 }
 
 model VerificationCode {
@@ -104,6 +105,8 @@ model Event {
     status   Status @relation(fields: [statusId], references: [id])
 
     images EventImage[]
+
+    participants User[] @relation("EventParticipants")
 }
 
 model EventImage {

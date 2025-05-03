@@ -5,6 +5,7 @@ import { Event } from "@prisma/client";
 export const useEvents = () => {
   const searchParams = useSearchParams();
   const [events, setEvents] = React.useState<Event[]>([]);
+
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<string | null>(null);
 

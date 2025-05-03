@@ -5,10 +5,6 @@ import { AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { Event, User } from "@prisma/client";
 
-// type EventCard extended Event{
-
-// }
-
 interface EventCardProps {
   event: Event;
   createdBy: User;
@@ -35,7 +31,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         <img
           src={
             event.images?.length > 0
-              ? `images/upload/${event.images[0]?.imageUrl}`
+              ? `/images/upload/${event.images[0]?.imageUrl}`
               : "/images/no-image.png"
           }
           alt="event image"

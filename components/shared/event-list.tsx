@@ -1,45 +1,19 @@
+// components/shared/EventList.tsx
+
 "use client";
 
 import React from "react";
-import { useSearchParams } from "next/navigation";
 import { EventCard } from "./event-card";
 import { Skeleton } from "../ui";
 import { cn } from "@/lib/utils";
-import { Event } from "@prisma/client";
+import { useEvents } from "@/hooks/useEvents";
 
 interface Props {
   className?: string;
 }
 
 export const EventList: React.FC<Props> = ({ className }) => {
-  const searchParams = useSearchParams();
-  const [events, setEvents] = React.useState<Event[]>([]);
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);
-  const [error, setError] = React.useState<string | null>(null);
-
-  const fetchEvents = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const queryParams = new URLSearchParams(
-        searchParams.toString()
-      ).toString();
-      const response = await fetch(`/api/events/search?${queryParams}`);
-      if (!response.ok) {
-        throw new Error("Ошибка загрузки событий");
-      }
-      const data = await response.json();
-      setEvents(data);
-    } catch (error) {
-      setError("Произошла ошибка при загрузке событий");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  React.useEffect(() => {
-    fetchEvents();
-  }, [searchParams]);
+  const { events, isLoading, error } = useEvents();
 
   return (
     <div className={cn("mt-[30px] w-full", className)}>

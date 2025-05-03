@@ -5,7 +5,7 @@ interface Props {
   className?: string;
 }
 
-export default async function CategoriesPage() {
+export default function CategoriesPage() {
   return (
     <Container>
       <Title text={"Все события"} className="font-semibold" />

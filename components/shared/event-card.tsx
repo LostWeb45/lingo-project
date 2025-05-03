@@ -3,12 +3,13 @@ import { format, addMinutes, parse } from "date-fns";
 import { ru } from "date-fns/locale";
 import { AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
-import { Event, User } from "@prisma/client";
+import { Event, EventImage, User } from "@prisma/client";
 
 interface EventCardProps {
-  event: Event;
-  createdBy: User;
-  images: string[];
+  event: Event & {
+    images: EventImage[];
+    createdBy: User;
+  };
 }
 
 const getFormattedDateTime = (date: Date, time: string, duration: number) => {
@@ -23,8 +24,6 @@ const getFormattedDateTime = (date: Date, time: string, duration: number) => {
 };
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
-  console.log(event);
-
   return (
     <div className="transition-shadow duration-300 hover:shadow-lg">
       <div className="h-[200px] overflow-hidden">

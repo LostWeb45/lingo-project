@@ -26,21 +26,21 @@ async function main() {
   // Создаем категории с картинками
   await prisma.category.createMany({
     data: [
-      { name: "Концерт", image: "/images/categories-ico/concert.svg" },
-      { name: "Выставка", image: "/images/categories-ico/exhibition.svg" },
-      { name: "Фестиваль", image: "/images/categories-ico/festival.svg" },
-      { name: "Спорт", image: "/images/categories-ico/sport.svg" },
-      { name: "Театр", image: "/images/categories-ico/theater.svg" },
-      { name: "Кино", image: "/images/categories-ico/cinema.svg" },
-      { name: "Образование", image: "/images/categories-ico/education.svg" },
+      { name: "Концерт", image: "concert.svg" },
+      { name: "Выставка", image: "exhibition.svg" },
+      { name: "Фестиваль", image: "festival.svg" },
+      { name: "Спорт", image: "sport.svg" },
+      { name: "Театр", image: "theater.svg" },
+      { name: "Кино", image: "cinema.svg" },
+      { name: "Образование", image: "education.svg" },
       {
         name: "Еда и напитки",
-        image: "/images/categories-ico/food-and-drinks.svg",
+        image: "food-and-drinks.svg",
       },
-      { name: "Кулинария", image: "/images/categories-ico/culinary.svg" },
-      { name: "Туризм", image: "/images/categories-ico/tourism.svg" },
-      { name: "Мода", image: "/images/categories-ico/fashion.svg" },
-      { name: "Бизнес", image: "/images/categories-ico/business.svg" },
+      { name: "Кулинария", image: "culinary.svg" },
+      { name: "Туризм", image: "tourism.svg" },
+      { name: "Мода", image: "fashion.svg" },
+      { name: "Бизнес", image: "business.svg" },
     ],
   });
 
@@ -231,6 +231,25 @@ async function main() {
         statusId: upcomingStatus.id,
       },
     ],
+  });
+  const rockConcert = await prisma.event.findFirstOrThrow({
+    where: { title: "Рок концерт" },
+  });
+  const jazzEvening = await prisma.event.findFirstOrThrow({
+    where: { title: "Джазовый вечер" },
+  });
+
+  await prisma.eventImage.create({
+    data: {
+      imageUrl: "rock-concert.png",
+      eventId: rockConcert.id,
+    },
+  });
+  await prisma.eventImage.create({
+    data: {
+      imageUrl: "jazz-evening.png",
+      eventId: jazzEvening.id,
+    },
   });
 }
 

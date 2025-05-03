@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { CategoryItem } from "./category-item";
 import { Skeleton } from "../ui/skeleton";
-import axios from "axios";
 import { Category } from "@prisma/client";
 
 interface Props {
@@ -27,11 +26,20 @@ export const CategoriesList: React.FC<Props> = ({ limit, className }) => {
 
   useEffect(() => {
     const fetchCategories = async () => {
+      setLoading(true);
+
       try {
-        const res = await axios.get<CategoryVitchCount[]>("/api/categories");
-        setCategories(res.data);
+        const res = await fetch("/api/categories");
+
+        if (!res.ok) {
+          throw new Error("Не удалось загрузить категории");
+        }
+
+        const data = await res.json();
+
+        setCategories(data);
       } catch (error) {
-        console.error("Ошибка загрузки категорий", error);
+        console.error("Ошибка загрузки категорий:", error);
       } finally {
         setLoading(false);
       }

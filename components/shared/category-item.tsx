@@ -18,7 +18,10 @@ export const CategoryItem: React.FC<Props> = ({
   className,
 }) => {
   return (
-    <Link className={cn(className)} href={`/categories/${id}`}>
+    <Link
+      className={cn(className)}
+      href={`/categories/search?categoryId=${id}`}
+    >
       <div className="flex pl-[30px] items-center  h-[105px] bg-[#fafcfe]  hover:bg-[#F5F6FA] transition rounded-[1px]">
         <img src={imageUrl} alt={title} className="w-[55px]" />
         <div className="pl-[45px]">

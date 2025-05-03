@@ -1,3 +1,4 @@
+import { Container, EventList, Filters, Title } from "@/components/shared";
 import React from "react";
 
 interface Props {
@@ -5,5 +6,11 @@ interface Props {
 }
 
 export default async function CategoriesPage() {
-  return <h2>Все события</h2>;
+  return (
+    <Container>
+      <Title text={"Все события"} className="font-semibold" />
+      <Filters className="mt-[27px]" />
+      <EventList />
+    </Container>
+  );
 }

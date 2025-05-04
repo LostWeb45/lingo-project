@@ -1,9 +1,13 @@
+"use client";
+
+import React from "react";
 import { Avatar, Button } from "../ui";
 import { format, addMinutes, parse } from "date-fns";
 import { ru } from "date-fns/locale";
 import { AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { Event, EventImage, User } from "@prisma/client";
+import { useRouter } from "next/navigation";
 
 interface EventCardProps {
   event: Event & {
@@ -24,6 +28,15 @@ const getFormattedDateTime = (date: Date, time: string, duration: number) => {
 };
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
+  const [loading, setLoading] = React.useState(false);
+  const router = useRouter();
+
+  const handleRedirect = () => {
+    setLoading(true);
+    router.push(`events/${event.id}`);
+    setTimeout(() => setLoading(false), 3000);
+  };
+
   return (
     <div className="transition-shadow duration-300 hover:shadow-lg">
       <div className="h-[200px] overflow-hidden">
@@ -68,7 +81,11 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           </div>
         </div>
         <div>
-          <Button className="w-[150px] h-[42px] text-[14px]">
+          <Button
+            className="w-[150px] h-[42px] text-[14px]"
+            onClick={handleRedirect}
+            loading={loading}
+          >
             {event.price ? `${event.price}₽` : "Вступить"}
           </Button>
         </div>

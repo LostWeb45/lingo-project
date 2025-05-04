@@ -46,7 +46,6 @@ export async function GET(request: NextRequest) {
         },
       }),
     },
-    take: 5,
     orderBy: {
       startDate: "asc",
     },

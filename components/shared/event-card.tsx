@@ -2,12 +2,11 @@
 
 import React from "react";
 import { Avatar, Button } from "../ui";
-import { format, addMinutes, parse } from "date-fns";
-import { ru } from "date-fns/locale";
 import { AvatarFallback, AvatarImage } from "../ui/avatar";
 import Link from "next/link";
 import { Event, EventImage, User } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import { getFormattedDateTime } from "@/lib";
 
 interface EventCardProps {
   event: Event & {
@@ -16,24 +15,13 @@ interface EventCardProps {
   };
 }
 
-const getFormattedDateTime = (date: Date, time: string, duration: number) => {
-  const start = parse(time, "HH:mm", date);
-  const end = addMinutes(start, duration);
-
-  const datePart = format(start, "d MMMM", { locale: ru });
-  const startTime = format(start, "HH:mm");
-  const endTime = format(end, "HH:mm");
-
-  return `${datePart} ${startTime}—${endTime}`;
-};
-
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const [loading, setLoading] = React.useState(false);
   const router = useRouter();
 
   const handleRedirect = () => {
     setLoading(true);
-    router.push(`events/${event.id}`);
+    router.push(`/events/${event.id}`);
     setTimeout(() => setLoading(false), 3000);
   };
 

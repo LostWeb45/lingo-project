@@ -1,7 +1,7 @@
 "use server";
 
 import { VerificationUserTemplate } from "@/components/shared/email-templates/verification-user";
-import { sendMail } from "@/lib";
+import { sendMail } from "@/lib/sendMail";
 import { getUserSession } from "@/lib/get-user-session";
 import { prisma } from "@/prisma/prisma-client";
 import { Prisma } from "@prisma/client";

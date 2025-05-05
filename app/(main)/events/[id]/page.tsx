@@ -1,5 +1,12 @@
 import { prisma } from "@/prisma/prisma-client";
 import { Container, Title } from "@/components/shared";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/caruosel";
 
 export default async function EventPage({
   params,
@@ -19,28 +26,47 @@ export default async function EventPage({
 
   if (!event) return <Container>Событие не найдено</Container>;
 
+  const hasMultipleImages = event.images.length > 1;
+
   return (
-    <Container className="space-y-6">
-      <Title text={event.title} />
-      <p>{event.description}</p>
-      <p>Дата: {new Date(event.startDate).toLocaleString()}</p>
-      <p>Цена: {event.price}₽</p>
-      <p>Категория: {event.category.name}</p>
-      <p>Город: {event.town.name}</p>
-      <p>Статус: {event.status.name}</p>
-      <p>Организатор: {event.createdBy.name}</p>
-      {event.images.length > 0 && (
-        <div className="grid grid-cols-2 gap-4">
-          {event.images.map((img, i) => (
-            <img
-              key={i}
-              src={`/images/upload/${img.imageUrl}`}
-              alt={`img-${i}`}
-              className="rounded-xl"
-            />
-          ))}
-        </div>
-      )}
+    <Container className="flex justify-between gap-[30px]">
+      <div className="w-[65%]">
+        {event.images.length > 0 && (
+          <Carousel>
+            <CarouselContent>
+              {event.images.map((img, i) => (
+                <CarouselItem key={i}>
+                  <div className="carousel-image-container relative overflow-hidden">
+                    <img
+                      src={`/images/upload/${img.imageUrl}`}
+                      alt={`img-${i}`}
+                      className="carousel-image object-cover w-full h-full transition-all duration-300 transform hover:scale-105"
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            {hasMultipleImages && (
+              <>
+                <CarouselPrevious className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white bg-black rounded-full p-2 hover:bg-opacity-50 z-10" />
+                <CarouselNext className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white bg-black rounded-full p-2 hover:bg-opacity-50 z-10" />
+              </>
+            )}
+          </Carousel>
+        )}
+
+        <Title text={event.title} />
+      </div>
+
+      <div className="w-[35%]">
+        <p>{event.description}</p>
+        <p>Дата: {new Date(event.startDate).toLocaleString()}</p>
+        <p>Цена: {event.price}₽</p>
+        <p>Категория: {event.category.name}</p>
+        <p>Город: {event.town.name}</p>
+        <p>Статус: {event.status.name}</p>
+        <p>Организатор: {event.createdBy.name}</p>
+      </div>
     </Container>
   );
 }

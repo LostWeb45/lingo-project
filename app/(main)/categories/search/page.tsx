@@ -33,7 +33,7 @@ export default function CategoriesPage() {
   return (
     <Container>
       {loading ? (
-        <Skeleton className="h-10 w-[500px] rounded-md mb-4" />
+        <Skeleton className="h-[48px] w-[500px] rounded-md mb-4" />
       ) : (
         <Title
           text={`Все события по теме ${categoryName}`}

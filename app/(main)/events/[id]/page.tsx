@@ -64,25 +64,17 @@ export default async function EventPage({
       >
         <div className="flex flex-col gap-[15px] w-[63%]">
           <Title text={event.title} className="font-bold text-[33px]" />
-          <div className="flex justify-between items-start gap-4">
-            <div className="flex flex-col items-start gap-2">
-              <p className=" [font-family:var(--font-montserrat)] font-bold text-[17px] opacity-60 text-[#1D3C6A]">
-                {event.age}+
-              </p>
-              <hr className="w-[200px] mt-1" />
-            </div>
-            <div className="flex flex-col items-end gap-2">
-              <p className="[font-family:var(--font-montserrat)] font-bold text-[17px] opacity-60 text-[#1D3C6A]">
-                {event.category.name}
-              </p>
-              <hr className="w-[200px] mt-1" />
-            </div>
+          <div className="flex flex-col items-start gap-2">
+            <p className=" [font-family:var(--font-montserrat)] font-bold text-[17px] opacity-60 text-[#1D3C6A]">
+              {event.age}+
+            </p>
+            <hr className="w-[30%] mt-1" />
           </div>
           <p className="text-[19px]">{event.description}</p>
         </div>
 
-        <div className="w-[37%] mt-[8px]">
-          <div className="flex flex-col gap-3">
+        <div className="w-[37%] mt-[7px]">
+          <div className="flex flex-col gap-4">
             <div className="flex justify-between items-center opacity-90">
               <p className="text-[21px] font-medium">
                 {getFormattedDateTime(
@@ -96,14 +88,14 @@ export default async function EventPage({
               </p>
             </div>
             <div className="flex items-center">
-              <p className="text-[18px] opacity-90 font [font-family:var(--font-montserrat)]">
-                {event.place}
-              </p>
               <MapPin
                 width={24}
                 height={24}
-                className="ml-[10px] min-w-[24px] text-[#1D3C6A] opacity-70"
+                className="mr-[6px] min-w-[24px] text-[#1D3C6A] opacity-70"
               />
+              <p className="text-[18px] opacity-90 font [font-family:var(--font-montserrat)]">
+                {event.place}
+              </p>
             </div>
           </div>
           {/* <div>участники</div> */}

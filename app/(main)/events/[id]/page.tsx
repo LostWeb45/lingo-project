@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/caruosel";
 import { getFormattedDateTime } from "@/lib";
 import { cn } from "@/lib/utils";
+import { MapPin } from "lucide-react";
 
 export default async function EventPage({
   params,
@@ -81,9 +82,9 @@ export default async function EventPage({
         </div>
 
         <div className="w-[37%] mt-[8px]">
-          <div>
+          <div className="flex flex-col gap-3">
             <div className="flex justify-between items-center opacity-90">
-              <p className="text-[22px] font-medium">
+              <p className="text-[21px] font-medium">
                 {getFormattedDateTime(
                   new Date(event.startDate),
                   event.startTime,
@@ -94,8 +95,18 @@ export default async function EventPage({
                 {event.price ? `Средняя цена: ${event.price}₽` : "бесплатно"}
               </p>
             </div>
+            <div className="flex items-center">
+              <p className="text-[18px] opacity-90 font [font-family:var(--font-montserrat)]">
+                {event.place}
+              </p>
+              <MapPin
+                width={24}
+                height={24}
+                className="ml-[10px] min-w-[24px] text-[#1D3C6A] opacity-70"
+              />
+            </div>
           </div>
-          <div>участники</div>
+          {/* <div>участники</div> */}
         </div>
       </div>
     </Container>

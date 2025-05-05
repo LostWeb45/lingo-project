@@ -8,6 +8,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/caruosel";
 import { getFormattedDateTime } from "@/lib";
+import { cn } from "@/lib/utils";
 
 export default async function EventPage({
   params,
@@ -54,34 +55,47 @@ export default async function EventPage({
           )}
         </Carousel>
       )}
-      <div className="flex justify-between gap-[30px]">
-        <div className="flex flex-col gap-[15px] w-[65%]">
-          <Title text={event.title} className="font-semibold" />
-          <p className="font-bold text-[17px] opacity-50 text-[#1D3C6A]">
-            {event.age}+
-          </p>
-          <hr className="w-[300px]" />
-          <p>{event.description}</p>
+      <div
+        className={cn(
+          "flex justify-between gap-[30px]",
+          event.images.length > 0 ? "mt-[20px]" : ""
+        )}
+      >
+        <div className="flex flex-col gap-[15px] w-[63%]">
+          <Title text={event.title} className="font-bold text-[33px]" />
+          <div className="flex justify-between items-start gap-4">
+            <div className="flex flex-col items-start gap-2">
+              <p className=" [font-family:var(--font-montserrat)] font-bold text-[17px] opacity-60 text-[#1D3C6A]">
+                {event.age}+
+              </p>
+              <hr className="w-[200px] mt-1" />
+            </div>
+            <div className="flex flex-col items-end gap-2">
+              <p className="[font-family:var(--font-montserrat)] font-bold text-[17px] opacity-60 text-[#1D3C6A]">
+                {event.category.name}
+              </p>
+              <hr className="w-[200px] mt-1" />
+            </div>
+          </div>
+          <p className="text-[19px]">{event.description}</p>
         </div>
 
-        <div className="w-[35%] mt-[15px]">
+        <div className="w-[37%] mt-[8px]">
           <div>
-            <p className="text-[22px] font-medium">Подробности</p>
-            <div>
-              <p>
-                Дата и время:{" "}
+            <div className="flex justify-between items-center opacity-90">
+              <p className="text-[22px] font-medium">
                 {getFormattedDateTime(
                   new Date(event.startDate),
                   event.startTime,
                   event.duration
                 )}
               </p>
-              <p>Цена: {event.price}₽</p>
-              <p>Возраст: {event.age}+</p>
-              <p>Категория: {event.category.name}</p>
+              <p className="text-[23px] font-medium opacity-90">
+                {event.price ? `Средняя цена: ${event.price}₽` : "бесплатно"}
+              </p>
             </div>
           </div>
-          <div></div>
+          <div>участники</div>
         </div>
       </div>
     </Container>

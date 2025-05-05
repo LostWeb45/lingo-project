@@ -41,7 +41,7 @@ export const AuthModal: React.FC<Props> = ({ open, onClose }) => {
             }
           >
             <img
-              src="./images/Yandex_icon.svg"
+              src="/images/Yandex_icon.svg"
               className="w-[35px] h-[35px]"
               alt="yandex"
             />
@@ -56,7 +56,7 @@ export const AuthModal: React.FC<Props> = ({ open, onClose }) => {
               })
             }
           >
-            <img src="./images/vk.svg" alt="vk" className="w-[30px] h-[30px]" />
+            <img src="/images/vk.svg" alt="vk" className="w-[30px] h-[30px]" />
           </Button>
         </div>
         <Button

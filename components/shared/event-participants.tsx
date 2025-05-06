@@ -117,7 +117,7 @@ export const EventParticipants: React.FC<Props> = ({
           <Button
             onClick={handleJoin}
             disabled={isPending}
-            className="w-[150px] h-[45px]"
+            className="w-[200px] h-[50px] text-[17px]"
           >
             {isPending ? "Вступаю..." : "Вступить"}
           </Button>

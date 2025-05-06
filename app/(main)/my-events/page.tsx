@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import React from "react";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 interface Event {
   id: number;
@@ -13,14 +15,21 @@ interface Event {
 }
 
 export default function MyEventsPage() {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [isPending, startTransition] = useTransition();
+  const [events, setEvents] = React.useState<Event[]>([]);
+  const [isPending, startTransition] = React.useTransition();
+  const router = useRouter();
+  const { data: session, status } = useSession();
 
-  useEffect(() => {
-    fetch("/api/user/participated-events")
-      .then((res) => res.json())
-      .then((data) => setEvents(data));
-  }, []);
+  React.useEffect(() => {
+    if (status === "loading") return;
+    if (!session) {
+      router.push("/");
+    } else {
+      fetch("/api/user/participated-events")
+        .then((res) => res.json())
+        .then((data) => setEvents(data));
+    }
+  }, [status, session, router]);
 
   const handleLeave = (eventId: number) => {
     startTransition(async () => {

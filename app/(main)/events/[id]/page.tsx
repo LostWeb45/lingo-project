@@ -19,8 +19,10 @@ export default async function EventPage({
 }: {
   params: { id: string };
 }) {
+  const { id } = await params;
+
   const event = await prisma.event.findUnique({
-    where: { id: parseInt(params.id) },
+    where: { id: parseInt(id) },
     include: {
       createdBy: true,
       category: true,
@@ -111,6 +113,7 @@ export default async function EventPage({
           <EventParticipants
             eventId={event.id}
             initialParticipants={event.participants}
+            createdBy={event.createdBy}
           />
         </div>
       </div>

@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { User } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
-import { Avatar } from "../ui";
+import { Avatar, Button } from "../ui";
 import { AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Crown } from "lucide-react";
 
@@ -13,6 +13,7 @@ interface Props {
   eventId: number;
   initialParticipants: User[];
   createdBy: User;
+  participantsCount: number;
   className?: string;
 }
 
@@ -21,6 +22,7 @@ export const EventParticipants: React.FC<Props> = ({
   initialParticipants,
   className,
   createdBy,
+  participantsCount,
 }) => {
   const { data: session } = useSession();
   const currentUser = session?.user as User | undefined;
@@ -59,9 +61,19 @@ export const EventParticipants: React.FC<Props> = ({
 
   return (
     <div className={cn("mt-4", className)}>
-      <h3 className="text-[20px] font-semibold mb-2">Участники:</h3>
+      <div className="flex justify-between items-center">
+        <h3 className="text-[21px] font-semibold  [font-family:var(--font-montserrat)]">
+          Участники:
+        </h3>
+        <p className="[font-family:var(--font-montserrat)] opacity-70">
+          Осталось {participantsCount - participants.length}
+        </p>
+      </div>
 
-      <ul className="flex flex-col gap-2">
+      <div
+        className="flex flex-col gap-2 overflow-y-auto max-h-[350px] scrollbar-thin scrollbar-thumb-[#1D3C6A] mt-4"
+        style={{ scrollbarWidth: "thin", scrollbarColor: "#1D3C6A #e0e0e0" }}
+      >
         {participants.length === 0 ? (
           <p className="text-[16px] text-gray-500">Пока никого нет</p>
         ) : (
@@ -70,11 +82,11 @@ export const EventParticipants: React.FC<Props> = ({
 
             return (
               <div
-                className="w-full h-[80px] bg-[#f5f6fa] px-[19px] rounded-[2px] gap-4 flex items-center justify-between"
+                className="w-full min-h-[80px] h-[80px] bg-[#f5f6fa] px-[19px] rounded-[2px] gap-4 flex items-center justify-between"
                 key={user.id}
               >
                 <div className="flex items-center gap-4">
-                  <Avatar className="cursor-pointer w-[50px] h-[50px] hover:opacity-90 transition-opacity">
+                  <Avatar className="cursor-pointer w-[50px] h-[50px] hover:opacity-90 transition-opacity text-[20px]">
                     <AvatarImage src={user.image ?? undefined} />
                     <AvatarFallback className="bg-white">
                       {user.name?.charAt(0) ?? "П"}
@@ -91,20 +103,17 @@ export const EventParticipants: React.FC<Props> = ({
             );
           })
         )}
-      </ul>
-
+      </div>
       {!isJoined ? (
-        <button
+        <Button
           onClick={handleJoin}
           disabled={isPending}
-          className="mt-4 px-4 py-2 rounded-md bg-[#1D3C6A] text-white hover:bg-opacity-90 transition disabled:opacity-60"
+          className="w-[150px] h-[45px]"
         >
           {isPending ? "Вступаю..." : "Вступить"}
-        </button>
+        </Button>
       ) : (
-        <p className="mt-4 text-green-600 font-semibold">
-          Вы участвуете в событии 🎉
-        </p>
+        <p className="text-green-600 font-semibold">Вы участвуете в событии</p>
       )}
     </div>
   );

@@ -13,7 +13,6 @@ import { MapPin } from "lucide-react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/constants/auth-options";
 import { EventParticipants } from "@/components/shared/event-participants";
-
 export default async function EventPage({
   params,
 }: {
@@ -81,7 +80,10 @@ export default async function EventPage({
             </p>
             <hr className="w-[30%] mt-1" />
           </div>
-          <p className="text-[19px]">{event.description}</p>
+          <div className="text-[19px]">
+            {" "}
+            <p>{event.description}</p>
+          </div>
         </div>
 
         <div className="w-[37%] mt-[7px]">
@@ -113,6 +115,7 @@ export default async function EventPage({
           <EventParticipants
             eventId={event.id}
             initialParticipants={event.participants}
+            participantsCount={event.participantsCount}
             createdBy={event.createdBy}
           />
         </div>

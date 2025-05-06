@@ -10,6 +10,9 @@ import {
 import { getFormattedDateTime } from "@/lib";
 import { cn } from "@/lib/utils";
 import { MapPin } from "lucide-react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/constants/auth-options";
+import { EventParticipants } from "@/components/shared/event-participants";
 
 export default async function EventPage({
   params,
@@ -24,8 +27,14 @@ export default async function EventPage({
       town: true,
       status: true,
       images: true,
+      participants: true,
     },
   });
+
+  const session = await getServerSession(authOptions);
+  const currentUser = session?.user;
+
+  console.log(event);
 
   if (!event) return <Container>Событие не найдено</Container>;
 
@@ -98,7 +107,11 @@ export default async function EventPage({
               </p>
             </div>
           </div>
-          {/* <div>участники</div> */}
+          {/* Участники */}
+          <EventParticipants
+            eventId={event.id}
+            initialParticipants={event.participants}
+          />
         </div>
       </div>
     </Container>

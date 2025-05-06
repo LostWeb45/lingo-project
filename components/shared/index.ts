@@ -15,4 +15,5 @@ export { AccordionMain } from "./accordion-main";
 export { CategoryItem } from "./category-item";
 export { EventCard } from "./event-card";
 export { Footer } from "./footer";
+export { EventParticipants } from "./event-participants";
 export * from "./modals";

@@ -13,6 +13,7 @@ interface EventCardProps {
   event: Event & {
     images: EventImage[];
     createdBy: User;
+    participants: User[];
   };
 }
 
@@ -21,7 +22,9 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const [joining, startTransition] = React.useTransition();
   const [joined, setJoined] = React.useState(false);
   const { data: session } = useSession();
+  const participantsCount = event.participants ? event.participants.length : 0;
   const router = useRouter();
+  console.log(event.participants);
 
   const handleCardClick = () => {
     router.push(`/events/${event.id}`);
@@ -98,27 +101,28 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           </div>
         </div>
 
-        <div className="flex gap-2">
-          {event.price ? (
-            <Button
-              className="w-[150px] h-[42px] text-[14px]"
-              onClick={handleCardClick}
-              loading={loading}
-            >
-              {event.price}₽
-            </Button>
-          ) : (
-            <Button
-              className={`w-[150px] h-[42px] text-[14px] ${
-                joined ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-              onClick={handleJoin}
-              disabled={joined || joining}
-            >
-              {joined ? "Вы участвуете" : "Вступить"}
-            </Button>
-          )}
-        </div>
+        {participantsCount >= event.participantsCount ? (
+          <Button
+            className="w-[150px] h-[42px] text-[14px] opacity-50 cursor-not-allowed"
+            disabled
+          >
+            Места кончились
+          </Button>
+        ) : (
+          <Button
+            className={`w-[150px] h-[42px] text-[14px] ${
+              joined ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            onClick={handleJoin}
+            disabled={joined || joining}
+          >
+            {event.price
+              ? `${event.price}₽`
+              : joined
+              ? "Вы участвуете"
+              : "Вступить"}
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -50,6 +50,7 @@ export async function GET(request: NextRequest) {
       startDate: "asc",
     },
     include: {
+      participants: true,
       createdBy: true,
       category: true,
       town: true,

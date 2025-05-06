@@ -1,5 +1,3 @@
-// components/shared/EventList.tsx
-
 "use client";
 
 import React from "react";
@@ -37,7 +35,11 @@ export const EventList: React.FC<Props> = ({ className }) => {
       ) : events.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-5">
           {events.map((event) => (
-            <EventCard key={event.id} event={event} />
+            <EventCard
+              key={event.id}
+              event={event}
+              participants={event.participants}
+            />
           ))}
         </div>
       ) : (

@@ -32,8 +32,8 @@ export const EventParticipants: React.FC<Props> = ({
 
   if (!currentUser) {
     return (
-      <p className="mt-4 text-[16px] text-gray-500">
-        Только авторизованные пользователи могут вступать.
+      <p className="mt-[50px] text-[18px] text-[#1D3C6A] [font-family:var(--font-montserrat)] font-medium opacity-70">
+        Для участия и просмотра пройдите регистрацию
       </p>
     );
   }
@@ -62,14 +62,13 @@ export const EventParticipants: React.FC<Props> = ({
   return (
     <div className={cn("mt-4", className)}>
       <div className="flex justify-between items-center">
-        <h3 className="text-[21px] font-semibold  [font-family:var(--font-montserrat)]">
+        <h3 className="text-[21px] font-semibold [font-family:var(--font-montserrat)]">
           Участники:
         </h3>
         <p className="[font-family:var(--font-montserrat)] opacity-70">
           Осталось {participantsCount - participants.length}
         </p>
       </div>
-
       <div
         className="flex flex-col gap-2 overflow-y-auto max-h-[350px] scrollbar-thin scrollbar-thumb-[#1D3C6A] mt-4"
         style={{ scrollbarWidth: "thin", scrollbarColor: "#1D3C6A #e0e0e0" }}
@@ -104,17 +103,26 @@ export const EventParticipants: React.FC<Props> = ({
           })
         )}
       </div>
-      {!isJoined ? (
-        <Button
-          onClick={handleJoin}
-          disabled={isPending}
-          className="w-[150px] h-[45px]"
-        >
-          {isPending ? "Вступаю..." : "Вступить"}
-        </Button>
-      ) : (
-        <p className="text-green-600 font-semibold">Вы участвуете в событии</p>
-      )}
+
+      <div className="mt-4">
+        {isJoined ? (
+          <p className="text-green-600 text-[20px] [font-family:var(--font-montserrat)] font-medium">
+            Вы участвуете в событии
+          </p>
+        ) : participants.length >= participantsCount ? (
+          <p className="text-red-600 text-[20px] [font-family:var(--font-montserrat)] font-medium">
+            Места закончились
+          </p>
+        ) : (
+          <Button
+            onClick={handleJoin}
+            disabled={isPending}
+            className="w-[150px] h-[45px]"
+          >
+            {isPending ? "Вступаю..." : "Вступить"}
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

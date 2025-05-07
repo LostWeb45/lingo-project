@@ -25,6 +25,8 @@ interface Props {
 export const ProfileForm: React.FC<Props> = ({ data }) => {
   const { data: session } = useSession();
   const [isYandexProvider, setIsYandexProvider] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState(data.image || "");
 
   useEffect(() => {
     if (session?.user?.email) {
@@ -41,6 +43,48 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
       confirmPassword: "",
     },
   });
+
+  const uploadImage = async () => {
+    if (!selectedImage) return;
+
+    const formData = new FormData();
+    formData.append("avatar", selectedImage);
+
+    try {
+      // Отправка изображения на микросервис
+      const response = await fetch("http://localhost:4000/upload/avatar", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Ошибка при загрузке изображения");
+      }
+
+      const data = await response.json();
+      const imageUrl = `http://localhost:4000${data.url}`; // Формируем полный URL
+
+      // Отправка полного URL изображения в Next.js API для сохранения в базе данных
+      const updateUserAvatarResponse = await fetch("/api/user/update-avatar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          avatarUrl: imageUrl, // Путь к изображению
+        }),
+      });
+
+      if (updateUserAvatarResponse.ok) {
+        toast.success("Аватар успешно обновлен!");
+      } else {
+        toast.error("Не удалось обновить аватар в базе данных.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Ошибка при загрузке аватара.", { icon: "❌" });
+    }
+  };
 
   const handleSendVerification = async () => {
     try {
@@ -81,11 +125,22 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
         </div>
         <div className="flex flex-col items-center mb-2">
           <Avatar className="w-[90px] h-[90px] mb-2">
-            <AvatarImage src={data.image ?? undefined} />
+            <AvatarImage src={imageUrl ?? null} />
             <AvatarFallback className="text-[28px]">
               {getFirstName(data.name)?.charAt(0).toUpperCase() ?? "П"}
             </AvatarFallback>
           </Avatar>
+
+          <div>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setSelectedImage(e.target.files?.[0] || null)}
+            />
+            <Button onClick={uploadImage} className="mt-2">
+              Загрузить аватар
+            </Button>
+          </div>
         </div>
 
         <FormProvider {...form}>

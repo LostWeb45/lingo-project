@@ -18,7 +18,6 @@ interface EventCardProps {
 }
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
-  const [loading, setLoading] = React.useState(false);
   const [joining, startTransition] = React.useTransition();
   const [joined, setJoined] = React.useState(false);
   const { data: session } = useSession();
@@ -115,6 +114,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             }`}
             onClick={handleJoin}
             disabled={joined || joining}
+            loading={joining}
           >
             {event.price
               ? `${event.price}₽`

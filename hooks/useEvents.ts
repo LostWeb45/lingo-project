@@ -1,10 +1,18 @@
 import { useSearchParams } from "next/navigation";
 import React from "react";
-import { Event } from "@prisma/client";
+import { Event, EventImage, User } from "@prisma/client";
+
+interface EventWithInfo {
+  event: Event & {
+    images: EventImage[];
+    createdBy: User;
+    participants: User[];
+  };
+}
 
 export const useEvents = () => {
   const searchParams = useSearchParams();
-  const [events, setEvents] = React.useState<Event[]>([]);
+  const [events, setEvents] = React.useState<EventWithInfo[]>([]);
 
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<string | null>(null);

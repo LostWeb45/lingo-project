@@ -86,7 +86,10 @@ export const EventParticipants: React.FC<Props> = ({
               >
                 <div className="flex items-center gap-4">
                   <Avatar className="cursor-pointer w-[50px] h-[50px] hover:opacity-90 transition-opacity text-[20px]">
-                    <AvatarImage src={user.image ?? undefined} />
+                    <AvatarImage
+                      src={user.image ?? undefined}
+                      className="w-full h-full object-cover rounded-full"
+                    />
                     <AvatarFallback className="bg-white">
                       {user.name?.charAt(0) ?? "П"}
                     </AvatarFallback>

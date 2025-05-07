@@ -101,6 +101,7 @@ export const authOptions: NextAuthOptions = {
           token.role = findUser.role;
           token.name = findUser.name;
           token.provider = account.provider;
+          token.image = findUser.image;
         }
       }
 

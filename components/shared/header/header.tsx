@@ -81,7 +81,10 @@ export const Header: React.FC<Props> = ({ initSession, className }) => {
                 {getFirstName(session.user.name)}
               </p>
               <Avatar className="cursor-pointer w-[50px] h-[50px] hover:opacity-90 transition-opacity">
-                <AvatarImage src={session.user.image ?? undefined} />
+                <AvatarImage
+                  src={session.user.image ?? undefined}
+                  className="w-full h-full object-cover rounded-full"
+                />
                 <AvatarFallback>
                   {getFirstName(session.user.name)?.charAt(0) ?? "П"}
                 </AvatarFallback>

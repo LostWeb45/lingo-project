@@ -7,7 +7,6 @@ import { authOptions } from "@/constants/auth-options";
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
 
-  // Проверяем, есть ли сессия и авторизован ли пользователь
   if (!session?.user?.id) {
     return NextResponse.json(
       { error: "Пользователь не авторизован" },
@@ -15,10 +14,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Получаем URL изображения из тела запроса
   const { avatarUrl } = await req.json();
 
-  // Проверяем, что URL изображения был передан
   if (!avatarUrl) {
     return NextResponse.json(
       { error: "URL изображения не предоставлен" },
@@ -27,13 +24,11 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Обновляем информацию о пользователе в базе данных
     const updatedUser = await prisma.user.update({
       where: { id: Number(session.user.id) },
       data: { image: avatarUrl },
     });
 
-    // Возвращаем обновленного пользователя в ответе
     return NextResponse.json(updatedUser, { status: 200 });
   } catch (error) {
     console.error("Ошибка при обновлении аватара:", error);

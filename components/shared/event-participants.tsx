@@ -121,8 +121,9 @@ export const EventParticipants: React.FC<Props> = ({
             onClick={handleJoin}
             disabled={isPending}
             className="w-[200px] h-[50px] text-[17px]"
+            loading={isPending}
           >
-            {isPending ? "Вступаю..." : "Вступить"}
+            Вступить
           </Button>
         )}
       </div>

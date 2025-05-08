@@ -171,7 +171,13 @@ export const authOptions: NextAuthOptions = {
         token.role = user.role;
         token.provider = account.provider;
       }
+      const updatedUser = await prisma.user.findUnique({
+        where: { id: Number(token.id) },
+      });
 
+      if (updatedUser) {
+        token.image = updatedUser.image;
+      }
       return token;
     },
 

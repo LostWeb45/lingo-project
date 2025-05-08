@@ -178,6 +178,7 @@ export const authOptions: NextAuthOptions = {
       if (updatedUser) {
         token.image = updatedUser.image;
       }
+
       return token;
     },
 

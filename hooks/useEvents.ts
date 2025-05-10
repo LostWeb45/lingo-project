@@ -2,7 +2,7 @@ import { EventImage, User } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
 import React from "react";
 
-const PAGE_SIZE = 7;
+const PAGE_SIZE = 3;
 
 type EventWithInfo = Event & {
   images: EventImage[];
@@ -31,10 +31,11 @@ export const useEvents = () => {
       const response = await fetch(`/api/events/search?${query.toString()}`);
       if (!response.ok) throw new Error("Ошибка загрузки событий");
 
-      const data = await response.json();
-      setEvents(reset ? data : [...events, ...data]);
+      const { events: newEvents, hasMore: newHasMore } = await response.json();
+
+      setEvents(reset ? newEvents : [...events, ...newEvents]);
       setOffset(reset ? PAGE_SIZE : offset + PAGE_SIZE);
-      setHasMore(data.length > 0);
+      setHasMore(newEvents.length === PAGE_SIZE && newHasMore);
     } catch {
       setError("Произошла ошибка при загрузке событий");
     } finally {

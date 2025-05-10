@@ -43,16 +43,34 @@ export async function GET(request: NextRequest) {
       images: true,
     },
     skip: offset,
-    take: limit,
+    take: limit * 2,
+  });
+
+  const rawEvents = await prisma.event.findMany({
+    where: filters,
+    orderBy: { startDate: "asc" },
+    include: {
+      participants: true,
+      createdBy: true,
+      category: true,
+      town: true,
+      status: true,
+      images: true,
+    },
+    skip: offset,
+    take: limit * 2,
   });
 
   const filteredEvents = availableOnly
-    ? events.filter(
+    ? rawEvents.filter(
         (event) =>
           !event.participantsCount ||
           event.participants.length < event.participantsCount
       )
-    : events;
+    : rawEvents;
 
-  return NextResponse.json(filteredEvents);
+  return NextResponse.json({
+    events: filteredEvents.slice(0, limit),
+    hasMore: rawEvents.length > limit,
+  });
 }

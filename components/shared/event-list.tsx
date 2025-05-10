@@ -2,7 +2,7 @@
 
 import React from "react";
 import { EventCard } from "./event-card";
-import { Skeleton } from "../ui";
+import { Button, Skeleton } from "../ui";
 import { cn } from "@/lib/utils";
 import { useEvents } from "@/hooks/useEvents";
 
@@ -45,12 +45,13 @@ export const EventList: React.FC<Props> = ({ className }) => {
           </div>
           {hasMore && (
             <div className="flex justify-center mt-6">
-              <button
+              <Button
+                className="w-[180px] h-[45px] text-[16px] text-[#3A5F9D]"
+                variant={"outline"}
                 onClick={() => fetchEvents(false)}
-                className="px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition"
               >
                 Показать ещё
-              </button>
+              </Button>
             </div>
           )}
         </>

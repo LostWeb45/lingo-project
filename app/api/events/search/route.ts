@@ -9,6 +9,8 @@ export async function GET(request: NextRequest) {
   const townId = request.nextUrl.searchParams.get("townId");
   const statusId = request.nextUrl.searchParams.get("statusId");
   const age = request.nextUrl.searchParams.get("age");
+  const availableOnly =
+    request.nextUrl.searchParams.get("availableOnly") === "true";
 
   const minPriceInt = minPrice ? parseInt(minPrice) : undefined;
   const maxPriceInt = maxPrice ? parseInt(maxPrice) : undefined;
@@ -17,6 +19,7 @@ export async function GET(request: NextRequest) {
   const statusIdInt = statusId ? parseInt(statusId) : undefined;
   const ageInt = age ? parseInt(age) : undefined;
 
+  // Сначала получаем все подходящие события
   const events = await prisma.event.findMany({
     where: {
       title: {
@@ -59,5 +62,13 @@ export async function GET(request: NextRequest) {
     },
   });
 
-  return NextResponse.json(events);
+  const filteredEvents = availableOnly
+    ? events.filter(
+        (event) =>
+          event.participantsCount === null ||
+          event.participants.length < event.participantsCount
+      )
+    : events;
+
+  return NextResponse.json(filteredEvents);
 }

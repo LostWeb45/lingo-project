@@ -34,7 +34,7 @@ model User {
     accounts            Account[]
     sessions            Session[]
     events              Event[]           @relation("EventCreator")
-    eventsAsParticipant Event[]           @relation("EventParticipants") // связь с участниками событий
+    eventsAsParticipant Event[]           @relation("EventParticipants")
 }
 
 model VerificationCode {

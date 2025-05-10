@@ -1,5 +1,6 @@
 import { prisma } from "@/prisma/prisma-client";
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 
 export async function GET(request: NextRequest) {
   const query = request.nextUrl.searchParams.get("query") || "";
@@ -11,47 +12,28 @@ export async function GET(request: NextRequest) {
   const age = request.nextUrl.searchParams.get("age");
   const availableOnly =
     request.nextUrl.searchParams.get("availableOnly") === "true";
+  const limit = parseInt(request.nextUrl.searchParams.get("limit") || "9");
+  const offset = parseInt(request.nextUrl.searchParams.get("offset") || "0");
 
-  const minPriceInt = minPrice ? parseInt(minPrice) : undefined;
-  const maxPriceInt = maxPrice ? parseInt(maxPrice) : undefined;
-  const categoryIdInt = categoryId ? parseInt(categoryId) : undefined;
-  const townIdInt = townId ? parseInt(townId) : undefined;
-  const statusIdInt = statusId ? parseInt(statusId) : undefined;
-  const ageInt = age ? parseInt(age) : undefined;
+  const filters = {
+    title: {
+      contains: query,
+      mode: "insensitive" as Prisma.QueryMode,
+    },
+    archive: false,
+    ...(minPrice &&
+      maxPrice && {
+        price: { gte: parseInt(minPrice), lte: parseInt(maxPrice) },
+      }),
+    ...(categoryId && { categoryId: parseInt(categoryId) }),
+    ...(townId && { townId: parseInt(townId) }),
+    ...(statusId && { statusId: parseInt(statusId) }),
+    ...(age && { age: { lte: parseInt(age) } }),
+  };
 
-  // Сначала получаем все подходящие события
   const events = await prisma.event.findMany({
-    where: {
-      title: {
-        contains: query,
-        mode: "insensitive",
-      },
-      archive: false,
-      ...(minPriceInt &&
-        maxPriceInt && {
-          price: {
-            gte: minPriceInt,
-            lte: maxPriceInt,
-          },
-        }),
-      ...(categoryIdInt && {
-        categoryId: categoryIdInt,
-      }),
-      ...(townIdInt && {
-        townId: townIdInt,
-      }),
-      ...(statusIdInt && {
-        statusId: statusIdInt,
-      }),
-      ...(ageInt && {
-        age: {
-          lte: ageInt,
-        },
-      }),
-    },
-    orderBy: {
-      startDate: "asc",
-    },
+    where: filters,
+    orderBy: { startDate: "asc" },
     include: {
       participants: true,
       createdBy: true,
@@ -60,12 +42,14 @@ export async function GET(request: NextRequest) {
       status: true,
       images: true,
     },
+    skip: offset,
+    take: limit,
   });
 
   const filteredEvents = availableOnly
     ? events.filter(
         (event) =>
-          event.participantsCount === null ||
+          !event.participantsCount ||
           event.participants.length < event.participantsCount
       )
     : events;

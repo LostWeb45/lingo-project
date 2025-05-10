@@ -1,29 +1,27 @@
+import { EventImage, User } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
 import React from "react";
-import { Event, EventImage, User } from "@prisma/client";
 
-interface EventWithInfo {
-  event: Event & {
-    images: EventImage[];
-    createdBy: User;
-    participants: User[];
-  };
-}
+const PAGE_SIZE = 7;
 
-const PAGE_SIZE = 9;
+type EventWithInfo = Event & {
+  images: EventImage[];
+  createdBy: User;
+  participants: User[];
+};
 
 export const useEvents = () => {
   const searchParams = useSearchParams();
   const [events, setEvents] = React.useState<EventWithInfo[]>([]);
   const [offset, setOffset] = React.useState<number>(0);
   const [hasMore, setHasMore] = React.useState<boolean>(true);
-
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string | null>(null);
 
   const fetchEvents = async (reset = false) => {
     setIsLoading(true);
     setError(null);
+
     try {
       const query = new URLSearchParams(searchParams.toString());
       query.set("limit", PAGE_SIZE.toString());
@@ -34,16 +32,10 @@ export const useEvents = () => {
       if (!response.ok) throw new Error("Ошибка загрузки событий");
 
       const data = await response.json();
-      if (reset) {
-        setEvents(data);
-        setOffset(PAGE_SIZE);
-      } else {
-        setEvents((prev) => [...prev, ...data]);
-        setOffset((prev) => prev + PAGE_SIZE);
-      }
-
-      if (data.length < PAGE_SIZE) setHasMore(false);
-    } catch (error) {
+      setEvents(reset ? data : [...events, ...data]);
+      setOffset(reset ? PAGE_SIZE : offset + PAGE_SIZE);
+      setHasMore(data.length > 0);
+    } catch {
       setError("Произошла ошибка при загрузке событий");
     } finally {
       setIsLoading(false);
@@ -56,11 +48,5 @@ export const useEvents = () => {
     fetchEvents(true);
   }, [searchParams]);
 
-  const loadMore = () => {
-    if (!isLoading && hasMore) {
-      fetchEvents();
-    }
-  };
-
-  return { events, isLoading, error, loadMore, hasMore };
+  return { events, isLoading, error, fetchEvents, hasMore };
 };

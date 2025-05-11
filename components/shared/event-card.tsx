@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { getFormattedDateTime } from "@/lib";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import { ParticipantsList } from "./part-list";
 
 interface EventCardProps {
   event: Event & {
@@ -18,16 +19,23 @@ interface EventCardProps {
 }
 
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
-  const [joining, startTransition] = React.useTransition();
-  const [joined, setJoined] = React.useState(false);
   const { data: session } = useSession();
-  const participantsCount = event.participants ? event.participants.length : 0;
+  const [joining, startTransition] = React.useTransition();
+  const [participants, setParticipants] = React.useState<User[]>(
+    event.participants
+  );
+  const participantsCount = participants.length;
+
+  const joined = React.useMemo(() => {
+    if (!session?.user) return false;
+    return participants.some((p) => p.id === Number(session.user.id));
+  }, [session, participants]);
+
   const router = useRouter();
 
   const handleCardClick = () => {
     router.push(`/events/${event.id}`);
   };
-  console.log(event);
 
   const handleJoin = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -37,17 +45,32 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       return;
     }
 
+    const newParticipant: User = {
+      id: Number(session.user.id),
+      name: session.user.name ?? "Без имени",
+      image: session.user.image ?? null,
+      email: "", // Заполняем пустыми значениями
+      password: "",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      emailVerified: null,
+      role: "USER", // Подставляем дефолтное значение роли
+    };
+
+    setParticipants((prev) => [...prev, newParticipant]);
+
     startTransition(async () => {
       const res = await fetch(`/api/events/${event.id}/join`, {
         method: "POST",
       });
 
-      if (res.ok) {
-        setJoined(true);
-        toast.success("Вы успешно вступили");
+      if (!res.ok) {
+        toast.error("Ошибка при вступлении");
+        setParticipants((prev) =>
+          prev.filter((p) => p.id !== Number(session.user.id))
+        );
       } else {
-        const err = await res.json();
-        toast.error(err?.error || "Ошибка при вступлении");
+        toast.success("Вы успешно вступили");
       }
     });
   };
@@ -73,7 +96,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           <div className="flex justify-center items-center gap-3">
             <Avatar className="cursor-pointer w-[30px] h-[30px] hover:opacity-90 transition-opacity">
               <AvatarImage src={event.createdBy?.image ?? undefined} />
-              <AvatarFallback className="bg-[white]">
+              <AvatarFallback>
                 {event.createdBy.name?.charAt(0) ?? "П"}
               </AvatarFallback>
             </Avatar>
@@ -98,30 +121,35 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             )}
           </div>
         </div>
-
-        {participantsCount >= event.participantsCount ? (
-          <Button
-            className="w-[150px] h-[42px] text-[14px] opacity-50 cursor-not-allowed"
-            disabled
-          >
-            Места кончились
-          </Button>
-        ) : (
-          <Button
-            className={`w-[150px] h-[42px] text-[14px] ${
-              joined ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-            onClick={handleJoin}
-            disabled={joined || joining}
-            loading={joining}
-          >
-            {event.price
-              ? `${event.price}₽`
-              : joined
-              ? "Вы участвуете"
-              : "Вступить"}
-          </Button>
-        )}
+        <div className="flex justify-between items-center">
+          {participantsCount >= event.participantsCount ? (
+            <Button
+              className="w-[150px] h-[42px] text-[14px] opacity-50 cursor-not-allowed"
+              disabled
+            >
+              Места кончились
+            </Button>
+          ) : (
+            <Button
+              className={`w-[150px] h-[42px] text-[14px] ${
+                joined ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+              onClick={handleJoin}
+              disabled={joined || joining}
+              loading={joining}
+            >
+              {event.price
+                ? `${event.price}₽`
+                : joined
+                ? "Вы участвуете"
+                : "Вступить"}
+            </Button>
+          )}
+          <ParticipantsList
+            participants={participants}
+            maxParticipants={event.participantsCount}
+          />
+        </div>
       </div>
     </div>
   );

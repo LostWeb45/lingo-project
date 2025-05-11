@@ -16,4 +16,5 @@ export { CategoryItem } from "./category-item";
 export { EventCard } from "./event-card";
 export { Footer } from "./footer";
 export { EventParticipants } from "./event-participants";
+export { ParticipantsList } from "./part-list";
 export * from "./modals";

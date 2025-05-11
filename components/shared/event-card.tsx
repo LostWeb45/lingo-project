@@ -49,12 +49,12 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       id: Number(session.user.id),
       name: session.user.name ?? "Без имени",
       image: session.user.image ?? null,
-      email: "", // Заполняем пустыми значениями
+      email: "",
       password: "",
       createdAt: new Date(),
       updatedAt: new Date(),
       emailVerified: null,
-      role: "USER", // Подставляем дефолтное значение роли
+      role: "USER",
     };
 
     setParticipants((prev) => [...prev, newParticipant]);
@@ -96,7 +96,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           <div className="flex justify-center items-center gap-3">
             <Avatar className="cursor-pointer w-[30px] h-[30px] hover:opacity-90 transition-opacity">
               <AvatarImage src={event.createdBy?.image ?? undefined} />
-              <AvatarFallback>
+              <AvatarFallback className="bg-[#fcfcfc]">
                 {event.createdBy.name?.charAt(0) ?? "П"}
               </AvatarFallback>
             </Avatar>

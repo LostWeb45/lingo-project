@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { getSession, useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -10,7 +10,6 @@ import {
 } from "./modals/auth-modal/forms/schemas";
 import { User } from "@prisma/client";
 import toast from "react-hot-toast";
-import { signOut } from "next-auth/react";
 import { Container } from "./container";
 import { Title } from "./title";
 import { FormInput } from "./form/form-input";
@@ -25,7 +24,6 @@ interface Props {
 export const ProfileForm: React.FC<Props> = ({ data }) => {
   const { data: session } = useSession();
   const [isYandexProvider, setIsYandexProvider] = React.useState(false);
-  const [selectedImage, setSelectedImage] = React.useState<File | null>(null);
   const [imageUrl, setImageUrl] = React.useState(data.image || "");
 
   React.useEffect(() => {
@@ -44,11 +42,14 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
     },
   });
 
-  const uploadImage = async () => {
-    if (!selectedImage) return;
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
 
     const formData = new FormData();
-    formData.append("avatar", selectedImage);
+    formData.append("avatar", file);
 
     try {
       const response = await fetch("http://localhost:4000/upload/avatar", {
@@ -60,29 +61,24 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
         throw new Error("Ошибка при загрузке изображения");
       }
 
-      const data = await response.json();
-      const imageUrl = `http://localhost:4000${data.url}`;
+      const result = await response.json();
+      const newUrl = `http://localhost:4000${result.url}`;
+      setImageUrl(newUrl);
 
-      setImageUrl(imageUrl);
-
-      const updateUserAvatarResponse = await fetch("/api/user/update-avatar", {
+      const updateRes = await fetch("/api/user/update-avatar", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          avatarUrl: imageUrl,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ avatarUrl: newUrl }),
       });
 
-      if (updateUserAvatarResponse.ok) {
-        toast.success("Аватар успешно обновлен!");
+      if (updateRes.ok) {
+        toast.success("Аватар обновлён!");
       } else {
-        toast.error("Не удалось обновить аватар в базе данных.");
+        toast.error("Ошибка обновления аватара в базе.");
       }
-    } catch (error) {
-      console.error(error);
-      toast.error("Ошибка при загрузке аватара.", { icon: "❌" });
+    } catch (err) {
+      console.error(err);
+      toast.error("Ошибка при загрузке аватара.");
     }
   };
 
@@ -90,7 +86,7 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
     try {
       await requestEmailVerification();
       toast.success("Код отправлен на почту", { icon: "📩" });
-    } catch (error) {
+    } catch {
       toast.error("Не удалось отправить код", { icon: "❌" });
     }
   };
@@ -102,19 +98,14 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
         name: formData.name,
         password: formData.password,
       });
-
       toast.success("Данные успешно обновлены", { icon: "✅" });
-    } catch (error) {
-      return toast.error("Что-то пошло не так", { icon: "❌" });
+    } catch {
+      toast.error("Что-то пошло не так", { icon: "❌" });
     }
   };
 
-  const onClickSignOut = () => {
-    signOut({ callbackUrl: "/" });
-  };
-
   const getFirstName = (name: string | null) =>
-    name ? name.split(" ")[0] : "Пользователь";
+    name?.split(" ")[0] ?? "Пользователь";
 
   return (
     <Container className="flex justify-center">
@@ -123,47 +114,55 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
           <Title text="Ваши данные" className="font-medium text-[26px]" />
           <div className="w-[240px] h-[3px] bg-gray-300 mx-auto mt-3 rounded-full" />
         </div>
-        <div className="flex flex-col items-center mb-2">
-          <Avatar className="w-[90px] h-[90px] mb-2">
+
+        <div className="flex flex-col items-center mb-4">
+          <Avatar
+            className="w-[90px] h-[90px] mb-2 cursor-pointer"
+            onClick={() => document.getElementById("avatarInput")?.click()}
+          >
             <AvatarImage
-              src={imageUrl ?? null}
+              src={imageUrl}
               className="object-cover w-full h-full rounded-full"
             />
             <AvatarFallback className="text-[28px]">
               {getFirstName(data.name)?.charAt(0).toUpperCase() ?? "П"}
             </AvatarFallback>
           </Avatar>
-
-          <div>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setSelectedImage(e.target.files?.[0] || null)}
-            />
-            <Button onClick={uploadImage} className="mt-2">
-              Загрузить аватар
-            </Button>
-          </div>
+          <input
+            id="avatarInput"
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="hidden"
+          />
+          <Button
+            className="text-[#667198]"
+            variant="ghost"
+            onClick={() => document.getElementById("avatarInput")?.click()}
+          >
+            Изменить фото
+          </Button>
         </div>
 
         <FormProvider {...form}>
           <form
-            className="flex flex-col gap-4"
             onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-4"
           >
             <FormInput
               name="email"
               label="E-Mail"
               required
-              className="text-[17px]"
               disabled={isYandexProvider}
               disablesDel={isYandexProvider}
+              className="text-[17px]"
             />
+
             {!data.emailVerified && (
               <Button
                 type="button"
                 variant="ghost"
-                className="h-[50px] text-[16px] text-[#1d3c6a] whitespace-nowrap"
+                className="h-[50px] text-[16px] text-[#1d3c6a]"
                 onClick={handleSendVerification}
               >
                 Подтвердить
@@ -173,8 +172,8 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
             <FormInput
               name="name"
               label="Полное имя"
-              className="text-[17px]"
               required
+              className="text-[17px]"
             />
 
             <FormInput
@@ -194,19 +193,19 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
             />
 
             <Button
-              disabled={form.formState.isSubmitting}
-              className="text-[18px] mt-3 h-[50px]"
               type="submit"
+              className="text-[18px] mt-3 h-[50px]"
+              disabled={form.formState.isSubmitting}
             >
               Сохранить
             </Button>
 
             <Button
-              onClick={onClickSignOut}
-              variant="secondary"
-              disabled={form.formState.isSubmitting}
-              className="text-[18px] text-[#667198] h-[50px] "
               type="button"
+              variant="secondary"
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="text-[18px] text-[#667198] h-[50px]"
+              disabled={form.formState.isSubmitting}
             >
               Выйти
             </Button>

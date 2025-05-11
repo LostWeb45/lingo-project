@@ -1,6 +1,6 @@
 import { prisma } from "@/prisma/prisma-client";
-import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   const query = request.nextUrl.searchParams.get("query") || "";
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
     ...(age && { age: { lte: parseInt(age) } }),
   };
 
-  const events = await prisma.event.findMany({
+  const allMatchingEvents = await prisma.event.findMany({
     where: filters,
     orderBy: { startDate: "asc" },
     include: {
@@ -42,35 +42,21 @@ export async function GET(request: NextRequest) {
       status: true,
       images: true,
     },
-    skip: offset,
-    take: limit * 2,
+    take: 200,
   });
 
-  const rawEvents = await prisma.event.findMany({
-    where: filters,
-    orderBy: { startDate: "asc" },
-    include: {
-      participants: true,
-      createdBy: true,
-      category: true,
-      town: true,
-      status: true,
-      images: true,
-    },
-    skip: offset,
-    take: limit * 2,
-  });
-
-  const filteredEvents = availableOnly
-    ? rawEvents.filter(
+  const availableEvents = availableOnly
+    ? allMatchingEvents.filter(
         (event) =>
           !event.participantsCount ||
           event.participants.length < event.participantsCount
       )
-    : rawEvents;
+    : allMatchingEvents;
+
+  const paginatedEvents = availableEvents.slice(offset, offset + limit);
 
   return NextResponse.json({
-    events: filteredEvents.slice(0, limit),
-    hasMore: rawEvents.length > limit,
+    events: paginatedEvents,
+    hasMore: offset + limit < availableEvents.length,
   });
 }

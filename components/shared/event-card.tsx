@@ -23,7 +23,6 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const { data: session } = useSession();
   const participantsCount = event.participants ? event.participants.length : 0;
   const router = useRouter();
-  console.log(event.participants);
 
   const handleCardClick = () => {
     router.push(`/events/${event.id}`);

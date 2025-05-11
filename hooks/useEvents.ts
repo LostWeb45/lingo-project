@@ -1,14 +1,14 @@
-import { EventImage, User } from "@prisma/client";
+import { Event, EventImage, User } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
 import React from "react";
 
-const PAGE_SIZE = 3;
+const PAGE_SIZE = 6;
 
-type EventWithInfo = Event & {
+interface EventWithInfo extends Event {
   images: EventImage[];
   createdBy: User;
   participants: User[];
-};
+}
 
 export const useEvents = () => {
   const searchParams = useSearchParams();

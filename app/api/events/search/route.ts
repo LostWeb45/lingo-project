@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
       status: true,
       images: true,
     },
-    take: 200,
+    take: 100,
   });
 
   const availableEvents = availableOnly

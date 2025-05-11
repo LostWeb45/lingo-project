@@ -2,7 +2,7 @@ import { Event, EventImage, User } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
 import React from "react";
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 18;
 
 interface EventWithInfo extends Event {
   images: EventImage[];

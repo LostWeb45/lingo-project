@@ -15,7 +15,7 @@ export const EventList: React.FC<Props> = ({ className }) => {
 
   return (
     <div className={cn("mt-[30px] w-full", className)}>
-      {isLoading && events.length === 0 ? (
+      {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-4">
           {[...Array(6)].map((_, index) => (
             <div key={index} className="flex flex-col gap-3">

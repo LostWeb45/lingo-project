@@ -3,10 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-type Category = {
-  id: number;
-  name: string;
-};
+type Category = { id: number; name: string };
+type Town = { id: number; name: string };
 
 export default function CreateEventPage() {
   const [form, setForm] = useState({
@@ -19,22 +17,34 @@ export default function CreateEventPage() {
     place: "",
     age: 0,
     categoryId: "",
-    townId: "7", // Санкт-Петербург — id = 7
-    participantsCount: 0, // Новое поле для количества участников
+    townId: "", // Динамически загружаем ID города
+    participantsCount: 0,
   });
+
   const [images, setImages] = useState<FileList | null>(null);
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [towns, setTowns] = useState<Town[]>([]);
   const router = useRouter();
 
+  // Загружаем категории
   useEffect(() => {
     const fetchCategories = async () => {
       const res = await fetch("/api/categories");
       const data = await res.json();
       setCategories(data);
     };
-
     fetchCategories();
+  }, []);
+
+  // Загружаем города
+  useEffect(() => {
+    const fetchTowns = async () => {
+      const res = await fetch("/api/towns");
+      const data = await res.json();
+      setTowns(data);
+    };
+    fetchTowns();
   }, []);
 
   const handleChange = (
@@ -42,8 +52,7 @@ export default function CreateEventPage() {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -184,10 +193,13 @@ export default function CreateEventPage() {
         onChange={handleChange}
         required
         className="w-full border p-2"
-        value={form.townId} // Значение выбирается из состояния
-        disabled
       >
-        <option value="7">Санкт-Петербург</option>
+        <option value="">Выберите город</option>
+        {towns.map((town) => (
+          <option key={town.id} value={town.id}>
+            {town.name}
+          </option>
+        ))}
       </select>
 
       <input

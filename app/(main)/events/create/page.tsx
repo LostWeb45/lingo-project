@@ -2,6 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { Label, Separator } from "@/components/ui";
 
 type Category = { id: number; name: string };
 type Town = { id: number; name: string };
@@ -17,7 +28,7 @@ export default function CreateEventPage() {
     place: "",
     age: 0,
     categoryId: "",
-    townId: "", // Динамически загружаем ID города
+    townId: "",
     participantsCount: 0,
   });
 
@@ -27,36 +38,27 @@ export default function CreateEventPage() {
   const [towns, setTowns] = useState<Town[]>([]);
   const router = useRouter();
 
-  // Загружаем категории
   useEffect(() => {
-    const fetchCategories = async () => {
-      const res = await fetch("/api/categories");
-      const data = await res.json();
-      setCategories(data);
-    };
-    fetchCategories();
-  }, []);
-
-  // Загружаем города
-  useEffect(() => {
-    const fetchTowns = async () => {
-      const res = await fetch("/api/towns");
-      const data = await res.json();
-      setTowns(data);
-    };
-    fetchTowns();
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then(setCategories);
+    fetch("/api/towns")
+      .then((res) => res.json())
+      .then(setTowns);
   }, []);
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setImages(e.target.files);
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -105,118 +107,154 @@ export default function CreateEventPage() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-xl mx-auto p-4 space-y-4">
+    <form onSubmit={handleSubmit} className="max-w-xl mx-auto space-y-6 p-6">
       <h1 className="text-2xl font-bold">Создать событие</h1>
+      <Separator />
 
-      <input
-        name="title"
-        onChange={handleChange}
-        placeholder="Название"
-        required
-        className="w-full border p-2"
-      />
-      <textarea
-        name="description"
-        onChange={handleChange}
-        placeholder="Описание"
-        required
-        className="w-full border p-2"
-      />
-      <input
-        type="date"
-        name="startDate"
-        onChange={handleChange}
-        required
-        className="w-full border p-2"
-      />
-      <input
-        type="time"
-        name="startTime"
-        onChange={handleChange}
-        required
-        className="w-full border p-2"
-      />
-      <input
-        type="number"
-        name="duration"
-        onChange={handleChange}
-        placeholder="Продолжительность (мин)"
-        required
-        className="w-full border p-2"
-      />
-      <input
-        type="number"
-        name="price"
-        onChange={handleChange}
-        placeholder="Цена"
-        className="w-full border p-2"
-      />
-      <input
-        name="place"
-        onChange={handleChange}
-        placeholder="Место проведения"
-        required
-        className="w-full border p-2"
-      />
-      <input
-        type="number"
-        name="age"
-        onChange={handleChange}
-        placeholder="Возрастное ограничение"
-        className="w-full border p-2"
-      />
-      <input
-        type="number"
-        name="participantsCount"
-        onChange={handleChange}
-        placeholder="Количество участников"
-        required
-        className="w-full border p-2"
-      />
+      <div className="space-y-2">
+        <Label htmlFor="title">Название</Label>
+        <Input
+          name="title"
+          value={form.title}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
-      <select
-        name="categoryId"
-        onChange={handleChange}
-        required
-        className="w-full border p-2"
-      >
-        <option value="">Выбрать категорию</option>
-        {categories.map((cat) => (
-          <option key={cat.id} value={cat.id}>
-            {cat.name}
-          </option>
-        ))}
-      </select>
+      <div className="space-y-2">
+        <Label htmlFor="description">Описание</Label>
+        <Textarea
+          name="description"
+          value={form.description}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
-      <select
-        name="townId"
-        onChange={handleChange}
-        required
-        className="w-full border p-2"
-      >
-        <option value="">Выберите город</option>
-        {towns.map((town) => (
-          <option key={town.id} value={town.id}>
-            {town.name}
-          </option>
-        ))}
-      </select>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="startDate">Дата начала</Label>
+          <Input
+            type="date"
+            name="startDate"
+            value={form.startDate}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="startTime">Время начала</Label>
+          <Input
+            type="time"
+            name="startTime"
+            value={form.startTime}
+            onChange={handleChange}
+            required
+          />
+        </div>
+      </div>
 
-      <input
-        type="file"
-        multiple
-        accept="image/*"
-        onChange={handleFileChange}
-        className="w-full"
-      />
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="duration">Продолжительность (мин)</Label>
+          <Input
+            type="number"
+            name="duration"
+            value={form.duration}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="price">Цена</Label>
+          <Input
+            type="number"
+            name="price"
+            value={form.price}
+            onChange={handleChange}
+          />
+        </div>
+      </div>
 
-      <button
-        disabled={loading}
-        type="submit"
-        className="bg-blue-600 text-white px-4 py-2 rounded"
-      >
+      <div className="space-y-2">
+        <Label htmlFor="place">Место проведения</Label>
+        <Input
+          name="place"
+          value={form.place}
+          onChange={handleChange}
+          required
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="age">Возрастное ограничение</Label>
+          <Input
+            type="number"
+            name="age"
+            value={form.age}
+            onChange={handleChange}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="participantsCount">Кол-во участников</Label>
+          <Input
+            type="number"
+            name="participantsCount"
+            value={form.participantsCount}
+            onChange={handleChange}
+            required
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Категория</Label>
+        <Select
+          onValueChange={(value) => handleSelectChange("categoryId", value)}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Выбрать категорию" />
+          </SelectTrigger>
+          <SelectContent>
+            {categories.map((cat) => (
+              <SelectItem key={cat.id} value={String(cat.id)}>
+                {cat.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Город</Label>
+        <Select onValueChange={(value) => handleSelectChange("townId", value)}>
+          <SelectTrigger>
+            <SelectValue placeholder="Выбрать город" />
+          </SelectTrigger>
+          <SelectContent>
+            {towns.map((town) => (
+              <SelectItem key={town.id} value={String(town.id)}>
+                {town.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="images">Изображения</Label>
+        <Input
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={handleFileChange}
+        />
+      </div>
+
+      <Button type="submit" disabled={loading} className="w-full">
         {loading ? "Создание..." : "Создать"}
-      </button>
+      </Button>
     </form>
   );
 }

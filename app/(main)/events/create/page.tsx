@@ -13,6 +13,16 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Label, Separator } from "@/components/ui";
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { ru } from "date-fns/locale"; // Импортируем русскую локализацию для даты
+import { cn } from "@/lib/utils";
 
 type Category = { id: number; name: string };
 type Town = { id: number; name: string };
@@ -134,13 +144,36 @@ export default function CreateEventPage() {
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="startDate">Дата начала</Label>
-          <Input
-            type="date"
-            name="startDate"
-            value={form.startDate}
-            onChange={handleChange}
-            required
-          />
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "w-full justify-start text-left font-normal",
+                  !form.startDate && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {form.startDate
+                  ? format(new Date(form.startDate), "PPP", { locale: ru }) // Форматирование даты с русской локализацией
+                  : "Выберите дату"}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0">
+              <Calendar
+                mode="single"
+                selected={form.startDate ? new Date(form.startDate) : undefined}
+                onSelect={(date) =>
+                  setForm((prev) => ({
+                    ...prev,
+                    startDate: date ? format(date, "yyyy-MM-dd") : "", // Форматирование даты при выборе
+                  }))
+                }
+                locale={ru} // Использование русской локализации
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
         </div>
         <div className="space-y-2">
           <Label htmlFor="startTime">Время начала</Label>

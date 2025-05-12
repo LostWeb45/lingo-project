@@ -3,8 +3,9 @@
 import React from "react";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { Plus } from "lucide-react";
 
 interface Event {
   id: number;
@@ -48,7 +49,16 @@ export default function MyEventsPage() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Мои события</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold mb-4">Мои события</h1>
+        <button
+          onClick={() => redirect("/events/create")}
+          className="flex justify-center items-center relative gap-2 border font-semibold border-[#aebdf3] rounded-[2px] cursor-pointer px-[15px] py-[6px] duration-200 hover:bg-[#e6e6f4]"
+        >
+          <p className="text-[#3A5F9D] text-[16px]">Создать событие</p>
+          <Plus className="text-[#3A5F9D]" width={20} />
+        </button>
+      </div>
 
       {events.length === 0 ? (
         <p className="text-gray-500">Вы ещё не участвуете в событиях</p>

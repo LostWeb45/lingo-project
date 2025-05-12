@@ -1,8 +1,20 @@
 import { prisma } from "@/prisma/prisma-client";
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/constants/auth-options";
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+
+    if (!session || !session.user) {
+      return NextResponse.json(
+        { error: "Неавторизованный доступ" },
+        { status: 401 }
+      );
+    }
+
+    const userId = session.user.id;
     const body = await req.json();
 
     const {
@@ -17,7 +29,7 @@ export async function POST(req: NextRequest) {
       categoryId,
       townId,
       imageUrls,
-      participantsCount, // Получаем количество участников
+      participantsCount,
     } = body;
 
     const event = await prisma.event.create({
@@ -32,13 +44,16 @@ export async function POST(req: NextRequest) {
         age: Number(age),
         categoryId: Number(categoryId),
         townId: Number(townId),
-        participantsCount: Number(participantsCount), // Сохраняем количество участников
-        createdById: 11, // TODO: заменить на ID авторизованного пользователя
-        statusId: 5, // "На проверке" или как в seed
+        participantsCount: Number(participantsCount),
+        createdById: Number(userId),
+        statusId: 5,
+        participants: {
+          connect: { id: Number(userId) },
+        },
       },
     });
 
-    if (Array.isArray(imageUrls)) {
+    if (Array.isArray(imageUrls) && imageUrls.length > 0) {
       await prisma.eventImage.createMany({
         data: imageUrls.map((url: string) => ({
           imageUrl: url,
@@ -47,7 +62,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, event });
   } catch (err) {
     console.error("Ошибка создания события:", err);
     return NextResponse.json({ error: "Ошибка сервера" }, { status: 500 });

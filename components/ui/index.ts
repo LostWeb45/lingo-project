@@ -6,3 +6,5 @@ export { Skeleton } from "./skeleton";
 export { Textarea } from "./textarea";
 export { Label } from "./label";
 export { Separator } from "./separator";
+export { DatePickerDemo } from "./date-picker";
+export { Calendar } from "./calendar";

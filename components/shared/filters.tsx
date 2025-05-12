@@ -2,7 +2,7 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
-import { useRouter, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { SearchIvent } from "./search-ivent";
 import {
   Select,
@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Category } from "@prisma/client";
+import { Plus } from "lucide-react";
 
 interface Props {
   className?: string;
@@ -149,7 +150,13 @@ export const Filters: React.FC<Props> = ({ className }) => {
           </span>
         )}
       </div>
-      <div className="font-[18px] text-[#333333]">187 событий</div>
+      <button
+        onClick={() => redirect("/events/create")}
+        className="flex justify-center items-center relative gap-2 border font-semibold border-[#aebdf3] rounded-[2px] cursor-pointer px-[15px] py-[6px] duration-200 hover:bg-[#e6e6f4]"
+      >
+        <p className="text-[#3A5F9D] text-[16px]">Создать событие</p>
+        <Plus className="text-[#3A5F9D]" width={20} />
+      </button>
     </div>
   );
 };

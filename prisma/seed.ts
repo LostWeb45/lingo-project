@@ -16,6 +16,8 @@ async function main() {
   // Создаем статусы событий
   await prisma.status.createMany({
     data: [
+      { name: "На проверке" },
+      { name: "Предстоящее" },
       { name: "Набор участников" },
       { name: "Общение участников " },
       { name: "Завершенное" },

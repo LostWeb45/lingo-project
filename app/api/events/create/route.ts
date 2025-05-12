@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
       categoryId,
       townId,
       imageUrls,
+      participantsCount, // Получаем количество участников
     } = body;
 
     const event = await prisma.event.create({
@@ -31,6 +32,7 @@ export async function POST(req: NextRequest) {
         age: Number(age),
         categoryId: Number(categoryId),
         townId: Number(townId),
+        participantsCount: Number(participantsCount), // Сохраняем количество участников
         createdById: 11, // TODO: заменить на ID авторизованного пользователя
         statusId: 5, // "На проверке" или как в seed
       },

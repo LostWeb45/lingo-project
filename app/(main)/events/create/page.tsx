@@ -19,7 +19,8 @@ export default function CreateEventPage() {
     place: "",
     age: 0,
     categoryId: "",
-    townId: "7", // Санкт-Петербург — id = 1
+    townId: "7", // Санкт-Петербург — id = 7
+    participantsCount: 0, // Новое поле для количества участников
   });
   const [images, setImages] = useState<FileList | null>(null);
   const [loading, setLoading] = useState(false);
@@ -155,6 +156,14 @@ export default function CreateEventPage() {
         placeholder="Возрастное ограничение"
         className="w-full border p-2"
       />
+      <input
+        type="number"
+        name="participantsCount"
+        onChange={handleChange}
+        placeholder="Количество участников"
+        required
+        className="w-full border p-2"
+      />
 
       <select
         name="categoryId"
@@ -175,7 +184,7 @@ export default function CreateEventPage() {
         onChange={handleChange}
         required
         className="w-full border p-2"
-        value="7" // Санкт-Петербург
+        value={form.townId} // Значение выбирается из состояния
         disabled
       >
         <option value="7">Санкт-Петербург</option>

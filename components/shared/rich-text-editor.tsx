@@ -1,22 +1,33 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import BulletList from "@tiptap/extension-bullet-list";
-import OrderedList from "@tiptap/extension-ordered-list";
 import Heading from "@tiptap/extension-heading";
+import Underline from "@tiptap/extension-underline";
+import TextStyle from "@tiptap/extension-text-style";
+import { useEffect, useState } from "react";
 
-export const RichTextEditor = ({
-  value,
-  onChange,
-}: {
+type RichTextEditorProps = {
   value: string;
   onChange: (content: string) => void;
+};
+
+export const RichTextEditor: React.FC<RichTextEditorProps> = ({
+  value,
+  onChange,
 }) => {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const editor = useEditor({
     extensions: [
-      StarterKit,
-      BulletList,
-      OrderedList,
+      StarterKit.configure({
+        heading: false,
+      }),
       Heading.configure({ levels: [1, 2, 3] }),
+      TextStyle,
+      Underline,
     ],
     content: value,
     onUpdate: ({ editor }) => {
@@ -24,19 +35,49 @@ export const RichTextEditor = ({
     },
   });
 
-  if (!editor) return null;
+  if (!isClient || !editor) return null;
+
+  const buttonClass = (active: boolean) =>
+    `px-2 py-1 rounded ${
+      active ? "bg-blue-300 text-black" : "bg-gray-200 text-black"
+    }`;
 
   return (
     <div className="border rounded p-2 space-y-2">
-      <div className="flex space-x-2 border-b pb-2">
+      {/* Панель инструментов */}
+      <div className="flex flex-wrap gap-2 border-b pb-2">
         <button
-          className="px-2 py-1 bg-gray-200 rounded"
+          className={buttonClass(editor.isActive("bold"))}
           onClick={() => editor.chain().focus().toggleBold().run()}
         >
-          **B**
+          <b>B</b>
         </button>
         <button
-          className="px-2 py-1 bg-gray-200 rounded"
+          className={buttonClass(editor.isActive("italic"))}
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+        >
+          <i>I</i>
+        </button>
+        <button
+          className={buttonClass(editor.isActive("underline"))}
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+        >
+          <u>U</u>
+        </button>
+        <button
+          className={buttonClass(editor.isActive("strike"))}
+          onClick={() => editor.chain().focus().toggleStrike().run()}
+        >
+          <s>S</s>
+        </button>
+        <button
+          className={buttonClass(editor.isActive("blockquote"))}
+          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+        >
+          “ Quote ”
+        </button>
+        <button
+          className={buttonClass(editor.isActive("heading", { level: 2 }))}
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 2 }).run()
           }
@@ -44,19 +85,20 @@ export const RichTextEditor = ({
           H2
         </button>
         <button
-          className="px-2 py-1 bg-gray-200 rounded"
+          className={buttonClass(editor.isActive("bulletList"))}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
         >
           • Bullet List
         </button>
         <button
-          className="px-2 py-1 bg-gray-200 rounded"
+          className={buttonClass(editor.isActive("orderedList"))}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         >
           1. Ordered List
         </button>
       </div>
 
+      {/* Сам редактор */}
       <EditorContent editor={editor} />
     </div>
   );

@@ -17,5 +17,4 @@ export { EventCard } from "./event-card";
 export { Footer } from "./footer";
 export { EventParticipants } from "./event-participants";
 export { ParticipantsList } from "./part-list";
-export { SafeHTML } from "./safe-html";
 export * from "./modals";

@@ -13,7 +13,7 @@ interface Props {
 
 export const Title: React.FC<Props> = ({
   text,
-  size = "lg",
+  size = "xl",
   className,
   url,
 }) => {
@@ -31,7 +31,7 @@ export const Title: React.FC<Props> = ({
     sm: "text-[22px]",
     md: "text-[26px]",
     lg: "text-[32px]",
-    xl: "text-[40px]",
+    xl: "text-[34px]",
     "2xl": "text-[48px]",
   } as const;
 

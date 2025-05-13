@@ -74,7 +74,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
           className={buttonClass(editor.isActive("blockquote"))}
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
         >
-          “ Quote ”
+          “ Цитата ”
         </button>
         <button
           className={buttonClass(editor.isActive("heading", { level: 2 }))}
@@ -82,24 +82,24 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             editor.chain().focus().toggleHeading({ level: 2 }).run()
           }
         >
-          H2
+          Заголовок
         </button>
         <button
           className={buttonClass(editor.isActive("bulletList"))}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
         >
-          • Bullet List
+          • Список
         </button>
         <button
           className={buttonClass(editor.isActive("orderedList"))}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         >
-          1. Ordered List
+          1. Список
         </button>
       </div>
 
       {/* Сам редактор */}
-      <EditorContent editor={editor} />
+      <EditorContent className="text-20px" editor={editor} />
     </div>
   );
 };

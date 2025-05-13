@@ -7,9 +7,20 @@ interface SafeHTMLProps {
 }
 
 const SafeHTML: React.FC<SafeHTMLProps> = ({ html }) => {
-  const sanitizedHTML = DOMPurify.sanitize(html);
+  let sanitizedHTML = html;
 
-  return <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />;
+  try {
+    sanitizedHTML = DOMPurify.sanitize(html);
+  } catch (error) {
+    console.log("Странная ошибка при санитизации HTML (пофиксить)");
+  }
+
+  return (
+    <div
+      className="ml-[5px]"
+      dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
+    />
+  );
 };
 
 export default SafeHTML;

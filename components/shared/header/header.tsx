@@ -119,7 +119,7 @@ export const Header: React.FC<Props> = ({ initSession, className }) => {
           onClose={() => setAuthOpenModal(false)}
         />
       </header>
-      <Container className="flex justify-between px-[81px] py-[10px] sticky top-0 shadow-md bg-[#F5F6FA] z-30 mb-[30px]">
+      <Container className="flex justify-between px-[81px] py-[10px] sticky top-0 shadow-md bg-[#F5F6FA] z-30 mb-[30px] [font-family:var(--font-montserrat)] ">
         {navItems.map((item) => (
           <Link
             key={item.id}

@@ -34,11 +34,6 @@ export default async function EventPage({
     },
   });
 
-  const session = await getServerSession(authOptions);
-  const currentUser = session?.user;
-
-  console.log(event);
-
   if (!event) return <Container>Событие не найдено</Container>;
 
   const hasMultipleImages = event.images.length > 1;
@@ -46,7 +41,7 @@ export default async function EventPage({
   return (
     <Container className="flex flex-col">
       {event.images.length > 0 && (
-        <Carousel className="ml-[-1px] w-full">
+        <Carousel className=" w-[1359px]">
           <CarouselContent>
             {event.images.map((img, i) => (
               <CarouselItem key={i}>
@@ -82,7 +77,7 @@ export default async function EventPage({
             </p>
             <hr className="w-[30%] mt-1" />
           </div>
-          <div className="text-[21px] max-w-full overflow-hidden break-words">
+          <div className="text-[18px] max-w-full overflow-hidden break-words">
             <SafeHTML html={event.description} />
           </div>
         </div>

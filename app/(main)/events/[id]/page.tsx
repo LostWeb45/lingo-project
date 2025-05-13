@@ -82,8 +82,7 @@ export default async function EventPage({
             </p>
             <hr className="w-[30%] mt-1" />
           </div>
-          <div className="text-[21px] ">
-            {" "}
+          <div className="text-[21px] max-w-full overflow-hidden break-words">
             <SafeHTML html={event.description} />
           </div>
         </div>

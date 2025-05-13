@@ -1,5 +1,5 @@
 import { prisma } from "@/prisma/prisma-client";
-import { Container, Title } from "@/components/shared";
+import { Container, SafeHTML, Title } from "@/components/shared";
 import {
   Carousel,
   CarouselContent,
@@ -13,6 +13,8 @@ import { MapPin } from "lucide-react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/constants/auth-options";
 import { EventParticipants } from "@/components/shared/event-participants";
+import dynamic from "next/dynamic";
+
 export default async function EventPage({
   params,
 }: {
@@ -82,7 +84,7 @@ export default async function EventPage({
           </div>
           <div className="text-[19px]">
             {" "}
-            <p>{event.description}</p>
+            <SafeHTML html={event.description} />
           </div>
         </div>
 

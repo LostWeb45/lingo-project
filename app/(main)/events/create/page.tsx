@@ -21,8 +21,10 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import { ru } from "date-fns/locale"; // Импортируем русскую локализацию для даты
+import { ru } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import dynamic from "next/dynamic";
+import { RichTextEditor } from "@/components/shared/rich-text-editor";
 
 type Category = { id: number; name: string };
 type Town = { id: number; name: string };
@@ -46,6 +48,7 @@ export default function CreateEventPage() {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [towns, setTowns] = useState<Town[]>([]);
+  const [description, setDescription] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -97,10 +100,12 @@ export default function CreateEventPage() {
         await Promise.all(uploads);
       }
 
+      const eventData = { ...form, description, imageUrls };
+
       const res = await fetch("/api/events/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, imageUrls }),
+        body: JSON.stringify(eventData),
       });
 
       if (res.ok) {
@@ -133,12 +138,13 @@ export default function CreateEventPage() {
 
       <div className="space-y-2">
         <Label htmlFor="description">Описание</Label>
-        <Textarea
+        <RichTextEditor value={description} onChange={setDescription} />
+        {/* <Textarea
           name="description"
           value={form.description}
           onChange={handleChange}
           required
-        />
+        /> */}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -155,7 +161,7 @@ export default function CreateEventPage() {
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {form.startDate
-                  ? format(new Date(form.startDate), "PPP", { locale: ru }) // Форматирование даты с русской локализацией
+                  ? format(new Date(form.startDate), "PPP", { locale: ru })
                   : "Выберите дату"}
               </Button>
             </PopoverTrigger>
@@ -166,10 +172,10 @@ export default function CreateEventPage() {
                 onSelect={(date) =>
                   setForm((prev) => ({
                     ...prev,
-                    startDate: date ? format(date, "yyyy-MM-dd") : "", // Форматирование даты при выборе
+                    startDate: date ? format(date, "yyyy-MM-dd") : "",
                   }))
                 }
-                locale={ru} // Использование русской локализации
+                locale={ru}
                 initialFocus
               />
             </PopoverContent>

@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -23,7 +22,6 @@ import {
 } from "@/components/ui/popover";
 import { ru } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import dynamic from "next/dynamic";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 
 type Category = { id: number; name: string };
@@ -36,12 +34,12 @@ export default function CreateEventPage() {
     startDate: "",
     startTime: "",
     duration: 60,
-    price: "",
+    price: 0,
     place: "",
     age: 0,
     categoryId: "",
     townId: "",
-    participantsCount: 0,
+    participantsCount: 2,
   });
 
   const [images, setImages] = useState<FileList | null>(null);
@@ -57,7 +55,12 @@ export default function CreateEventPage() {
       .then(setCategories);
     fetch("/api/towns")
       .then((res) => res.json())
-      .then(setTowns);
+      .then((data) => {
+        const spb = data.filter((town: Town) =>
+          town.name.toLowerCase().includes("петербург")
+        );
+        setTowns(spb);
+      });
   }, []);
 
   const handleChange = (
@@ -139,12 +142,6 @@ export default function CreateEventPage() {
       <div className="space-y-2">
         <Label htmlFor="description">Описание</Label>
         <RichTextEditor value={description} onChange={setDescription} />
-        {/* <Textarea
-          name="description"
-          value={form.description}
-          onChange={handleChange}
-          required
-        /> */}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -153,7 +150,7 @@ export default function CreateEventPage() {
           <Popover>
             <PopoverTrigger asChild>
               <Button
-                variant={"outline"}
+                variant={"ghost"}
                 className={cn(
                   "w-full justify-start text-left font-normal",
                   !form.startDate && "text-muted-foreground"
@@ -241,6 +238,7 @@ export default function CreateEventPage() {
             type="number"
             name="participantsCount"
             value={form.participantsCount}
+            min={2}
             onChange={handleChange}
             required
           />

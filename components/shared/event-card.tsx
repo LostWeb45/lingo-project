@@ -49,6 +49,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       id: Number(session.user.id),
       name: session.user.name ?? "Без имени",
       image: session.user.image ?? null,
+      telegramId: "",
       email: "",
       password: "",
       createdAt: new Date(),

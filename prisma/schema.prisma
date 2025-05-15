@@ -26,6 +26,7 @@ model User {
     password      String
     emailVerified DateTime?
     image         String?
+    telegramId    String?
     role          Role      @default(USER)
     createdAt     DateTime  @default(now())
     updatedAt     DateTime  @updatedAt
@@ -134,4 +135,12 @@ model Status {
     id     Int     @id @default(autoincrement())
     name   String  @unique
     events Event[]
+}
+
+model TelegramGroup {
+    id             Int      @id @default(autoincrement())
+    telegramChatId String   @unique
+    name           String
+    eventId        Int?
+    createdAt      DateTime @default(now())
 }

@@ -122,8 +122,11 @@ bot.command("id", (ctx) => {
   }
 });
 
-// Обработчик сообщений
-bot.on("message", (ctx) => {
+// bot.command("hello-blin", (ctx) => {
+//   safeReply(ctx, `Иди на хуй <3`);
+// });
+
+bot.command("start", (ctx) => {
   safeReply(ctx, "Привет, я бот для событий! Добавьте меня в группу ✨");
 });
 

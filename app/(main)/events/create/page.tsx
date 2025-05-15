@@ -149,6 +149,7 @@ export default function CreateEventPage() {
                   Изображения
                 </Label>
                 <Input
+                  className="text-[#325288] pt-[5px] text-[16px] font-semibold w-[355px] cursor-pointer"
                   type="file"
                   multiple
                   accept="image/*"

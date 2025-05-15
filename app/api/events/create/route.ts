@@ -32,19 +32,6 @@ export async function POST(req: NextRequest) {
       participantsCount,
     } = body;
 
-    // Находим пользователя и проверяем Telegram
-    const user = await prisma.user.findUnique({
-      where: { id: Number(userId) },
-    });
-
-    if (!user || !user.telegramId) {
-      return NextResponse.json(
-        { error: "Для создания события необходимо привязать Telegram" },
-        { status: 400 }
-      );
-    }
-
-    // Создаём событие
     const event = await prisma.event.create({
       data: {
         title,
@@ -66,7 +53,6 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Загружаем изображения
     if (Array.isArray(imageUrls) && imageUrls.length > 0) {
       await prisma.eventImage.createMany({
         data: imageUrls.map((url: string) => ({
@@ -76,17 +62,7 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const botUsername = "LinGoForSiteBot";
-    const message = encodeURIComponent(
-      `Создаём группу для события: ${title}. Добавьте в неё бота @${botUsername} сразу после создания.`
-    );
-    const telegramGroupLink = `https://t.me/share/url?url=${message}`;
-
-    return NextResponse.json({
-      success: true,
-      event,
-      telegramGroupLink,
-    });
+    return NextResponse.json({ success: true, event });
   } catch (err) {
     console.error("Ошибка создания события:", err);
     return NextResponse.json({ error: "Ошибка сервера" }, { status: 500 });

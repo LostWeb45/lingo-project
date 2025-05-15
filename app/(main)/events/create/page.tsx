@@ -23,6 +23,7 @@ import {
 import { ru } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
+import { Container, Title } from "@/components/shared";
 
 type Category = { id: number; name: string };
 type Town = { id: number; name: string };
@@ -125,173 +126,209 @@ export default function CreateEventPage() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-xl mx-auto space-y-6 p-6">
-      <h1 className="text-2xl font-bold">Создать событие</h1>
-      <Separator />
-
-      <div className="space-y-2">
-        <Label htmlFor="title">Название</Label>
-        <Input
-          name="title"
-          value={form.title}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="description">Описание</Label>
-        <RichTextEditor value={description} onChange={setDescription} />
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="startDate">Дата начала</Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"ghost"}
-                className={cn(
-                  "w-full justify-start text-left font-normal",
-                  !form.startDate && "text-muted-foreground"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {form.startDate
-                  ? format(new Date(form.startDate), "PPP", { locale: ru })
-                  : "Выберите дату"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <Calendar
-                mode="single"
-                selected={form.startDate ? new Date(form.startDate) : undefined}
-                onSelect={(date) =>
-                  setForm((prev) => ({
-                    ...prev,
-                    startDate: date ? format(date, "yyyy-MM-dd") : "",
-                  }))
-                }
-                locale={ru}
-                initialFocus
+    <Container>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-[18px]">
+        <Title className="font-semibold " text="Создать событие" />
+        <Separator />
+        <div className="flex justify-between gap-[30px]">
+          <div className=" w-[60%] flex flex-col gap-[18px]">
+            <div className="space-y-2">
+              <Label className="text-[17px]" htmlFor="title">
+                Название
+              </Label>
+              <Input
+                name="title"
+                value={form.title}
+                onChange={handleChange}
+                required
               />
-            </PopoverContent>
-          </Popover>
+            </div>
+            <div className="flex gap-3">
+              <div>
+                <Label className="text-[17px]" htmlFor="images">
+                  Изображения
+                </Label>
+                <Input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />
+              </div>
+              <div>
+                <Label className="text-[17px]">Категория</Label>
+
+                <Select
+                  onValueChange={(value) =>
+                    handleSelectChange("categoryId", value)
+                  }
+                >
+                  <SelectTrigger size="lg" className="text-[white]!">
+                    <SelectValue placeholder="Выбрать категорию" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={String(cat.id)}>
+                        {cat.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-[17px]">Город</Label>
+                <Select
+                  onValueChange={(value) => handleSelectChange("townId", value)}
+                >
+                  <SelectTrigger size="lg" className="text-[white]!">
+                    <SelectValue placeholder="Выбрать город" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {towns.map((town) => (
+                      <SelectItem key={town.id} value={String(town.id)}>
+                        {town.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-[17px]" htmlFor="description">
+                Описание
+              </Label>
+              <RichTextEditor value={description} onChange={setDescription} />
+            </div>
+          </div>
+          <div className="w-[40%] flex flex-col gap-[18px]">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-[17px]" htmlFor="startDate">
+                  Дата начала
+                </Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"ghost"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal h-[40px]",
+                        !form.startDate && "text-black"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {form.startDate
+                        ? format(new Date(form.startDate), "PPP", {
+                            locale: ru,
+                          })
+                        : "Выберите дату"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={
+                        form.startDate ? new Date(form.startDate) : undefined
+                      }
+                      onSelect={(date) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          startDate: date ? format(date, "yyyy-MM-dd") : "",
+                        }))
+                      }
+                      locale={ru}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[17px]" htmlFor="startTime">
+                  Время начала
+                </Label>
+                <Input
+                  className=" h-[40px] border-none bg-[#f2f4fb] cursor-pointer hover:bg-accent hover:text-[#555e7e] dark:hover:bg-accent/50"
+                  type="time"
+                  name="startTime"
+                  value={form.startTime}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-[17px]" htmlFor="duration">
+                  Продолжительность (мин)
+                </Label>
+                <Input
+                  type="number"
+                  name="duration"
+                  value={form.duration}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[17px]" htmlFor="price">
+                  Цена
+                </Label>
+                <Input
+                  type="number"
+                  name="price"
+                  value={form.price}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[17px]" htmlFor="place">
+                Место проведения
+              </Label>
+              <Input
+                name="place"
+                value={form.place}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label className="text-[17px]" htmlFor="age">
+                  Возрастное ограничение
+                </Label>
+                <Input
+                  type="number"
+                  name="age"
+                  value={form.age}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-[17px]" htmlFor="participantsCount">
+                  Кол-во участников
+                </Label>
+                <Input
+                  type="number"
+                  name="participantsCount"
+                  value={form.participantsCount}
+                  min={2}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full h-[45px] text-[18px] "
+            >
+              {loading ? "Создание..." : "Создать"}
+            </Button>
+          </div>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="startTime">Время начала</Label>
-          <Input
-            type="time"
-            name="startTime"
-            value={form.startTime}
-            onChange={handleChange}
-            required
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="duration">Продолжительность (мин)</Label>
-          <Input
-            type="number"
-            name="duration"
-            value={form.duration}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="price">Цена</Label>
-          <Input
-            type="number"
-            name="price"
-            value={form.price}
-            onChange={handleChange}
-          />
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="place">Место проведения</Label>
-        <Input
-          name="place"
-          value={form.place}
-          onChange={handleChange}
-          required
-        />
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="age">Возрастное ограничение</Label>
-          <Input
-            type="number"
-            name="age"
-            value={form.age}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="participantsCount">Кол-во участников</Label>
-          <Input
-            type="number"
-            name="participantsCount"
-            value={form.participantsCount}
-            min={2}
-            onChange={handleChange}
-            required
-          />
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label>Категория</Label>
-        <Select
-          onValueChange={(value) => handleSelectChange("categoryId", value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Выбрать категорию" />
-          </SelectTrigger>
-          <SelectContent>
-            {categories.map((cat) => (
-              <SelectItem key={cat.id} value={String(cat.id)}>
-                {cat.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="space-y-2">
-        <Label>Город</Label>
-        <Select onValueChange={(value) => handleSelectChange("townId", value)}>
-          <SelectTrigger>
-            <SelectValue placeholder="Выбрать город" />
-          </SelectTrigger>
-          <SelectContent>
-            {towns.map((town) => (
-              <SelectItem key={town.id} value={String(town.id)}>
-                {town.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="images">Изображения</Label>
-        <Input
-          type="file"
-          multiple
-          accept="image/*"
-          onChange={handleFileChange}
-        />
-      </div>
-
-      <Button type="submit" disabled={loading} className="w-full">
-        {loading ? "Создание..." : "Создать"}
-      </Button>
-    </form>
+      </form>
+    </Container>
   );
 }

@@ -97,7 +97,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
         <SearchIvent />
         {/* Цена */}
         <Select value={price} onValueChange={handlePriceChange}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger size="sm" className="w-[180px]">
             <SelectValue placeholder="Цена" />
           </SelectTrigger>
           <SelectContent>
@@ -113,7 +113,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
           value={category}
           onValueChange={(v) => handleChange("categoryId", v, setCategory)}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger size="sm" className="w-[180px]">
             <SelectValue placeholder="Категория" />
           </SelectTrigger>
           <SelectContent>
@@ -130,7 +130,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
           value={age}
           onValueChange={(v) => handleChange("age", v, setAge)}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger size="sm" className="w-[180px]">
             <SelectValue placeholder="Возраст" />
           </SelectTrigger>
           <SelectContent>

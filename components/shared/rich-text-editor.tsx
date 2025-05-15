@@ -38,8 +38,8 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   if (!isClient || !editor) return null;
 
   const buttonClass = (active: boolean) =>
-    `px-2 py-1 rounded ${
-      active ? "bg-blue-300 text-black" : "bg-gray-200 text-black"
+    `px-2 py-1 rounded-[3px] font-medium ${
+      active ? "bg-[#3a5f9d] text-white" : "bg-[#f2f4fb] text-black"
     }`;
 
   return (
@@ -99,7 +99,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
       </div>
 
       {/* Сам редактор */}
-      <EditorContent className="text-20px" editor={editor} />
+      <EditorContent className="text-20px min-h-[122px]" editor={editor} />
     </div>
   );
 };

@@ -82,24 +82,22 @@ bot.command("event", async (ctx) => {
       event.description || "Отсутствует"
     );
 
-    // Формирование сообщения
     const message = `
-🎉 *Информация о событии* 🎉
+    📢 *Информация о событии*
 
-📌 *Название:* ${event.title}
-📍 *Место:* ${event.place}
-📅 *Дата:* ${new Date(event.startDate).toLocaleDateString()}
-⏰ *Время:* ${event.startTime}
-⌛ *Длительность:* ${event.duration} мин.
-💰 *Цена:* ${event.price > 0 ? `${event.price} ₽` : "Бесплатно"}
-🔞 *Возрастное ограничение:* ${event.age}+
+    *📌 Название:* ${event.title}
+    *📍 Место проведения:* ${event.place}
+    *📅 Дата:* ${new Date(event.startDate).toLocaleDateString()}
+    *⏰ Время начала:* ${event.startTime}
+    *⌛ Продолжительность:* ${event.duration} мин.
+    *💰 Стоимость:* ${event.price > 0 ? `${event.price} ₽` : "Бесплатно"}
+    *🔞 Возрастное ограничение:* ${event.age}+
 
-📝 *Описание:*
-${formattedDescription}
+    *📝 Описание:*
+    ${formattedDescription}
 
-🏷️ *Категория:* ${event.category?.name || "-"}
-`;
-
+    🏷️ *Категория:* ${event.category?.name || "Не указана"}
+    `;
     // Отправка изображения события, если оно есть
     // if (event.images && event.images.length > 0) {
     //   for (const image of event.images) {

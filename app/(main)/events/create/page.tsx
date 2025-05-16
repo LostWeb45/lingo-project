@@ -51,7 +51,7 @@ export default function CreateEventPage() {
   const router = useRouter();
 
   useEffect(() => {
-    fetch("/api/categories")
+    fetch("/api/categories/all")
       .then((res) => res.json())
       .then(setCategories);
     fetch("/api/towns")

@@ -3,26 +3,13 @@ import Link from "next/link";
 import { Container, Title } from "@/components/shared";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/constants/auth-options";
+import { redirect } from "next/navigation";
 
 export default async function PendingEventsPage() {
   const session = await getServerSession(authOptions);
 
-  if (!session) {
-    return (
-      <Container className="space-y-6">
-        <Title text="Доступ запрещён" />
-        <p>Вам нужно войти в систему, чтобы просматривать эту страницу.</p>
-      </Container>
-    );
-  }
-
-  if (session.user.role !== "ADMIN") {
-    return (
-      <Container className="space-y-6">
-        <Title text="Доступ запрещён" />
-        <p>У вас нет прав для доступа к этой странице.</p>
-      </Container>
-    );
+  if (!session || session.user.role !== "ADMIN") {
+    redirect("/");
   }
 
   const pendingEvents = await prisma.event.findMany({
@@ -50,12 +37,20 @@ export default async function PendingEventsPage() {
               <p>
                 {event.category.name} — {event.town.name}
               </p>
-              <Link
-                href={`/admin/pending-events/${event.id}`}
-                className="text-blue-600 underline"
-              >
-                Посмотреть / Редактировать
-              </Link>
+              <div className="flex gap-4 mt-4">
+                <Link
+                  href={`/events/${event.id}`}
+                  className="text-blue-600 underline"
+                >
+                  Посмотреть
+                </Link>
+                <Link
+                  href={`/admin/events/${event.id}/edit`}
+                  className="text-yellow-600 underline"
+                >
+                  Редактировать
+                </Link>
+              </div>
               <div className="flex gap-4 mt-6">
                 <form action={`/api/events/${event.id}/approve`} method="POST">
                   <button

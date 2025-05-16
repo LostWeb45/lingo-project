@@ -16,7 +16,7 @@ export default function DeleteImageButton({
         `Удаление изображения: eventId=${eventId}, imageId=${imageId}`
       );
 
-      // window.location.reload();
+      window.location.reload();
     } catch (error) {
       console.error("Ошибка удаления изображения:", error);
     }

@@ -7,7 +7,6 @@ export async function POST(
   req: NextRequest,
   context: { params: { id: string } }
 ) {
-  // Важно: если params — Promise, await нужно здесь
   const params = await context.params;
   const session = await getServerSession(authOptions);
   if (!session || session.user.role !== "ADMIN") {

@@ -11,6 +11,7 @@ export default async function EditEventPage({
 }: {
   params: { id: string };
 }) {
+  const { id } = await params;
   const session = await getServerSession(authOptions);
 
   if (!session || session.user.role !== "ADMIN") {
@@ -18,7 +19,7 @@ export default async function EditEventPage({
   }
 
   const event = await prisma.event.findUnique({
-    where: { id: parseInt(params.id) },
+    where: { id: parseInt(id) },
     include: {
       category: true,
       town: true,

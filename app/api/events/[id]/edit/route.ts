@@ -5,8 +5,10 @@ import { prisma } from "@/prisma/prisma-client";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
+  // Важно: если params — Promise, await нужно здесь
+  const params = await context.params;
   const session = await getServerSession(authOptions);
   if (!session || session.user.role !== "ADMIN") {
     return NextResponse.json({ error: "Access denied" }, { status: 403 });

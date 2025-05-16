@@ -108,12 +108,18 @@ export default async function EventPage({
             </div>
           </div>
           {/* Участники */}
-          <EventParticipants
-            eventId={event.id}
-            initialParticipants={event.participants}
-            participantsCount={event.participantsCount}
-            createdBy={event.createdBy}
-          />
+          {event.status.name === "Предстоящее" ? (
+            <EventParticipants
+              eventId={event.id}
+              initialParticipants={event.participants}
+              participantsCount={event.participantsCount}
+              createdBy={event.createdBy}
+            />
+          ) : (
+            <p className="text-[16px] text-gray-500 mt-[30px]">
+              Пока событие на модерации, в него нельзя вступить
+            </p>
+          )}
         </div>
       </div>
     </Container>

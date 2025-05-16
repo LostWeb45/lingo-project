@@ -15,12 +15,17 @@ export async function GET(request: NextRequest) {
   const limit = parseInt(request.nextUrl.searchParams.get("limit") || "9");
   const offset = parseInt(request.nextUrl.searchParams.get("offset") || "0");
 
+  const upcomingStatus = await prisma.status.findUnique({
+    where: { name: "Предстоящее" },
+  });
+
   const filters = {
     title: {
       contains: query,
       mode: "insensitive" as Prisma.QueryMode,
     },
     archive: false,
+    ...(upcomingStatus ? { statusId: upcomingStatus.id } : {}),
     ...(minPrice &&
       maxPrice && {
         price: { gte: parseInt(minPrice), lte: parseInt(maxPrice) },

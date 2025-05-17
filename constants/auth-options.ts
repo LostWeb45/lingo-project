@@ -176,6 +176,8 @@ export const authOptions: NextAuthOptions = {
       });
 
       if (updatedUser) {
+        token.name = updatedUser.name;
+        token.email = updatedUser.email;
         token.image = updatedUser.image;
       }
 
@@ -185,6 +187,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (session?.user) {
         session.user.id = token.id as string;
+        session.user.name = token.name as string;
         session.user.role = token.role as string;
         session.user.email = token.email as string;
         session.user.image = token.image as string;

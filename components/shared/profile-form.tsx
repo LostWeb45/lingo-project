@@ -98,6 +98,7 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
         name: formData.name,
         password: formData.password,
       });
+
       toast.success("Данные успешно обновлены", { icon: "✅" });
     } catch {
       toast.error("Что-то пошло не так", { icon: "❌" });

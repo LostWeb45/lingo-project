@@ -22,9 +22,6 @@ export default async function PendingEventsPage() {
       town: true,
       category: true,
     },
-    orderBy: {
-      createdAt: "desc",
-    },
   });
 
   return (

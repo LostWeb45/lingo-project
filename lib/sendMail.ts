@@ -1,11 +1,4 @@
-import formData from "form-data";
-import Mailgun from "mailgun.js";
-
-const mailgun = new Mailgun(formData);
-const client = mailgun.client({
-  username: "api",
-  key: process.env.MAILGUN_API_KEY!,
-});
+import nodemailer from "nodemailer";
 
 interface SendEmailProps {
   to: string;
@@ -15,16 +8,26 @@ interface SendEmailProps {
 }
 
 export async function sendMail({ to, subject, text, html }: SendEmailProps) {
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT),
+    secure: Number(process.env.SMTP_PORT) === 465,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+
   try {
-    await client.messages.create(process.env.MAILGUN_DOMAIN!, {
-      from: process.env.MAILGUN_SENDER_EMAIL!,
+    await transporter.sendMail({
+      from: `"LinGo" <${process.env.SMTP_USER}>`,
       to,
       subject,
       text,
       html,
     });
   } catch (error) {
-    console.error("Ошибка отправки письма:", error);
+    console.error("Ошибка при отправке письма:", error);
     throw error;
   }
 }

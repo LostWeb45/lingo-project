@@ -18,8 +18,7 @@ async function main() {
     data: [
       { name: "На проверке" },
       { name: "Предстоящее" },
-      { name: "Набор участников" },
-      { name: "Общение участников " },
+      { name: "Общение участников" },
       { name: "Завершенное" },
       { name: "Отмененное" },
     ],
@@ -267,25 +266,6 @@ async function main() {
         statusId: upcomingStatus.id,
       },
     ],
-  });
-  const rockConcert = await prisma.event.findFirstOrThrow({
-    where: { title: "Рок концерт" },
-  });
-  const jazzEvening = await prisma.event.findFirstOrThrow({
-    where: { title: "Джазовый вечер" },
-  });
-
-  await prisma.eventImage.create({
-    data: {
-      imageUrl: "rock-concert.png",
-      eventId: rockConcert.id,
-    },
-  });
-  await prisma.eventImage.create({
-    data: {
-      imageUrl: "jazz-evening.png",
-      eventId: jazzEvening.id,
-    },
   });
 }
 

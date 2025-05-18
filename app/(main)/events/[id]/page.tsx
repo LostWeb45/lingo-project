@@ -10,8 +10,6 @@ import {
 import { getFormattedDateTime } from "@/lib";
 import { cn } from "@/lib/utils";
 import { MapPin } from "lucide-react";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/constants/auth-options";
 import { EventParticipants } from "@/components/shared/event-participants";
 import SafeHTML from "@/components/shared/safe-html";
 

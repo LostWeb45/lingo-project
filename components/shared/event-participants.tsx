@@ -59,6 +59,25 @@ export const EventParticipants: React.FC<Props> = ({
     });
   };
 
+  const handleKickParticipant = async (userId: number) => {
+    if (!confirm("Вы уверены, что хотите удалить участника?")) return;
+
+    startTransition(async () => {
+      const res = await fetch(`/api/events/${eventId}/kick?userId=${userId}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setParticipants((prev) => prev.filter((u) => u.id !== userId));
+        toast.success("Участник удален");
+      } else {
+        toast.error(data.message || "Ошибка при удалении участника");
+      }
+    });
+  };
+
   return (
     <div className={cn("mt-4", className)}>
       <div className="flex justify-between items-center">
@@ -100,7 +119,21 @@ export const EventParticipants: React.FC<Props> = ({
                     </p>
                   </div>
                 </div>
-                {isCreator && <Crown className="text-yellow-400" />}
+
+                <div className="flex items-center gap-2">
+                  {isCreator && <Crown className="text-yellow-400" />}
+                  {currentUser?.id == createdBy.id &&
+                    user.id !== createdBy.id && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleKickParticipant(user.id)}
+                        disabled={isPending}
+                      >
+                        Кикнуть
+                      </Button>
+                    )}
+                </div>
               </div>
             );
           })

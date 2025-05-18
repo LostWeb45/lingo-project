@@ -38,7 +38,6 @@ export const EventParticipants: React.FC<Props> = ({
     React.useState<User[]>(initialParticipants);
   const [isPending, startTransition] = React.useTransition();
 
-  // Храним пользователя для кика
   const [kickUser, setKickUser] = React.useState<User | null>(null);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
@@ -183,9 +182,8 @@ export const EventParticipants: React.FC<Props> = ({
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="font-semibold!">
-              Вы хотите выгнать участника?
+              Вы хотите удалить участника?
             </DialogTitle>
-            {/* <hr /> */}
             <DialogDescription className="flex items-center gap-4">
               {kickUser && (
                 <div className="flex w-full min-h-[80px] h-[80px] bg-[#f5f6fa] px-[19px] rounded-[2px] mt-[20px]">
@@ -208,7 +206,10 @@ export const EventParticipants: React.FC<Props> = ({
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button className=" w-[120px] h-[40px]" onClick={closeKickDialog}>
+            <Button
+              className=" w-[120px] h-[40px]"
+              onClick={() => setIsDialogOpen(false)}
+            >
               Отмена
             </Button>
             <Button

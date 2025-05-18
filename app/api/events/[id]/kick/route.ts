@@ -7,6 +7,8 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const { id } = await params;
+
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -14,7 +16,7 @@ export async function DELETE(
   }
 
   const currentUserEmail = session.user.email;
-  const eventId = parseInt(params.id);
+  const eventId = parseInt(id);
   const userIdParam = req.nextUrl.searchParams.get("userId");
 
   if (!userIdParam) {

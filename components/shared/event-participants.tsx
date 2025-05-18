@@ -7,7 +7,15 @@ import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { Avatar, Button } from "../ui";
 import { AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Crown } from "lucide-react";
+import { Crown, X } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "../ui/dialog";
 
 interface Props {
   eventId: number;
@@ -29,6 +37,10 @@ export const EventParticipants: React.FC<Props> = ({
   const [participants, setParticipants] =
     React.useState<User[]>(initialParticipants);
   const [isPending, startTransition] = React.useTransition();
+
+  // Храним пользователя для кика
+  const [kickUser, setKickUser] = React.useState<User | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
   if (!currentUser) {
     return (
@@ -60,8 +72,6 @@ export const EventParticipants: React.FC<Props> = ({
   };
 
   const handleKickParticipant = async (userId: number) => {
-    if (!confirm("Вы уверены, что хотите удалить участника?")) return;
-
     startTransition(async () => {
       const res = await fetch(`/api/events/${eventId}/kick?userId=${userId}`, {
         method: "DELETE",
@@ -76,6 +86,16 @@ export const EventParticipants: React.FC<Props> = ({
         toast.error(data.message || "Ошибка при удалении участника");
       }
     });
+  };
+
+  const openKickDialog = (user: User) => {
+    setKickUser(user);
+    setIsDialogOpen(true);
+  };
+
+  const closeKickDialog = () => {
+    setKickUser(null);
+    setIsDialogOpen(false);
   };
 
   return (
@@ -124,14 +144,11 @@ export const EventParticipants: React.FC<Props> = ({
                   {isCreator && <Crown className="text-yellow-400" />}
                   {currentUser?.id == createdBy.id &&
                     user.id !== createdBy.id && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleKickParticipant(user.id)}
-                        disabled={isPending}
-                      >
-                        Кикнуть
-                      </Button>
+                      <X
+                        size={25}
+                        className="text-red-600 cursor-pointer hover:text-red-700"
+                        onClick={() => openKickDialog(user)}
+                      />
                     )}
                 </div>
               </div>
@@ -160,6 +177,55 @@ export const EventParticipants: React.FC<Props> = ({
           </Button>
         )}
       </div>
+
+      {/* Модальное окно подтверждения удаления */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="font-semibold!">
+              Вы хотите выгнать участника?
+            </DialogTitle>
+            {/* <hr /> */}
+            <DialogDescription className="flex items-center gap-4">
+              {kickUser && (
+                <div className="flex w-full min-h-[80px] h-[80px] bg-[#f5f6fa] px-[19px] rounded-[2px] mt-[20px]">
+                  <div className="flex items-center gap-4">
+                    <Avatar className="w-[50px] h-[50px]">
+                      <AvatarImage
+                        src={kickUser.image ?? undefined}
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                      <AvatarFallback className="bg-white text-[20px]">
+                        {kickUser.name?.charAt(0) ?? "П"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-[#2E1A1A] text-[19px] ">
+                      {kickUser.name}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button className=" w-[120px] h-[40px]" onClick={closeKickDialog}>
+              Отмена
+            </Button>
+            <Button
+              variant="outline"
+              className="text-[#3A5F9D] w-[120px] h-[40px]"
+              onClick={() => {
+                if (kickUser) {
+                  handleKickParticipant(kickUser.id);
+                  closeKickDialog();
+                }
+              }}
+            >
+              Удалить
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

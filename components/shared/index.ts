@@ -17,4 +17,5 @@ export { EventCard } from "./event-card";
 export { Footer } from "./footer";
 export { EventParticipants } from "./event-participants";
 export { ParticipantsList } from "./part-list";
+export { HeaderAdmin } from "./header-admin";
 export * from "./modals";

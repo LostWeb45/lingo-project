@@ -44,7 +44,7 @@ export const EventParticipants: React.FC<Props> = ({
   if (!currentUser) {
     return (
       <p className="mt-[50px] text-[18px] text-[#1D3C6A] [font-family:var(--font-montserrat)] font-medium opacity-70">
-        Для участия и просмотра пройдите регистрацию
+        Для просмотра и участия пройдите регистрацию
       </p>
     );
   }

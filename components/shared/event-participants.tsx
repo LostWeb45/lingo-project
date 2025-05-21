@@ -184,7 +184,7 @@ export const EventParticipants: React.FC<Props> = ({
             <DialogTitle className="font-semibold!">
               Вы хотите удалить участника?
             </DialogTitle>
-            <DialogDescription className="flex items-center gap-4">
+            <div className="flex items-center gap-4">
               {kickUser && (
                 <div className="flex w-full min-h-[80px] h-[80px] bg-[#f5f6fa] px-[19px] rounded-[2px] mt-[20px]">
                   <div className="flex items-center gap-4">
@@ -203,7 +203,7 @@ export const EventParticipants: React.FC<Props> = ({
                   </div>
                 </div>
               )}
-            </DialogDescription>
+            </div>
           </DialogHeader>
           <DialogFooter>
             <Button

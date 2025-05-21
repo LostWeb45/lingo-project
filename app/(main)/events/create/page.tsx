@@ -111,7 +111,6 @@ export default function CreateEventPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(eventData),
       });
-
       if (res.ok) {
         router.push("/events");
       } else {

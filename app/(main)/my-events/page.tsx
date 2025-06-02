@@ -13,6 +13,8 @@ interface Event {
   category: { name: string };
   town: { name: string };
   images: { imageUrl: string }[];
+  status: { name: string };
+  createdById: string;
 }
 
 export default function MyEventsPage() {
@@ -47,6 +49,49 @@ export default function MyEventsPage() {
     });
   };
 
+  const upcomingEvents = events.filter(
+    (event) => event.status?.name === "Предстоящее"
+  );
+  const pendingEvents = events.filter(
+    (event) => event.status?.name === "На проверке"
+  );
+
+  const renderEventItem = (event: Event) => {
+    const isCreator = event.createdById == session?.user?.id;
+
+    return (
+      <li
+        key={event.id}
+        className="border rounded-lg p-4 flex justify-between items-center"
+      >
+        <div>
+          <Link
+            href={`/events/${event.id}`}
+            className="text-lg font-semibold hover:underline"
+          >
+            {event.title}
+          </Link>
+          <p className="text-sm text-gray-600">
+            {event.town.name} · {event.category.name}
+          </p>
+        </div>
+        {isCreator ? (
+          <span title="Вы создатель" className="text-yellow-500 text-xl">
+            👑
+          </span>
+        ) : (
+          <button
+            onClick={() => handleLeave(event.id)}
+            disabled={isPending}
+            className="text-sm text-red-600 hover:underline disabled:opacity-50"
+          >
+            Выйти
+          </button>
+        )}
+      </li>
+    );
+  };
+
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <div className="flex justify-between items-center">
@@ -63,33 +108,24 @@ export default function MyEventsPage() {
       {events.length === 0 ? (
         <p className="text-gray-500">Вы ещё не участвуете в событиях</p>
       ) : (
-        <ul className="space-y-4">
-          {events.map((event) => (
-            <li
-              key={event.id}
-              className="border rounded-lg p-4 flex justify-between items-center"
-            >
-              <div>
-                <Link
-                  href={`/events/${event.id}`}
-                  className="text-lg font-semibold hover:underline"
-                >
-                  {event.title}
-                </Link>
-                <p className="text-sm text-gray-600">
-                  {event.town.name} · {event.category.name}
-                </p>
-              </div>
-              <button
-                onClick={() => handleLeave(event.id)}
-                disabled={isPending}
-                className="text-sm text-red-600 hover:underline disabled:opacity-50"
-              >
-                Выйти
-              </button>
-            </li>
-          ))}
-        </ul>
+        <>
+          {upcomingEvents.length > 0 && (
+            <>
+              <h2 className="text-xl font-semibold mt-6 mb-2">Предстоящие</h2>
+              <ul className="space-y-4">
+                {upcomingEvents.map(renderEventItem)}
+              </ul>
+            </>
+          )}
+          {pendingEvents.length > 0 && (
+            <>
+              <h2 className="text-xl font-semibold mt-6 mb-2">На проверке</h2>
+              <ul className="space-y-4">
+                {pendingEvents.map(renderEventItem)}
+              </ul>
+            </>
+          )}
+        </>
       )}
     </div>
   );

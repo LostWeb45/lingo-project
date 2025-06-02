@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Plus } from "lucide-react";
+import { Crown, Plus } from "lucide-react";
 
 interface Event {
   id: number;
@@ -76,9 +76,7 @@ export default function MyEventsPage() {
           </p>
         </div>
         {isCreator ? (
-          <span title="Вы создатель" className="text-yellow-500 text-xl">
-            👑
-          </span>
+          <Crown className="text-yellow-400" />
         ) : (
           <button
             onClick={() => handleLeave(event.id)}

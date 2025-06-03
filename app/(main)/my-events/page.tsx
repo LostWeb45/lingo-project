@@ -5,7 +5,8 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Crown, Plus } from "lucide-react";
+import { Crown, LogOut, Plus } from "lucide-react";
+import { Title } from "@/components/shared";
 
 interface Event {
   id: number;
@@ -59,41 +60,47 @@ export default function MyEventsPage() {
   const renderEventItem = (event: Event) => {
     const isCreator = event.createdById == session?.user?.id;
 
+    const handleClick = () => {
+      router.push(`/events/${event.id}`);
+    };
+
+    const handleLeaveClick = (
+      e: React.MouseEvent<SVGSVGElement, MouseEvent>
+    ) => {
+      e.stopPropagation();
+      handleLeave(event.id);
+    };
+
     return (
-      <li
+      <div
         key={event.id}
-        className="border rounded-lg p-4 flex justify-between items-center"
+        onClick={handleClick}
+        className="p-5 px-7 flex justify-between transition-shadow duration-300 items-center bg-[#f5f6fa] hover:shadow-lg cursor-pointer"
       >
         <div>
-          <Link
-            href={`/events/${event.id}`}
-            className="text-lg font-semibold hover:underline"
-          >
-            {event.title}
-          </Link>
-          <p className="text-sm text-gray-600">
+          <div className="text-lg font-semibold">{event.title}</div>
+          <p className="text-md text-gray-600">
             {event.town.name} · {event.category.name}
           </p>
         </div>
         {isCreator ? (
-          <Crown className="text-yellow-400" />
+          <Crown className="text-yellow-400" width={25} />
         ) : (
-          <button
-            onClick={() => handleLeave(event.id)}
-            disabled={isPending}
-            className="text-sm text-red-600 hover:underline disabled:opacity-50"
-          >
-            Выйти
-          </button>
+          <LogOut
+            className="text-red-500 cursor-pointer"
+            width={25}
+            onClick={handleLeaveClick}
+          />
         )}
-      </li>
+      </div>
     );
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-1 max-w-4xl mx-auto">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold mb-4">Мои события</h1>
+        <Title text="Мои события" className="font-medium" />
+
         <button
           onClick={() => redirect("/events/create")}
           className="flex justify-center items-center relative gap-2 border font-semibold border-[#aebdf3] rounded-[2px] cursor-pointer px-[15px] py-[6px] duration-200 hover:bg-[#e6e6f4]"
@@ -102,28 +109,34 @@ export default function MyEventsPage() {
           <Plus className="text-[#3A5F9D]" width={20} />
         </button>
       </div>
+      <hr className="w-[90%] mx-auto my-4" />
 
       {events.length === 0 ? (
         <p className="text-gray-500">Вы ещё не участвуете в событиях</p>
       ) : (
-        <>
+        <div>
           {upcomingEvents.length > 0 && (
-            <>
-              <h2 className="text-xl font-semibold mt-6 mb-2">Предстоящие</h2>
-              <ul className="space-y-4">
+            <div>
+              <h3 className="text-xl font-semibold mt-2 mb-2 ml-[12px] text-[#585858] ">
+                Предстоящие
+              </h3>
+
+              <div className="space-y-4 ">
                 {upcomingEvents.map(renderEventItem)}
-              </ul>
-            </>
+              </div>
+            </div>
           )}
           {pendingEvents.length > 0 && (
-            <>
-              <h2 className="text-xl font-semibold mt-6 mb-2">На проверке</h2>
-              <ul className="space-y-4">
+            <div>
+              <h3 className="text-xl text-[#585858] ml-[12px] font-semibold mt-3 mb-2 ">
+                На проверке
+              </h3>
+              <div className="space-y-4">
                 {pendingEvents.map(renderEventItem)}
-              </ul>
-            </>
+              </div>
+            </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );

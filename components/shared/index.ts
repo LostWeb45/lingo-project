@@ -18,4 +18,5 @@ export { Footer } from "./footer";
 export { EventParticipants } from "./event-participants";
 export { ParticipantsList } from "./part-list";
 export { HeaderAdmin } from "./header-admin";
+export { EventChat } from "./event-chat";
 export * from "./modals";

@@ -1,5 +1,5 @@
 import { prisma } from "@/prisma/prisma-client";
-import { Container, Title } from "@/components/shared";
+import { Container, EventChat, Title } from "@/components/shared";
 import {
   Carousel,
   CarouselContent,
@@ -12,6 +12,8 @@ import { cn } from "@/lib/utils";
 import { MapPin } from "lucide-react";
 import { EventParticipants } from "@/components/shared/event-participants";
 import SafeHTML from "@/components/shared/safe-html";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/constants/auth-options";
 
 export default async function EventPage({
   params,
@@ -31,6 +33,9 @@ export default async function EventPage({
       participants: true,
     },
   });
+
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
 
   if (!event) return <Container>Событие не найдено</Container>;
 
@@ -120,6 +125,9 @@ export default async function EventPage({
           )}
         </div>
       </div>
+      {event.status.name === "Предстоящее" && (
+        <EventChat eventId={event.id} userId={Number(userId)} />
+      )}
     </Container>
   );
 }

@@ -87,7 +87,7 @@ export default function MyEventsPage() {
           <Crown className="text-yellow-400" width={25} />
         ) : (
           <LogOut
-            className="text-red-500 cursor-pointer"
+            className="text-red-500 cursor-pointer duration-300 hover:text-red-400 "
             width={25}
             onClick={handleLeaveClick}
           />
@@ -112,7 +112,9 @@ export default function MyEventsPage() {
       <hr className="w-[90%] mx-auto my-4" />
 
       {events.length === 0 ? (
-        <p className="text-gray-500">Вы ещё не участвуете в событиях</p>
+        <h3 className="text-xl font-semibold mt-2 mb-2 ml-[33%] text-[#585858] ">
+          Вы ещё не участвуете в событиях
+        </h3>
       ) : (
         <div>
           {upcomingEvents.length > 0 && (

@@ -1,5 +1,6 @@
 "use client";
 
+import { User } from "@prisma/client";
 import { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import { Socket } from "socket.io-client";
@@ -15,9 +16,11 @@ interface ChatMessage {
 export function EventChat({
   eventId,
   userId,
+  participants,
 }: {
   eventId: number;
   userId: number;
+  participants: User[];
 }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
@@ -25,17 +28,14 @@ export function EventChat({
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // 1. Загрузка истории сообщений из API
     fetch(`http://localhost:5000/events/${eventId}/messages`)
       .then((res) => res.json())
       .then((data: ChatMessage[]) => setMessages(data));
 
-    // 2. Подключение к WebSocket-серверу
     socketRef.current = io("http://localhost:5001", {
       query: { eventId: eventId.toString(), userId: userId.toString() },
     });
 
-    // 3. Получение новых сообщений
     socketRef.current.on("message", (msg: ChatMessage) => {
       setMessages((prev) => [...prev, msg]);
     });
@@ -68,7 +68,11 @@ export function EventChat({
             }`}
           >
             <span className="font-semibold">
-              {msg.senderId === userId ? "Вы" : `Пользователь ${msg.senderId}`}:{" "}
+              {msg.senderId === userId
+                ? "Вы"
+                : participants.find((p) => p.id === msg.senderId)?.name ||
+                  `Пользователь ${msg.senderId}`}
+              :{" "}
             </span>
             <span>{msg.message}</span>
             <br />

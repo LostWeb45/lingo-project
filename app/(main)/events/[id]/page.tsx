@@ -126,7 +126,11 @@ export default async function EventPage({
         </div>
       </div>
       {event.status.name === "Предстоящее" && (
-        <EventChat eventId={event.id} userId={Number(userId)} />
+        <EventChat
+          eventId={event.id}
+          userId={Number(userId)}
+          participants={event.participants}
+        />
       )}
     </Container>
   );

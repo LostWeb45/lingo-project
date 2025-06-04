@@ -2,8 +2,9 @@
 
 import { User } from "@prisma/client";
 import { useEffect, useState, useRef } from "react";
-import io from "socket.io-client";
-import { Socket } from "socket.io-client";
+import io, { Socket } from "socket.io-client";
+import { Button } from "../ui";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface ChatMessage {
   id: number;
@@ -11,6 +12,7 @@ interface ChatMessage {
   senderId: number;
   message: string;
   createdAt: string;
+  senderAvatar?: string;
 }
 
 export function EventChat({
@@ -49,6 +51,22 @@ export function EventChat({
     };
   }, [eventId, userId, isParticipant]);
 
+  useEffect(() => {
+    bottomRef.current?.parentElement?.scrollTo({
+      top: bottomRef.current.offsetTop,
+      behavior: "smooth",
+    });
+  }, [messages]);
+
+  useEffect(() => {
+    if (isParticipant) {
+      window.scrollTo({
+        top: document.body.scrollHeight - document.body.scrollHeight * 0.5,
+        behavior: "smooth",
+      });
+    }
+  }, [isParticipant]);
+
   const sendMessage = () => {
     if (input.trim() && socketRef.current) {
       socketRef.current.emit("message", input);
@@ -58,52 +76,82 @@ export function EventChat({
 
   if (!isParticipant) {
     return (
-      <div className="p-4 mt-2 w-full h-[350px] flex items-center justify-center bg-gray-100 text-gray-600 text-center rounded">
+      <div className="p-2 mt-2 w-full text-[18px] h-[360px] flex items-center justify-center bg-[#f5f6fa] text-gray-600 text-center">
         Только участники могут пользоваться чатом
       </div>
     );
   }
 
   return (
-    <div className="p-4 mt-6 w-full h-[300px] flex flex-col bg-white overflow-hidden">
+    <div className="p-2 shadow-sm mt-2 w-full h-[360px] flex flex-col overflow-hidden bg-white">
       <div className="flex-1 overflow-y-auto mb-2 pr-2">
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={`mb-2 ${
-              msg.senderId === userId ? "text-right" : "text-left"
-            }`}
-          >
-            <span className="font-semibold">
-              {msg.senderId === userId
-                ? "Вы"
-                : participants.find((p) => p.id === msg.senderId)?.name ||
-                  `Пользователь ${msg.senderId}`}
-              :{" "}
-            </span>
-            <span>{msg.message}</span>
-            <br />
-            <small className="text-xs text-gray-400">
-              {new Date(msg.createdAt).toLocaleTimeString()}
-            </small>
-          </div>
-        ))}
+        {messages.map((msg) => {
+          const participant = participants.find((p) => p.id === msg.senderId);
+          const isUserMessage = msg.senderId === userId;
+
+          return (
+            <div
+              key={msg.id}
+              className={`mb-2 flex flex-col items-start max-w-fit ${
+                isUserMessage ? "ml-auto" : "mr-auto text-left"
+              }`}
+            >
+              <div className="flex gap-2 items-center">
+                {!isUserMessage && (
+                  <Avatar
+                    key={msg.id}
+                    className={`cursor-pointer w-[33px] h-[33px] hover:opacity-90 transition-opacity `}
+                  >
+                    {participant?.image ? (
+                      <AvatarImage
+                        src={participant.image}
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    ) : (
+                      <AvatarFallback className="bg-[#fcfcfc]  text-[16px]">
+                        {participant?.name
+                          ? participant.name.charAt(0).toUpperCase()
+                          : "П"}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                )}
+                <span className="font-semibold">
+                  {isUserMessage
+                    ? "Вы"
+                    : participant?.name || `Пользователь ${msg.senderId}`}
+                </span>
+              </div>
+              <div
+                className={`px-3 py-1 rounded-md mt-1 ${
+                  isUserMessage ? "bg-[#d9e4f8] " : "bg-[#ece8e8]"
+                }`}
+              >
+                <div className="text-[18px]">{msg.message}</div>
+                <small className="text-xs text-gray-500">
+                  {new Date(msg.createdAt).toLocaleTimeString()}
+                </small>
+              </div>
+            </div>
+          );
+        })}
         <div ref={bottomRef} />
       </div>
+
       <div className="flex gap-2">
         <input
-          className="flex-1 border px-2 py-1 rounded"
+          className="flex-1 border px-2 py-1"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
           placeholder="Напишите сообщение..."
         />
-        <button
-          className="bg-blue-500 text-white px-3 py-1 rounded"
+        <Button
+          className="w-[150px] h-[42px] text-[15px]"
           onClick={sendMessage}
         >
           Отправить
-        </button>
+        </Button>
       </div>
     </div>
   );

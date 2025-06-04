@@ -111,7 +111,8 @@ export default function MyEventsPage() {
       </div>
       <hr className="w-[90%] mx-auto my-4" />
 
-      {events.length === 0 ? (
+      {events.length === 0 ||
+      (upcomingEvents.length === 0 && pendingEvents.length === 0) ? (
         <h3 className="text-xl font-semibold mt-2 mb-2 ml-[33%] text-[#585858] ">
           Вы ещё не участвуете в событиях
         </h3>
@@ -122,8 +123,7 @@ export default function MyEventsPage() {
               <h3 className="text-xl font-semibold mt-2 mb-2 ml-[12px] text-[#585858] ">
                 Предстоящие
               </h3>
-
-              <div className="space-y-4 ">
+              <div className="space-y-4">
                 {upcomingEvents.map(renderEventItem)}
               </div>
             </div>

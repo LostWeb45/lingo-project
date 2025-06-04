@@ -116,20 +116,27 @@ export function EventChat({
                     )}
                   </Avatar>
                 )}
-                <span className="font-semibold">
+                <span
+                  className={`font-semibold  ${
+                    isUserMessage ? "text-right" : "text-right"
+                  }`}
+                >
                   {isUserMessage
                     ? "Вы"
                     : participant?.name || `Пользователь ${msg.senderId}`}
                 </span>
               </div>
               <div
-                className={`px-3 py-1 rounded-md mt-1 ${
+                className={`pl-3 pr-4 py-2 rounded-md mt-2 ${
                   isUserMessage ? "bg-[#d9e4f8] " : "bg-[#ece8e8]"
                 }`}
               >
                 <div className="text-[18px]">{msg.message}</div>
                 <small className="text-xs text-gray-500">
-                  {new Date(msg.createdAt).toLocaleTimeString()}
+                  {new Date(msg.createdAt).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </small>
               </div>
             </div>

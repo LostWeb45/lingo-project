@@ -27,7 +27,11 @@ export function EventChat({
   const socketRef = useRef<typeof Socket | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  const isParticipant = participants.some((p) => p.id === userId);
+
   useEffect(() => {
+    if (!isParticipant) return;
+
     fetch(`http://localhost:5000/events/${eventId}/messages`)
       .then((res) => res.json())
       .then((data: ChatMessage[]) => setMessages(data));
@@ -43,12 +47,7 @@ export function EventChat({
     return () => {
       socketRef.current?.disconnect();
     };
-  }, [eventId, userId]);
-
-  //   useEffect(() => {
-  //     // Автопрокрутка вниз при новых сообщениях
-  //     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  //   }, [messages]);
+  }, [eventId, userId, isParticipant]);
 
   const sendMessage = () => {
     if (input.trim() && socketRef.current) {
@@ -57,8 +56,16 @@ export function EventChat({
     }
   };
 
+  if (!isParticipant) {
+    return (
+      <div className="p-4 mt-2 w-full h-[350px] flex items-center justify-center bg-gray-100 text-gray-600 text-center rounded">
+        Только участники могут пользоваться чатом
+      </div>
+    );
+  }
+
   return (
-    <div className="border p-4 mt-6 rounded-md w-full h-[400px] flex flex-col bg-white overflow-hidden">
+    <div className="p-4 mt-6 w-full h-[300px] flex flex-col bg-white overflow-hidden">
       <div className="flex-1 overflow-y-auto mb-2 pr-2">
         {messages.map((msg) => (
           <div

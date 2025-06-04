@@ -80,9 +80,17 @@ export default async function EventPage({
             </p>
             <hr className="w-[30%] mt-1" />
           </div>
+
           <div className="text-[18px] max-w-full overflow-hidden break-words">
             <SafeHTML html={event.description} />
           </div>
+          {event.status.name === "Предстоящее" && (
+            <EventChat
+              eventId={event.id}
+              userId={Number(userId)}
+              participants={event.participants}
+            />
+          )}
         </div>
 
         <div className="w-[37%] mt-[7px]">
@@ -125,13 +133,6 @@ export default async function EventPage({
           )}
         </div>
       </div>
-      {event.status.name === "Предстоящее" && (
-        <EventChat
-          eventId={event.id}
-          userId={Number(userId)}
-          participants={event.participants}
-        />
-      )}
     </Container>
   );
 }

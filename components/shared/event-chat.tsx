@@ -92,7 +92,7 @@ export function EventChat({
           return (
             <div
               key={msg.id}
-              className={`mb-2 flex flex-col items-start max-w-fit ${
+              className={`mb-1 flex flex-col items-start max-w-fit ${
                 isUserMessage ? "ml-auto" : "mr-auto text-left"
               }`}
             >
@@ -127,11 +127,13 @@ export function EventChat({
                 </span>
               </div>
               <div
-                className={`pl-3 pr-4 py-2 rounded-md mt-2 ${
+                className={`pl-2 pr-4 py-1 rounded-md mt-[4px] ${
                   isUserMessage ? "bg-[#d9e4f8] " : "bg-[#ece8e8]"
                 }`}
               >
-                <div className="text-[18px]">{msg.message}</div>
+                <div className="text-[18px] break-words whitespace-pre-wrap max-w-[300px] sm:max-w-[400px]">
+                  {msg.message}
+                </div>
                 <small className="text-xs text-gray-500">
                   {new Date(msg.createdAt).toLocaleTimeString([], {
                     hour: "2-digit",
@@ -146,11 +148,16 @@ export function EventChat({
       </div>
 
       <div className="flex gap-2">
-        <input
-          className="flex-1 border px-2 py-1"
+        <textarea
+          className="flex-1 border px-2 py-1 resize-none h-[42px] max-h-[100px] overflow-y-auto"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              sendMessage();
+            }
+          }}
           placeholder="Напишите сообщение..."
         />
         <Button

@@ -13,6 +13,9 @@ import {
 } from "@/components/ui/select";
 import { Category } from "@prisma/client";
 import { Plus } from "lucide-react";
+import { create } from "domain";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 interface Props {
   className?: string;
@@ -35,6 +38,7 @@ const ageOptions = [
 export const Filters: React.FC<Props> = ({ className }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { data: session } = useSession();
 
   const [price, setPrice] = React.useState(searchParams.get("price") || "any");
   const [category, setCategory] = React.useState(
@@ -67,6 +71,14 @@ export const Filters: React.FC<Props> = ({ className }) => {
         value === "3000+" ? ["3000", "20000"] : value.split("-");
       updateParams({ minPrice, maxPrice });
     }
+  };
+  const createEvent = () => {
+    if (!session) {
+      toast.error("Сначала войдите в аккаунт");
+      return;
+    }
+
+    redirect("/events/create");
   };
 
   const handleChange = (
@@ -151,7 +163,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
         )}
       </div>
       <button
-        onClick={() => redirect("/events/create")}
+        onClick={createEvent}
         className="flex justify-center items-center relative gap-2 border font-semibold border-[#aebdf3] rounded-[2px] cursor-pointer px-[15px] py-[6px] duration-200 hover:bg-[#e6e6f4]"
       >
         <p className="text-[#3A5F9D] text-[16px]">Создать событие</p>

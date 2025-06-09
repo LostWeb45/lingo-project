@@ -37,6 +37,19 @@ export const formUpdateSchema = z
     path: ["confirmPassword"],
   });
 
+export const formResetPasswordSchema = z
+  .object({
+    email: z.string().email({ message: "Введите корректную почту" }),
+    code: z.string().min(6, { message: "Введите код из письма" }),
+    password: passwordSchema,
+    confirmPassword: passwordSchema,
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Пароли не совпадают",
+    path: ["confirmPassword"],
+  });
+
 export type TFormUpdateValues = z.infer<typeof formUpdateSchema>;
 export type TFormLoginValues = z.infer<typeof formLoginSchema>;
 export type TFormRegisterValues = z.infer<typeof formRegisterSchema>;
+export type TFormResetPasswordValues = z.infer<typeof formResetPasswordSchema>;

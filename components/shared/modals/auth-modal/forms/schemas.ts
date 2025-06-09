@@ -9,16 +9,19 @@ export const formLoginSchema = z.object({
   password: passwordSchema,
 });
 
-export const formRegisterSchema = formLoginSchema
-  .merge(
-    z.object({
-      name: z.string().min(2, { message: "Введите корректное имя" }),
-      confirmPassword: passwordSchema,
-    })
-  )
-  .refine((data) => data.password == data.confirmPassword, {
-    message: "Пароли не совпадают",
+export const formRegisterSchema = z
+  .object({
+    name: z.string().min(2, "Имя обязательно"),
+    email: z.string().email("Некорректный email"),
+    password: z.string().min(6, "Минимум 6 символов"),
+    confirmPassword: z.string(),
+    acceptTerms: z.literal(true, {
+      errorMap: () => ({ message: "Вы должны принять условия" }),
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
     path: ["confirmPassword"],
+    message: "Пароли не совпадают",
   });
 
 export const formUpdateSchema = z

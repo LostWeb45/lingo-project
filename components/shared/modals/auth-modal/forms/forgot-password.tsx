@@ -59,7 +59,7 @@ export const ForgotPasswordForm = () => {
           loading={form.formState.isSubmitting}
           disabled={form.formState.isSubmitting}
         >
-          Получить код восстановления
+          Отправить
         </Button>
       </form>
     </FormProvider>

@@ -121,6 +121,29 @@ export const RegisterForm: React.FC<Props> = ({ onClose, className }) => {
           type="password"
           required
         />
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            {...form.register("acceptTerms")}
+            className="accent-[#3a5f9d] w-5 h-5"
+            id="acceptTerms"
+          />
+          <label htmlFor="acceptTerms" className="text-sm text-gray-700">
+            Я принимаю{" "}
+            <a
+              href="/policy"
+              target="_blank"
+              className="text-[#3a5f9d] underline"
+            >
+              условия обработки персональных данных
+            </a>
+          </label>
+        </div>
+        {form.formState.errors.acceptTerms && (
+          <p className="text-red-500 text-sm -mt-3">
+            {form.formState.errors.acceptTerms.message}
+          </p>
+        )}
 
         <Button
           className="h-[50px]"

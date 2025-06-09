@@ -52,6 +52,10 @@ export const Header: React.FC<Props> = ({ initSession, className }) => {
       toastMessage = "Почта успешно подтверждена";
     }
 
+    // if (searParams.has("created")) {
+    //   toastMessage = "Событие отправлено на модерацию";
+    // }
+
     if (toastMessage) {
       setTimeout(() => {
         router.replace("/");

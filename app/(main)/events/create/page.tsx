@@ -24,6 +24,7 @@ import { ru } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import { Container, Title } from "@/components/shared";
+import toast from "react-hot-toast";
 
 type Category = { id: number; name: string };
 type Town = { id: number; name: string };
@@ -112,6 +113,9 @@ export default function CreateEventPage() {
         body: JSON.stringify(eventData),
       });
       if (res.ok) {
+        toast.success("Событие отправлено на модерацию", {
+          duration: 3000,
+        });
         router.push("/events");
       } else {
         alert("Ошибка при создании события");

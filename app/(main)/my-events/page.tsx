@@ -26,9 +26,7 @@ export default function MyEventsPage() {
 
   React.useEffect(() => {
     if (status === "loading") return;
-    if (!session) {
-      router.push("/");
-    } else {
+    if (session) {
       fetch("/api/user/participated-events")
         .then((res) => res.json())
         .then((data) => setEvents(data));

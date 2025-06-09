@@ -6,11 +6,12 @@ export const ForgotPassword = ({ code }: { code: string }) => `
         Вы запросили восстановление пароля на сайте <strong>LinGo</strong>.
       </p>
       <p style="font-size: 16px; color: #555;">
-        Введите этот код в форме на сайте, чтобы сбросить пароль:
+        Нажмите на кнопку для перехода на форму восстановления:
       </p>
       <div style="font-size: 32px; font-weight: bold; color: #000; text-align: center; letter-spacing: 4px; margin: 24px 0;">
         ${code}
       </div>
+      <div style="text-align: center;">
       <a
           href="http://localhost:3000/reset-password?code=${code}"
           style="
@@ -26,6 +27,7 @@ export const ForgotPassword = ({ code }: { code: string }) => `
         >
           Восстановить пароль
         </a>
+      </div>
       <p style="font-size: 14px; color: #999;">Если вы не запрашивали восстановление, просто проигнорируйте это письмо.</p>
     </div>
   </div>

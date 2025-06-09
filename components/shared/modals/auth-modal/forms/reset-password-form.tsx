@@ -3,7 +3,7 @@
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 import { formResetPasswordSchema, TFormResetPasswordValues } from "./schemas";
 import { FormInput } from "@/components/shared/form/form-input";
@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 
 export const ResetPasswordForm = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const codeFromUrl = searchParams.get("code") || "";
 
   const form = useForm<TFormResetPasswordValues>({
@@ -24,7 +25,6 @@ export const ResetPasswordForm = () => {
     },
   });
 
-  // Если пользователь попал на страницу позже, можно подставить код динамически
   useEffect(() => {
     if (codeFromUrl) {
       form.setValue("code", codeFromUrl);
@@ -45,8 +45,12 @@ export const ResetPasswordForm = () => {
         return;
       }
 
-      toast.success("Пароль успешно обновлён. Войдите заново.");
+      toast.success("Пароль успешно обновлён.");
       form.reset();
+
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
     } catch (e) {
       toast.error("Ошибка сервера");
     }

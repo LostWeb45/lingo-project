@@ -1,19 +1,20 @@
-// app/reset-password/page.tsx
 "use client";
 
+import { Container, Title } from "@/components/shared";
 import { ResetPasswordForm } from "@/components/shared/modals/auth-modal/forms/reset-password-form";
-import React from "react";
 
 const ResetPasswordPage = () => {
   return (
-    <main className="flex min-h-screen items-center justify-center p-4 bg-gray-50">
-      <div className="w-full max-w-md bg-white p-8 rounded shadow">
-        <h1 className="text-2xl font-semibold mb-6 text-center">
-          Сброс пароля
-        </h1>
+    <Container className="flex justify-center">
+      <div className="w-full max-w-lg bg-white shadow-sm rounded-[3px] p-8 border border-gray-100">
+        <div className="text-center mb-6">
+          <Title text="Сброс пароля" className="font-medium text-[26px]" />
+          <div className="w-[240px] h-[3px] bg-gray-300 mx-auto mt-3 rounded-full" />
+        </div>
+
         <ResetPasswordForm />
       </div>
-    </main>
+    </Container>
   );
 };
 

@@ -16,6 +16,7 @@ import { FormInput } from "./form/form-input";
 import { Button } from "../ui";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { requestEmailVerification, updateUserInfo } from "@/app/actions";
+import { Link } from "lucide-react";
 
 interface Props {
   data: User;
@@ -111,7 +112,7 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
   // Функция для сохранения telegramId
   const handleTelegramIdSave = async () => {
     try {
-      const res = await fetch("/api/set-telegram-id", {
+      const res = await fetch("/api/user/set-telegram", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ telegramId }),
@@ -131,7 +132,7 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
     name?.split(" ")[0] ?? "Пользователь";
 
   return (
-    <Container className="flex justify-center gap-10">
+    <Container className="flex flex-col justify-center items-center">
       <div className="w-full max-w-lg bg-white shadow-sm rounded-[3px] p-8 border border-gray-100">
         <div className="text-center mb-6">
           <Title text="Ваши данные" className="font-medium text-[26px]" />
@@ -236,12 +237,25 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
         </FormProvider>
       </div>
 
-      {/* Новая секция для Telegram ID и ссылки на бота */}
-      <div className="w-full max-w-sm bg-white shadow-sm rounded-[3px] p-6 border border-gray-100 flex flex-col items-center">
-        <Title
-          text="Telegram Уведомления"
-          className="font-medium text-[24px] mb-4"
-        />
+      <div className="w-full max-w-lg bg-white shadow-sm rounded-[3px] p-8 border border-gray-100 mt-6">
+        <div className="text-center mb-2">
+          <Title
+            text="Telegram уведомления"
+            className="font-medium"
+            size="md"
+          />
+
+          <a
+            href="https://t.me/LinGoForSiteBot"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full text-center text-lg flex items-center justify-center gap-1 text-[#1d3c6a]"
+          >
+            Перейти к боту
+            <Link width={16} className="mt-1" />
+          </a>
+        </div>
+
         <input
           type="text"
           placeholder="Введите ваш Telegram ID"
@@ -249,18 +263,12 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
           onChange={(e) => setTelegramId(e.target.value)}
           className="w-full border border-gray-300 rounded px-3 py-2 mb-3 text-[16px]"
         />
-        <Button onClick={handleTelegramIdSave} className="w-full mb-4 h-[44px]">
-          Сохранить Telegram ID
-        </Button>
-
-        <a
-          href="https://t.me/your_bot_username"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="w-full text-center py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        <Button
+          onClick={handleTelegramIdSave}
+          className="w-full mb-4 h-[50px] text-[18px]"
         >
-          Перейти к боту
-        </a>
+          Применить
+        </Button>
       </div>
     </Container>
   );

@@ -22,22 +22,22 @@ export const AccordionMain: React.FC<Props> = ({ className }) => {
       )}
     >
       <AccordionItem value="item-1">
+        <AccordionTrigger className="group flex justify-between items-center py-3 text-[17px] font-bold text-[#1D3C6A] transition-colors hover:text-[#3A5F9D] no-underline">
+          Удобное вступление и напоминания
+        </AccordionTrigger>
+        <AccordionContent className="text-[#333] text-[14px] leading-[20px] pb-2">
+          Вы можете вступать в события в один клик, подключить напоминания в
+          профиле и быть уверенным, что не пропустите ничего важного.
+        </AccordionContent>
+      </AccordionItem>
+
+      <AccordionItem value="item-2">
         <AccordionTrigger className="group flex justify-between items-center  text-[17px] font-bold text-[#1D3C6A] transition-colors hover:text-[#3A5F9D] no-underline">
           Быстрый доступ к мероприятиям
         </AccordionTrigger>
         <AccordionContent className="text-[#333] text-[14px] leading-[20px] pb-2">
           Платформа показывает актуальные события рядом с вами — не нужно
           тратить время на поиски в соцсетях или переписках.
-        </AccordionContent>
-      </AccordionItem>
-
-      <AccordionItem value="item-2">
-        <AccordionTrigger className="group flex justify-between items-center py-3 text-[17px] font-bold text-[#1D3C6A] transition-colors hover:text-[#3A5F9D] no-underline">
-          Удобное вступление и напоминания
-        </AccordionTrigger>
-        <AccordionContent className="text-[#333] text-[14px] leading-[20px] pb-2">
-          Вы можете вступать в события в один клик, получать напоминания и быть
-          уверенным, что не пропустите ничего важного.
         </AccordionContent>
       </AccordionItem>
 

@@ -26,6 +26,9 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
   const [isYandexProvider, setIsYandexProvider] = React.useState(false);
   const [imageUrl, setImageUrl] = React.useState(data.image || "");
 
+  // Новый стейт для telegramId
+  const [telegramId, setTelegramId] = React.useState(data.telegramId || "");
+
   React.useEffect(() => {
     if (session?.user?.email) {
       setIsYandexProvider(session.user.provider === "yandex");
@@ -105,11 +108,30 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
     }
   };
 
+  // Функция для сохранения telegramId
+  const handleTelegramIdSave = async () => {
+    try {
+      const res = await fetch("/api/set-telegram-id", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ telegramId }),
+      });
+
+      if (res.ok) {
+        toast.success("Telegram ID сохранён");
+      } else {
+        toast.error("Ошибка сохранения Telegram ID");
+      }
+    } catch (error) {
+      toast.error("Ошибка при сохранении Telegram ID");
+    }
+  };
+
   const getFirstName = (name: string | null) =>
     name?.split(" ")[0] ?? "Пользователь";
 
   return (
-    <Container className="flex justify-center">
+    <Container className="flex justify-center gap-10">
       <div className="w-full max-w-lg bg-white shadow-sm rounded-[3px] p-8 border border-gray-100">
         <div className="text-center mb-6">
           <Title text="Ваши данные" className="font-medium text-[26px]" />
@@ -212,6 +234,33 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
             </Button>
           </form>
         </FormProvider>
+      </div>
+
+      {/* Новая секция для Telegram ID и ссылки на бота */}
+      <div className="w-full max-w-sm bg-white shadow-sm rounded-[3px] p-6 border border-gray-100 flex flex-col items-center">
+        <Title
+          text="Telegram Уведомления"
+          className="font-medium text-[24px] mb-4"
+        />
+        <input
+          type="text"
+          placeholder="Введите ваш Telegram ID"
+          value={telegramId}
+          onChange={(e) => setTelegramId(e.target.value)}
+          className="w-full border border-gray-300 rounded px-3 py-2 mb-3 text-[16px]"
+        />
+        <Button onClick={handleTelegramIdSave} className="w-full mb-4 h-[44px]">
+          Сохранить Telegram ID
+        </Button>
+
+        <a
+          href="https://t.me/your_bot_username"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full text-center py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        >
+          Перейти к боту
+        </a>
       </div>
     </Container>
   );

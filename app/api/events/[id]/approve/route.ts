@@ -7,6 +7,7 @@ export async function POST(
   req: Request,
   { params }: { params: { id: string } }
 ) {
+  const { id } = await params;
   const session = await getServerSession(authOptions);
   if (!session || session.user.role !== "ADMIN") {
     return NextResponse.json({ error: "Access denied" }, { status: 403 });
@@ -21,7 +22,7 @@ export async function POST(
   }
 
   await prisma.event.update({
-    where: { id: parseInt(params.id) },
+    where: { id: parseInt(id) },
     data: {
       statusId: approvedStatus.id,
     },

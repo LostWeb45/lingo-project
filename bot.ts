@@ -1,6 +1,4 @@
 import { Context, Telegraf } from "telegraf";
-import axios from "axios";
-import { parse } from "node-html-parser";
 import "dotenv/config";
 
 const BOT_TOKEN = process.env.BOT_TOKEN as string;
@@ -22,112 +20,23 @@ async function safeReply(ctx: Context, text: string): Promise<void> {
   }
 }
 
-// Функция для очистки HTML-форматирования из описания события
-function formatDescription(rawHtml: string) {
-  const root = parse(rawHtml);
-  return root.text.trim();
-}
+bot.command("start", async (ctx) => {
+  const telegramId = ctx.from?.id;
+  const firstName = ctx.from?.first_name || "пользователь";
 
-// Обработчик события добавления бота в группу
-bot.on("my_chat_member", async (ctx) => {
-  const chat = ctx.chat;
-  if (!chat || chat.type === "private") return;
+  const message = `
+👋 Привет, ${firstName}!
 
-  const chatId = chat.id;
-  const title = chat.title;
+Этот бот будет присылать тебе напоминания о событиях, в которых ты участвуешь.
 
-  console.log(`Бот добавлен в группу: ${title}, ID: ${chatId}`);
+🔐 Чтобы получать уведомления:
+1. Скопируй свой Telegram ID: \`${telegramId}\`
+2. Перейди на сайт и вставь его в настройках профиля (в поле "Telegram ID").
 
-  try {
-    await axios.post("http://localhost:3000/api/telegram/group", {
-      chatId,
-      title,
-    });
-    await safeReply(ctx, "Группа успешно связана с событием 🎉");
-  } catch (err) {
-    console.error("Ошибка при отправке chat_id:", err);
-    await safeReply(ctx, "Ошибка при сохранении группы 😞");
-  }
-});
+После этого ты начнёшь получать уведомления за 1 час до начала событий. 🎉
+`;
 
-// Команда для получения информации о событии
-bot.command("event", async (ctx) => {
-  const chatId = ctx.chat?.id;
-  if (!chatId) {
-    return safeReply(ctx, "Эта команда работает только в группах.");
-  }
-
-  try {
-    // Получение eventId по chatId
-    const eventIdResp = await axios.post(
-      "http://localhost:3000/api/telegram/event-byid",
-      { chatId }
-    );
-    if (!eventIdResp.data.eventId) {
-      return safeReply(ctx, "Событие для этой группы не найдено.");
-    }
-    const BASE_URL = "https://localhost:4000";
-    const eventId = eventIdResp.data.eventId;
-
-    // Получение данных события по eventId
-    const eventResp = await axios.get(
-      `http://localhost:3000/api/events?id=${eventId}`
-    );
-    if (!eventResp.data) {
-      return safeReply(ctx, "Ошибка при получении информации о событии.");
-    }
-
-    const event = eventResp.data;
-    const formattedDescription = formatDescription(
-      event.description || "Отсутствует"
-    );
-
-    const message = `
-    📢 *Информация о событии*
-
-    *📌 Название:* ${event.title}
-    *📍 Место проведения:* ${event.place}
-    *📅 Дата:* ${new Date(event.startDate).toLocaleDateString()}
-    *⏰ Время начала:* ${event.startTime}
-    *⌛ Продолжительность:* ${event.duration} мин.
-    *💰 Стоимость:* ${event.price > 0 ? `${event.price} ₽` : "Бесплатно"}
-    *🔞 Возрастное ограничение:* ${event.age}+
-
-    *📝 Описание:*
-    ${formattedDescription}
-
-    🏷️ *Категория:* ${event.category?.name || "Не указана"}
-    `;
-    // Отправка изображения события, если оно есть
-    // if (event.images && event.images.length > 0) {
-    //   for (const image of event.images) {
-    //     const imageUrl = image.imageUrl.startsWith("http")
-    //       ? image.imageUrl
-    //       : `${BASE_URL}${image.imageUrl}`;
-    //     await ctx.replyWithPhoto(imageUrl);
-    //   }
-    // }
-    await safeReply(ctx, message);
-  } catch (err) {
-    console.error("Ошибка при получении события:", err);
-    await safeReply(ctx, "Ошибка при получении информации о событии.");
-  }
-});
-
-// Команда для получения ID группы
-bot.command("id", (ctx) => {
-  const chat = ctx.chat;
-  if (chat) {
-    safeReply(ctx, `ID этой группы: ${chat.id}`);
-  }
-});
-
-// bot.command("hello-blin", (ctx) => {
-//   safeReply(ctx, `Иди на хуй <3`);
-// });
-
-bot.command("start", (ctx) => {
-  safeReply(ctx, "Привет, я бот для событий! Добавьте меня в группу ✨");
+  await safeReply(ctx, message);
 });
 
 // Запуск бота

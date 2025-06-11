@@ -7,6 +7,7 @@ import {
   Title,
 } from "@/components/shared/";
 import { Button } from "@/components/ui";
+import { Suspense } from "react";
 
 export default async function Home() {
   return (
@@ -42,8 +43,12 @@ export default async function Home() {
       {/* Все события, доделать груплист и сам элемент карточки */}
       <Container>
         <Title text={"Все события"} className="font-semibold" url="/events" />
-        <Filters className="mt-[27px]" />
-        <EventList />
+        <Suspense>
+          <Filters className="mt-[27px]" />
+        </Suspense>
+        <Suspense>
+          <EventList />
+        </Suspense>
       </Container>
     </>
   );

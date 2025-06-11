@@ -10,9 +10,6 @@ import { LogIn } from "lucide-react";
 import { AuthModal } from "../modals";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
 
 interface Props {
   initSession: Session | null;
@@ -20,9 +17,6 @@ interface Props {
 }
 
 export const Header: React.FC<Props> = ({ initSession, className }) => {
-  const searParams = useSearchParams();
-  const router = useRouter();
-
   const [openAuthModal, setAuthOpenModal] = React.useState(false);
 
   const { data: clientSession } = useSession();
@@ -40,31 +34,6 @@ export const Header: React.FC<Props> = ({ initSession, className }) => {
     { id: 3, title: "Все события", href: "/events" },
     { id: 4, title: "События с вами", href: "/my-events" },
   ];
-
-  React.useEffect(() => {
-    let toastMessage = "";
-
-    if (searParams.has("logined")) {
-      toastMessage = "Вы успешно вошли в аккаунт";
-    }
-
-    if (searParams.has("verified")) {
-      toastMessage = "Почта успешно подтверждена";
-    }
-
-    // if (searParams.has("created")) {
-    //   toastMessage = "Событие отправлено на модерацию";
-    // }
-
-    if (toastMessage) {
-      setTimeout(() => {
-        router.replace("/");
-        toast.success(toastMessage, {
-          duration: 3000,
-        });
-      });
-    }
-  }, []);
 
   return (
     <>

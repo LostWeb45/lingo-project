@@ -2,7 +2,7 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { SearchIvent } from "./search-ivent";
 import {
   Select,
@@ -78,7 +78,7 @@ export const Filters: React.FC<Props> = ({ className }) => {
       return;
     }
 
-    redirect("/events/create");
+    router.push("/events/create");
   };
 
   const handleChange = (

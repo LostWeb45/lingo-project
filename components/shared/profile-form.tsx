@@ -24,17 +24,11 @@ interface Props {
 
 export const ProfileForm: React.FC<Props> = ({ data }) => {
   const { data: session } = useSession();
-  const [isYandexProvider, setIsYandexProvider] = React.useState(false);
   const [imageUrl, setImageUrl] = React.useState(data.image || "");
-
-  // Новый стейт для telegramId
   const [telegramId, setTelegramId] = React.useState(data.telegramId || "");
 
-  React.useEffect(() => {
-    if (session?.user?.email) {
-      setIsYandexProvider(session.user.provider === "yandex");
-    }
-  }, [session]);
+  // Универсальная проверка на вход через OAuth
+  const isOAuthProvider = session?.user?.provider !== "credentials";
 
   const form = useForm<TFormUpdateValues>({
     resolver: zodResolver(formUpdateSchema),
@@ -61,9 +55,7 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
         body: formData,
       });
 
-      if (!response.ok) {
-        throw new Error("Ошибка при загрузке изображения");
-      }
+      if (!response.ok) throw new Error("Ошибка при загрузке изображения");
 
       const result = await response.json();
       const newUrl = `http://localhost:4000${result.url}`;
@@ -75,11 +67,8 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
         body: JSON.stringify({ avatarUrl: newUrl }),
       });
 
-      if (updateRes.ok) {
-        toast.success("Аватар обновлён!");
-      } else {
-        toast.error("Ошибка обновления аватара в базе.");
-      }
+      if (updateRes.ok) toast.success("Аватар обновлён!");
+      else toast.error("Ошибка обновления аватара в базе.");
     } catch (err) {
       console.error(err);
       toast.error("Ошибка при загрузке аватара.");
@@ -98,7 +87,7 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
   const onSubmit = async (formData: TFormUpdateValues) => {
     try {
       await updateUserInfo({
-        email: formData.email,
+        email: isOAuthProvider ? undefined : formData.email,
         name: formData.name,
         password: formData.password,
       });
@@ -109,7 +98,6 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
     }
   };
 
-  // Функция для сохранения telegramId
   const handleTelegramIdSave = async () => {
     try {
       const res = await fetch("/api/user/set-telegram", {
@@ -177,8 +165,8 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
               name="email"
               label="E-Mail"
               required
-              disabled={isYandexProvider}
-              disablesDel={isYandexProvider}
+              disabled={isOAuthProvider}
+              readOnly={isOAuthProvider}
               className="text-[17px]"
             />
 
@@ -205,7 +193,7 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
               name="password"
               label="Новый пароль"
               className="text-[17px]"
-              disabled={isYandexProvider}
+              disabled={isOAuthProvider}
             />
 
             <FormInput
@@ -213,7 +201,7 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
               name="confirmPassword"
               label="Повторите пароль"
               className="text-[17px]"
-              disabled={isYandexProvider}
+              disabled={isOAuthProvider}
             />
 
             <Button
@@ -244,7 +232,6 @@ export const ProfileForm: React.FC<Props> = ({ data }) => {
             className="font-medium"
             size="md"
           />
-
           <a
             href="https://t.me/LinGoForSiteBot"
             target="_blank"
